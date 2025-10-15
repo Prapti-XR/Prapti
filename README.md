@@ -44,7 +44,7 @@ In order to create immersive augmented reality (AR) and virtual reality (VR) exp
 - @react-three/xr v6.6.26 for WebXR (AR/VR support, React 18 compatibility)
 - three.js 0.169.0 (aligned with fiber/drei)
 - TypeScript 5.6.3 for compile-time type safety
-  
+- Google Maps API
 *** 
 
 ## Backend & Storage:
