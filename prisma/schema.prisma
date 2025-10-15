@@ -1,0 +1,234 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User Management
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  favoriteSites FavoriteSite[]
+  triviaScores  TriviaScore[]
+  uploadedAssets Asset[]     @relation("UploadedBy")
+  
+  @@index([email])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+// Heritage Sites
+model HeritageSite {
+  id              String   @id @default(cuid())
+  name            String
+  description     String   @db.Text
+  location        String
+  latitude        Float
+  longitude       Float
+  country         String
+  city            String?
+  era             String?  // e.g., "Ancient", "Medieval", "Modern"
+  yearBuilt       Int?
+  culturalContext String?  @db.Text
+  historicalFacts String?  @db.Text
+  visitingInfo    String?  @db.Text
+  accessibility   String?  @db.Text
+  
+  // Status
+  isPublished     Boolean  @default(false)
+  isFeatured      Boolean  @default(false)
+  viewCount       Int      @default(0)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  assets          Asset[]
+  triviaQuestions TriviaQuestion[]
+  favoritedBy     FavoriteSite[]
+  tags            SiteTag[]
+  
+  @@index([country, city])
+  @@index([latitude, longitude])
+  @@index([isPublished, isFeatured])
+}
+
+// Assets (3D Models, Panoramas, Images)
+model Asset {
+  id            String      @id @default(cuid())
+  type          AssetType
+  title         String
+  description   String?     @db.Text
+  
+  // Storage Information
+  storageKey    String      @unique // R2 object key
+  storageUrl    String      // Public URL
+  fileSize      BigInt      // in bytes
+  mimeType      String
+  
+  // 3D Model specific
+  format        String?     // e.g., "GLTF", "GLB"
+  polygonCount  Int?
+  textureCount  Int?
+  
+  // Panorama specific
+  isPanorama    Boolean     @default(false)
+  panoramaType  String?     // e.g., "360", "180"
+  
+  // Image metadata
+  width         Int?
+  height        Int?
+  
+  // Attribution
+  attribution   String?     @db.Text
+  license       String?     // e.g., "CC-BY-4.0"
+  
+  // Status
+  isProcessed   Boolean     @default(false)
+  isPublic      Boolean     @default(true)
+  downloadCount Int         @default(0)
+  
+  // Timestamps
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relations
+  siteId        String
+  site          HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  uploadedById  String?
+  uploadedBy    User?        @relation("UploadedBy", fields: [uploadedById], references: [id])
+  
+  @@index([siteId, type])
+  @@index([type, isPublic])
+}
+
+enum AssetType {
+  MODEL_3D
+  PANORAMA_360
+  PANORAMA_180
+  IMAGE
+  THUMBNAIL
+  VIDEO
+}
+
+// Trivia System
+model TriviaQuestion {
+  id          String   @id @default(cuid())
+  question    String   @db.Text
+  difficulty  Difficulty
+  category    String
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  siteId      String
+  site        HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  answers     TriviaAnswer[]
+  scores      TriviaScore[]
+  
+  @@index([siteId, difficulty])
+}
+
+model TriviaAnswer {
+  id          String   @id @default(cuid())
+  answerText  String
+  isCorrect   Boolean  @default(false)
+  explanation String?  @db.Text
+  
+  // Relations
+  questionId  String
+  question    TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@index([questionId])
+}
+
+model TriviaScore {
+  id          String   @id @default(cuid())
+  score       Int
+  totalQuestions Int
+  completedAt DateTime @default(now())
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId  String
+  question    TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([questionId])
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// User Favorites
+model FavoriteSite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  siteId    String
+  site      HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, siteId])
+  @@index([userId])
+  @@index([siteId])
+}
+
+// Site Tags for categorization
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  
+  sites     SiteTag[]
+}
+
+model SiteTag {
+  siteId    String
+  site      HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@id([siteId, tagId])
+  @@index([siteId])
+  @@index([tagId])
+}
+
+// Analytics (optional, for tracking usage)
+model SiteView {
+  id        String   @id @default(cuid())
+  siteId    String
+  viewedAt  DateTime @default(now())
+  userAgent String?
+  country   String?
+  
+  @@index([siteId, viewedAt])
+}

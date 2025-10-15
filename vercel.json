@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "DIRECT_URL": "@direct-url",
+    "R2_ACCOUNT_ID": "@r2-account-id",
+    "R2_ACCESS_KEY_ID": "@r2-access-key-id",
+    "R2_SECRET_ACCESS_KEY": "@r2-secret-access-key",
+    "R2_BUCKET_NAME": "@r2-bucket-name",
+    "R2_PUBLIC_URL": "@r2-public-url",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY": "@google-maps-api-key"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}

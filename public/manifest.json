@@ -1,0 +1,26 @@
+{
+  "name": "Prapti - Heritage AR/VR Platform",
+  "short_name": "Prapti",
+  "description": "Experience historical sites and cultural landmarks through immersive AR/VR technology",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#8B4513",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "entertainment", "travel"],
+  "screenshots": []
+}
