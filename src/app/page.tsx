@@ -5,91 +5,80 @@ export default function HomePage() {
     return (
         <>
             <Navbar />
-            <main className="min-h-screen relative overflow-hidden">
-                {/* Hero Section */}
-                <section className="pt-32 pb-20 px-6">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="grid lg:grid-cols-2 gap-12 items-center">
-                            {/* Left Content */}
-                            <div className="space-y-8 animate-slide-up">
-                                <h1 className="text-6xl lg:text-7xl font-bold text-heritage-dark font-serif leading-tight">
-                                    Let&apos;s Explore
-                                </h1>
-                                <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                                    Experience historical sites and cultural landmarks through immersive AR/VR technology.
-                                    Discover heritage like never before.
-                                </p>
-                                <div className="flex gap-4">
-                                    <Link
-                                        href="/map"
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-heritage-dark text-white rounded-full font-medium hover:bg-heritage-primary transition-all duration-200 hover:scale-105 hover:shadow-xl"
-                                    >
-                                        NAVIGATE
-                                    </Link>
-                                    <Link
-                                        href="/about"
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/80 backdrop-blur text-heritage-dark rounded-full font-medium hover:bg-white transition-all duration-200 border border-gray-200 hover:border-heritage-primary"
-                                    >
-                                        Learn More
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Right Image Placeholder */}
-                            <div className="relative lg:h-[600px] h-[400px] animate-fade-in">
-                                <div className="absolute inset-0 bg-gradient-to-br from-heritage-primary/20 via-heritage-secondary/20 to-heritage-accent/20 rounded-3xl backdrop-blur-sm border border-gray-200/50 shadow-2xl overflow-hidden">
-                                    {/* Decorative Elements */}
-                                    <div className="absolute top-8 right-8 w-32 h-32 bg-heritage-primary/10 rounded-full blur-3xl"></div>
-                                    <div className="absolute bottom-12 left-12 w-40 h-40 bg-heritage-secondary/10 rounded-full blur-3xl"></div>
-
-                                    {/* Placeholder for Map/Image */}
-                                    <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                                        <div className="text-center p-8">
-                                            <svg className="w-24 h-24 mx-auto mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                                            </svg>
-                                            <p className="text-sm">Interactive Heritage Map</p>
-                                        </div>
-                                    </div>
-                                </div>
+            <main className="min-h-screen bg-white">
+                {/* Hero Section - Clean & Minimalistic */}
+                <section className="px-4 pt-24 pb-16 md:pt-32 md:pb-24 md:px-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="space-y-6 text-center md:space-y-8">
+                            <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight md:text-6xl lg:text-7xl text-heritage-dark">
+                                Discover Heritage,<br />Experience History
+                            </h1>
+                            <p className="max-w-2xl mx-auto text-lg leading-relaxed text-gray-600 md:text-xl">
+                                Explore cultural landmarks through immersive AR/VR technology.
+                                Journey through time and space from anywhere.
+                            </p>
+                            <div className="flex flex-col justify-center gap-3 pt-4 sm:flex-row md:gap-4">
+                                <Link
+                                    href="/map"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-white transition-colors duration-200 rounded-lg md:px-8 md:py-4 bg-heritage-dark hover:bg-heritage-primary"
+                                >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                    </svg>
+                                    Explore Map
+                                </Link>
+                                <Link
+                                    href="/about"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-medium transition-colors duration-200 bg-white border border-gray-200 rounded-lg md:px-8 md:py-4 text-heritage-dark hover:border-heritage-dark"
+                                >
+                                    Learn More
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Features Section */}
-                <section className="py-20 px-6">
+                {/* Features Grid */}
+                <section className="px-4 py-16 md:py-24 md:px-6 bg-gray-50">
                     <div className="max-w-6xl mx-auto">
-                        <div className="grid md:grid-cols-3 gap-8">
-                            <FeatureCard
-                                icon="🎮"
-                                title="Interactive Games"
-                                description="Engage with heritage through trivia and immersive experiences"
-                            />
-                            <FeatureCard
-                                icon="🗺️"
-                                title="Explore Sites"
-                                description="Navigate through historical locations with our interactive map"
-                            />
-                            <FeatureCard
-                                icon="📱"
-                                title="AR/VR Ready"
-                                description="Experience monuments in augmented and virtual reality"
-                            />
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
+                            <Link href="/models" className="group">
+                                <div className="p-6 transition-all duration-200 bg-white border border-gray-100 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
+                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
+                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">3D Models</h3>
+                                    <p className="text-sm leading-relaxed text-gray-600">Explore detailed 3D reconstructions of heritage sites</p>
+                                </div>
+                            </Link>
+                            <Link href="/images" className="group">
+                                <div className="p-6 transition-all duration-200 bg-white border border-gray-100 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
+                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
+                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">360° Images</h3>
+                                    <p className="text-sm leading-relaxed text-gray-600">Immerse yourself in panoramic views of historic places</p>
+                                </div>
+                            </Link>
+                            <Link href="/map" className="group">
+                                <div className="p-6 transition-all duration-200 bg-white border border-gray-100 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
+                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
+                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">Interactive Map</h3>
+                                    <p className="text-sm leading-relaxed text-gray-600">Discover heritage sites around you</p>
+                                </div>
+                            </Link>
                         </div>
                     </div>
                 </section>
             </main>
         </>
-    );
-}
-
-function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string }) {
-    return (
-        <div className="group p-8 bg-white/60 backdrop-blur-lg rounded-2xl border border-gray-200/50 hover:border-heritage-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div className="text-4xl mb-4">{icon}</div>
-            <h3 className="text-xl font-semibold text-heritage-dark mb-2 font-serif">{title}</h3>
-            <p className="text-gray-600 leading-relaxed">{description}</p>
-        </div>
     );
 }

@@ -58,12 +58,15 @@ export default function SignInPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+        <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
+            <div className="max-w-md w-full space-y-8">
                 {/* Header */}
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-                    <p className="mt-2 text-sm text-gray-600">
+                    <Link href="/" className="inline-block mb-6">
+                        <span className="text-2xl font-bold text-heritage-dark">Prapti</span>
+                    </Link>
+                    <h1 className="text-3xl md:text-4xl font-bold text-heritage-dark font-serif mb-2">Welcome Back</h1>
+                    <p className="text-gray-600">
                         Sign in to explore heritage sites
                     </p>
                 </div>
@@ -76,10 +79,10 @@ export default function SignInPage() {
                 )}
 
                 {/* Sign In Form */}
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                                 Email Address
                             </label>
                             <input
@@ -90,13 +93,13 @@ export default function SignInPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Password
                             </label>
                             <input
@@ -107,7 +110,7 @@ export default function SignInPage() {
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -119,7 +122,7 @@ export default function SignInPage() {
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                                 Remember me
@@ -127,7 +130,7 @@ export default function SignInPage() {
                         </div>
 
                         <div className="text-sm">
-                            <Link href="/auth/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link href="/auth/forgot-password" className="font-medium text-heritage-dark hover:text-heritage-primary">
                                 Forgot password?
                             </Link>
                         </div>
@@ -136,7 +139,7 @@ export default function SignInPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-heritage-dark hover:bg-heritage-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         {isLoading ? 'Signing in...' : 'Sign In'}
                     </button>
@@ -145,7 +148,7 @@ export default function SignInPage() {
                 {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-300"></div>
+                        <div className="w-full border-t border-gray-200"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
                         <span className="px-2 bg-white text-gray-500">Or continue with</span>
@@ -157,7 +160,7 @@ export default function SignInPage() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-lg bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path
@@ -183,7 +186,7 @@ export default function SignInPage() {
                 {/* Sign Up Link */}
                 <p className="text-center text-sm text-gray-600">
                     Don't have an account?{' '}
-                    <Link href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <Link href="/auth/signup" className="font-medium text-heritage-dark hover:text-heritage-primary">
                         Sign up
                     </Link>
                 </p>

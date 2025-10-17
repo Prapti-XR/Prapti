@@ -92,12 +92,15 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-100 px-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+        <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
+            <div className="max-w-md w-full space-y-8">
                 {/* Header */}
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-                    <p className="mt-2 text-sm text-gray-600">
+                    <Link href="/" className="inline-block mb-6">
+                        <span className="text-2xl font-bold text-heritage-dark">Prapti</span>
+                    </Link>
+                    <h1 className="text-3xl md:text-4xl font-bold text-heritage-dark font-serif mb-2">Create Account</h1>
+                    <p className="text-gray-600">
                         Join us to explore world heritage sites
                     </p>
                 </div>
@@ -110,10 +113,10 @@ export default function SignUpPage() {
                 )}
 
                 {/* Sign Up Form */}
-                <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                                 Full Name
                             </label>
                             <input
@@ -123,13 +126,13 @@ export default function SignUpPage() {
                                 autoComplete="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="John Doe"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                                 Email Address
                             </label>
                             <input
@@ -140,13 +143,13 @@ export default function SignUpPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Password
                             </label>
                             <input
@@ -157,7 +160,7 @@ export default function SignUpPage() {
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
                             <p className="mt-1 text-xs text-gray-500">
@@ -166,7 +169,7 @@ export default function SignUpPage() {
                         </div>
 
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                                 Confirm Password
                             </label>
                             <input
@@ -177,7 +180,7 @@ export default function SignUpPage() {
                                 required
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -190,17 +193,17 @@ export default function SignUpPage() {
                                 name="terms"
                                 type="checkbox"
                                 required
-                                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-gray-300 rounded"
                             />
                         </div>
                         <div className="ml-3 text-sm">
                             <label htmlFor="terms" className="text-gray-700">
                                 I agree to the{' '}
-                                <Link href="/terms" className="font-medium text-purple-600 hover:text-purple-500">
+                                <Link href="/terms" className="font-medium text-heritage-dark hover:text-heritage-primary">
                                     Terms of Service
                                 </Link>{' '}
                                 and{' '}
-                                <Link href="/privacy" className="font-medium text-purple-600 hover:text-purple-500">
+                                <Link href="/privacy" className="font-medium text-heritage-dark hover:text-heritage-primary">
                                     Privacy Policy
                                 </Link>
                             </label>
@@ -210,7 +213,7 @@ export default function SignUpPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-heritage-dark hover:bg-heritage-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         {isLoading ? 'Creating account...' : 'Create Account'}
                     </button>
@@ -219,7 +222,7 @@ export default function SignUpPage() {
                 {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-300"></div>
+                        <div className="w-full border-t border-gray-200"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
                         <span className="px-2 bg-white text-gray-500">Or continue with</span>
@@ -231,7 +234,7 @@ export default function SignUpPage() {
                     type="button"
                     onClick={handleGoogleSignUp}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-lg bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path
@@ -257,7 +260,7 @@ export default function SignUpPage() {
                 {/* Sign In Link */}
                 <p className="text-center text-sm text-gray-600">
                     Already have an account?{' '}
-                    <Link href="/auth/signin" className="font-medium text-purple-600 hover:text-purple-500">
+                    <Link href="/auth/signin" className="font-medium text-heritage-dark hover:text-heritage-primary">
                         Sign in
                     </Link>
                 </p>
