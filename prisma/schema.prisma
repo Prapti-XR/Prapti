@@ -16,17 +16,63 @@ model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
-  passwordHash  String
+  passwordHash  String? // Optional for OAuth users
+  image         String? // Profile image from OAuth
+  emailVerified DateTime? // Email verification timestamp
   role          UserRole  @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
   // Relations
-  favoriteSites FavoriteSite[]
-  triviaScores  TriviaScore[]
-  uploadedAssets Asset[]     @relation("UploadedBy")
-  
+  accounts       Account[]
+  sessions       Session[]
+  favoriteSites  FavoriteSite[]
+  triviaScores   TriviaScore[]
+  uploadedAssets Asset[]        @relation("UploadedBy")
+
   @@index([email])
+}
+
+// OAuth Accounts (NextAuth)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String // oauth, email, etc.
+  provider          String // google, github, etc.
+  providerAccountId String // User's ID from the provider
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// Session Management (NextAuth)
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Email Verification Tokens
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 enum UserRole {
@@ -37,36 +83,36 @@ enum UserRole {
 
 // Heritage Sites
 model HeritageSite {
-  id              String   @id @default(cuid())
+  id              String  @id @default(cuid())
   name            String
-  description     String   @db.Text
+  description     String  @db.Text
   location        String
   latitude        Float
   longitude       Float
   country         String
   city            String?
-  era             String?  // e.g., "Ancient", "Medieval", "Modern"
+  era             String? // e.g., "Ancient", "Medieval", "Modern"
   yearBuilt       Int?
-  culturalContext String?  @db.Text
-  historicalFacts String?  @db.Text
-  visitingInfo    String?  @db.Text
-  accessibility   String?  @db.Text
-  
+  culturalContext String? @db.Text
+  historicalFacts String? @db.Text
+  visitingInfo    String? @db.Text
+  accessibility   String? @db.Text
+
   // Status
-  isPublished     Boolean  @default(false)
-  isFeatured      Boolean  @default(false)
-  viewCount       Int      @default(0)
-  
+  isPublished Boolean @default(false)
+  isFeatured  Boolean @default(false)
+  viewCount   Int     @default(0)
+
   // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
   assets          Asset[]
   triviaQuestions TriviaQuestion[]
   favoritedBy     FavoriteSite[]
   tags            SiteTag[]
-  
+
   @@index([country, city])
   @@index([latitude, longitude])
   @@index([isPublished, isFeatured])
@@ -74,49 +120,49 @@ model HeritageSite {
 
 // Assets (3D Models, Panoramas, Images)
 model Asset {
-  id            String      @id @default(cuid())
-  type          AssetType
-  title         String
-  description   String?     @db.Text
-  
+  id          String    @id @default(cuid())
+  type        AssetType
+  title       String
+  description String?   @db.Text
+
   // Storage Information
-  storageKey    String      @unique // R2 object key
-  storageUrl    String      // Public URL
-  fileSize      BigInt      // in bytes
-  mimeType      String
-  
+  storageKey String @unique // R2 object key
+  storageUrl String // Public URL
+  fileSize   BigInt // in bytes
+  mimeType   String
+
   // 3D Model specific
-  format        String?     // e.g., "GLTF", "GLB"
-  polygonCount  Int?
-  textureCount  Int?
-  
+  format       String? // e.g., "GLTF", "GLB"
+  polygonCount Int?
+  textureCount Int?
+
   // Panorama specific
-  isPanorama    Boolean     @default(false)
-  panoramaType  String?     // e.g., "360", "180"
-  
+  isPanorama   Boolean @default(false)
+  panoramaType String? // e.g., "360", "180"
+
   // Image metadata
-  width         Int?
-  height        Int?
-  
+  width  Int?
+  height Int?
+
   // Attribution
-  attribution   String?     @db.Text
-  license       String?     // e.g., "CC-BY-4.0"
-  
+  attribution String? @db.Text
+  license     String? // e.g., "CC-BY-4.0"
+
   // Status
-  isProcessed   Boolean     @default(false)
-  isPublic      Boolean     @default(true)
-  downloadCount Int         @default(0)
-  
+  isProcessed   Boolean @default(false)
+  isPublic      Boolean @default(true)
+  downloadCount Int     @default(0)
+
   // Timestamps
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  siteId        String
-  site          HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  uploadedById  String?
-  uploadedBy    User?        @relation("UploadedBy", fields: [uploadedById], references: [id])
-  
+  siteId       String
+  site         HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  uploadedById String?
+  uploadedBy   User?        @relation("UploadedBy", fields: [uploadedById], references: [id])
+
   @@index([siteId, type])
   @@index([type, isPublic])
 }
@@ -132,49 +178,49 @@ enum AssetType {
 
 // Trivia System
 model TriviaQuestion {
-  id          String   @id @default(cuid())
-  question    String   @db.Text
-  difficulty  Difficulty
-  category    String
-  
+  id         String     @id @default(cuid())
+  question   String     @db.Text
+  difficulty Difficulty
+  category   String
+
   // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  siteId      String
-  site        HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  answers     TriviaAnswer[]
-  scores      TriviaScore[]
-  
+  siteId  String
+  site    HeritageSite   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  answers TriviaAnswer[]
+  scores  TriviaScore[]
+
   @@index([siteId, difficulty])
 }
 
 model TriviaAnswer {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   answerText  String
-  isCorrect   Boolean  @default(false)
-  explanation String?  @db.Text
-  
+  isCorrect   Boolean @default(false)
+  explanation String? @db.Text
+
   // Relations
-  questionId  String
-  question    TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  
+  questionId String
+  question   TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
   @@index([questionId])
 }
 
 model TriviaScore {
-  id          String   @id @default(cuid())
-  score       Int
+  id             String   @id @default(cuid())
+  score          Int
   totalQuestions Int
-  completedAt DateTime @default(now())
-  
+  completedAt    DateTime @default(now())
+
   // Relations
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questionId  String
-  question    TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String
+  question   TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([questionId])
 }
@@ -189,13 +235,13 @@ enum Difficulty {
 model FavoriteSite {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  
+
   // Relations
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  siteId    String
-  site      HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  
+  userId String
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  siteId String
+  site   HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
   @@unique([userId, siteId])
   @@index([userId])
   @@index([siteId])
@@ -203,20 +249,20 @@ model FavoriteSite {
 
 // Site Tags for categorization
 model Tag {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  slug      String    @unique
-  createdAt DateTime  @default(now())
-  
-  sites     SiteTag[]
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  sites SiteTag[]
 }
 
 model SiteTag {
-  siteId    String
-  site      HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  tagId     String
-  tag       Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  
+  siteId String
+  site   HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  tagId  String
+  tag    Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
   @@id([siteId, tagId])
   @@index([siteId])
   @@index([tagId])
@@ -229,6 +275,6 @@ model SiteView {
   viewedAt  DateTime @default(now())
   userAgent String?
   country   String?
-  
+
   @@index([siteId, viewedAt])
 }
