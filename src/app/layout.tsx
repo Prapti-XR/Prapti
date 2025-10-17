@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '@/styles/globals.css';
 
@@ -33,12 +33,13 @@ export const metadata: Metadata = {
         title: 'Prapti - Heritage AR/VR Platform',
         description: 'Experience historical sites and cultural landmarks through immersive AR/VR technology',
     },
-    viewport: {
-        width: 'device-width',
-        initialScale: 1,
-        maximumScale: 5,
-    },
     manifest: '/manifest.json',
+};
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -48,7 +49,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-            <body className="font-sans">
+            <body className="font-sans bg-gradient-to-br from-gray-50 via-white to-heritage-light/30 min-h-screen">
                 {children}
             </body>
         </html>

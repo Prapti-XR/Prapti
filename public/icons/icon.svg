@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#8B4513" rx="64" />
+
+  <!-- Decorative Heritage Pattern -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#D2691E" stroke-width="3" opacity="0.3" />
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#CD853F" stroke-width="2" opacity="0.4" />
+
+  <!-- Center Monument/Temple Icon -->
+  <path d="M 256 140 L 200 200 L 200 340 L 312 340 L 312 200 Z" fill="#EFEBE9" />
+  <rect x="220" y="250" width="72" height="90" fill="#3E2723" opacity="0.6" />
+  <polygon points="256,100 180,160 332,160" fill="#EFEBE9" />
+  <circle cx="256" cy="200" r="15" fill="#CD853F" />
+
+  <!-- Letter P -->
+  <text x="256" y="420" font-family="serif" font-size="140" font-weight="bold" fill="#EFEBE9" text-anchor="middle">P</text>
+</svg>

@@ -35,4 +35,13 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Glassmorphism utilities */
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-gray-200/50;
+  }
+
+  .glass-dark {
+    @apply bg-gray-900/70 backdrop-blur-xl border border-gray-700/50;
+  }
 }
