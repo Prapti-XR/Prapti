@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components';
 
 export default function ProfilePage() {
     return (
@@ -20,9 +21,9 @@ export default function ProfilePage() {
                                 </h1>
                                 <p className="text-gray-600">user@example.com</p>
                             </div>
-                            <button className="px-6 py-2 bg-white text-heritage-dark rounded-lg font-medium border border-gray-200 hover:border-heritage-dark transition-colors w-full md:w-auto">
+                            <Button variant="default" size="md" className="w-full md:w-auto">
                                 Edit Profile
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </header>

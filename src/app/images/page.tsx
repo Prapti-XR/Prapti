@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
+import { Button, Search } from '@/components';
 
 export default function ImagesPage() {
     return (
@@ -20,22 +21,27 @@ export default function ImagesPage() {
                     </div>
                 </header>
 
-                {/* Filters */}
+                {/* Search and Filters */}
                 <section className="py-6 md:py-8 px-4 md:px-6 bg-gray-50 sticky top-16 z-10 border-b border-gray-100">
-                    <div className="max-w-6xl mx-auto">
+                    <div className="max-w-6xl mx-auto space-y-4">
+                        <Search
+                            placeholder="Search 360° images..."
+                            size="md"
+                            className="max-w-xl"
+                        />
                         <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                            <button className="px-4 md:px-5 py-2 bg-heritage-dark text-white rounded-full text-sm font-medium whitespace-nowrap">
+                            <Button size="sm" variant="primary">
                                 All Images
-                            </button>
-                            <button className="px-4 md:px-5 py-2 bg-white text-gray-700 rounded-full text-sm font-medium border border-gray-200 hover:border-heritage-dark transition-colors whitespace-nowrap">
+                            </Button>
+                            <Button size="sm" variant="default">
                                 Exterior
-                            </button>
-                            <button className="px-4 md:px-5 py-2 bg-white text-gray-700 rounded-full text-sm font-medium border border-gray-200 hover:border-heritage-dark transition-colors whitespace-nowrap">
+                            </Button>
+                            <Button size="sm" variant="default">
                                 Interior
-                            </button>
-                            <button className="px-4 md:px-5 py-2 bg-white text-gray-700 rounded-full text-sm font-medium border border-gray-200 hover:border-heritage-dark transition-colors whitespace-nowrap">
+                            </Button>
+                            <Button size="sm" variant="default">
                                 Aerial
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </section>

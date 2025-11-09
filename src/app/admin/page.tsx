@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components';
 
 export default function AdminPage() {
     return (
@@ -111,11 +112,11 @@ function StatCard({ label, value, icon }: { label: string; value: string; icon: 
 
 function ActionCard({ title, description, icon }: { title: string; description: string; icon: string }) {
     return (
-        <button className="text-left bg-white p-6 rounded-lg border border-gray-200 hover:border-heritage-primary transition-all duration-200 hover:shadow-md">
+        <Button variant="default" className="text-left h-auto py-6 flex-col items-start">
             <div className="text-2xl mb-3">{icon}</div>
-            <h3 className="font-semibold text-heritage-dark mb-1">{title}</h3>
-            <p className="text-sm text-gray-600">{description}</p>
-        </button>
+            <h3 className="font-semibold mb-1">{title}</h3>
+            <p className="text-sm opacity-80">{description}</p>
+        </Button>
     );
 }
 

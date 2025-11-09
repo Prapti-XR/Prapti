@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components';
 import Link from 'next/link';
 
 export default function AboutPage() {
@@ -91,14 +92,13 @@ export default function AboutPage() {
                                 <p className="text-gray-600 mb-6">
                                     Start your journey through heritage sites around the world.
                                 </p>
-                                <Link
-                                    href="/map"
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-heritage-dark text-white rounded-lg font-medium hover:bg-heritage-primary transition-colors duration-200"
-                                >
-                                    Explore Now
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
+                                <Link href="/map">
+                                    <Button variant="primary" size="lg">
+                                        Explore Now
+                                        <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                        </svg>
+                                    </Button>
                                 </Link>
                             </div>
                         </section>

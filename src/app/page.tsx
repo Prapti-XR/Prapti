@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -18,20 +19,18 @@ export default function HomePage() {
                                 Journey through time and space from anywhere.
                             </p>
                             <div className="flex flex-col justify-center gap-3 pt-4 sm:flex-row md:gap-4">
-                                <Link
-                                    href="/map"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-white transition-colors duration-200 rounded-lg md:px-8 md:py-4 bg-heritage-dark hover:bg-heritage-primary"
-                                >
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                                    </svg>
-                                    Explore Map
+                                <Link href="/map">
+                                    <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                        </svg>
+                                        Explore Map
+                                    </Button>
                                 </Link>
-                                <Link
-                                    href="/about"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-medium transition-colors duration-200 bg-white border border-gray-200 rounded-lg md:px-8 md:py-4 text-heritage-dark hover:border-heritage-dark"
-                                >
-                                    Learn More
+                                <Link href="/about">
+                                    <Button variant="default" size="lg" className="w-full sm:w-auto">
+                                        Learn More
+                                    </Button>
                                 </Link>
                             </div>
                         </div>
