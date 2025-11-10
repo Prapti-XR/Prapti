@@ -57,6 +57,10 @@ prisma/migrations/
 public/models/*
 !public/models/.gitkeep
 
+# 360° Panorama Images (development only - prod assets in R2)
+public/360-images/*
+!public/360-images/.gitkeep
+
 # Local testing
 .cache/
 temp/

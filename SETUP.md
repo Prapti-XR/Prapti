@@ -100,30 +100,133 @@ cp .env.example .env
 
 **Required Credentials:**
 
-1. **Neon PostgreSQL** (Free Tier)
-   - Sign up at https://neon.tech
-   - Create a new project
-   - Copy the connection strings to `.env`
+#### 1. **Neon PostgreSQL Database** (Free Tier - Required)
 
-2. **Cloudflare R2** (Free Tier)
-   - Sign up at https://cloudflare.com
-   - Create R2 bucket
-   - Generate API tokens
-   - Add credentials to `.env`
-
-3. **Google Maps API** ($200/month free)
-   - Get API key at https://console.cloud.google.com
-   - Enable Maps JavaScript API
-   - Add to `.env`
-
-4. **Generate NextAuth Secret**
-   ```bash
-   # On Linux/Mac
-   openssl rand -base64 32
-
-   # On Windows (PowerShell)
-   [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+1. Go to https://neon.tech and sign up
+2. Click **"Create a project"**
+3. Enter project name (e.g., "prapti")
+4. Select a region close to you
+5. Click **"Create project"**
+6. On the dashboard, find **"Connection string"**
+7. Copy the connection string (looks like `postgresql://user:password@ep-xxx.neon.tech/neondb`)
+8. In your `.env.local` file, update:
+   ```env
+   DATABASE_URL="your-connection-string-here"
+   DIRECT_URL="your-connection-string-here"
    ```
+
+**⚠️ Important:** Make sure to use the **pooled connection string** for `DATABASE_URL`
+
+#### 2. **Google OAuth** (Free - Required for Google Sign-In)
+
+1. Go to https://console.cloud.google.com
+2. Create a new project or select existing one
+3. Click **"APIs & Services"** → **"Credentials"**
+4. Click **"Create Credentials"** → **"OAuth client ID"**
+5. If prompted, configure the **OAuth consent screen**:
+   - Choose **"External"** user type
+   - Fill in app name: "Prapti"
+   - Add your email as support email
+   - Add authorized domain: `localhost` (for development)
+   - Save and continue
+6. Back to **Create OAuth client ID**:
+   - Application type: **"Web application"**
+   - Name: "Prapti Web Client"
+   - **Authorized JavaScript origins**: `http://localhost:3000`
+   - **Authorized redirect URIs**: `http://localhost:3000/api/auth/callback/google`
+   - Click **"Create"**
+7. Copy the **Client ID** and **Client Secret**
+8. In your `.env.local` file, add:
+   ```env
+   GOOGLE_CLIENT_ID="your-client-id-here"
+   GOOGLE_CLIENT_SECRET="your-client-secret-here"
+   ```
+
+#### 3. **Google Maps API** (Free - $200/month credit)
+
+1. In the same Google Cloud Console project
+2. Go to **"APIs & Services"** → **"Library"**
+3. Search for **"Maps JavaScript API"**
+4. Click **"Enable"**
+5. Go to **"Credentials"** → **"Create Credentials"** → **"API Key"**
+6. Copy the API key
+7. (Optional) Click **"Restrict Key"** to secure it:
+   - API restrictions: Select **"Maps JavaScript API"**
+   - Website restrictions: Add `localhost:3000/*` for development
+8. In your `.env.local` file, add:
+   ```env
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="your-maps-api-key-here"
+   ```
+
+#### 4. **Cloudflare R2 Storage** (Free Tier - Optional for now)
+
+1. Sign up at https://cloudflare.com
+2. Go to **R2 Object Storage** in the dashboard
+3. Click **"Create bucket"**
+4. Name it `prapti-assets`
+5. Go to **"Manage R2 API Tokens"**
+6. Click **"Create API token"**
+7. Select **"Edit"** permissions for your bucket
+8. Copy the **Access Key ID** and **Secret Access Key**
+9. Copy your **Account ID** from the R2 overview page
+10. In your `.env.local` file, add:
+    ```env
+    R2_ACCOUNT_ID="your-account-id"
+    R2_ACCESS_KEY_ID="your-access-key"
+    R2_SECRET_ACCESS_KEY="your-secret-key"
+    R2_BUCKET_NAME="prapti-assets"
+    R2_PUBLIC_URL="https://pub-xxxxxxxxxxxxxxxxxxxx.r2.dev"
+    ```
+
+#### 5. **Generate NextAuth Secret** (Required)
+
+Run this command to generate a secure secret:
+
+```bash
+# On Windows (PowerShell)
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+
+# On Linux/Mac
+openssl rand -base64 32
+```
+
+Add to `.env.local`:
+```env
+NEXTAUTH_SECRET="your-generated-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+#### 6. **Complete .env.local Example**
+
+Your `.env.local` should look like this:
+
+```env
+# Database (Required)
+DATABASE_URL="postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require"
+DIRECT_URL="postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require"
+
+# NextAuth (Required)
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-generated-secret"
+
+# Google OAuth (Required)
+GOOGLE_CLIENT_ID="xxx.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="GOCSPX-xxx"
+
+# Google Maps (Required)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyXXX"
+
+# Cloudflare R2 (Optional - for production)
+R2_ACCOUNT_ID="your-account-id"
+R2_ACCESS_KEY_ID="your-access-key"
+R2_SECRET_ACCESS_KEY="your-secret-key"
+R2_BUCKET_NAME="prapti-assets"
+R2_PUBLIC_URL="https://pub-xxx.r2.dev"
+
+# App Config
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_NAME="Prapti"
+```
 
 ### 3. Set Up Database
 
