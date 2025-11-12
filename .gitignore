@@ -65,5 +65,8 @@ public/360-images/*
 .cache/
 temp/
 
+# HTTPS Certificates
+certificates/
+
 # Local Docs
 docs

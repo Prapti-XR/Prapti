@@ -46,14 +46,6 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'credentialless',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-          {
             key: 'Access-Control-Allow-Origin',
             value: '*', // Allow all origins for development
           },

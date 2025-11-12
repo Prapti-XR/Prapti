@@ -9,6 +9,9 @@ export { ModelViewer } from './3d/ModelViewer';
 export { PanoramaViewer } from './3d/PanoramaViewer';
 export { ARViewer } from './3d/ARViewer';
 
+// AR Components
+export { QRCodeModal } from './ar/QRCodeModal';
+
 // Layout Components
 export { Navbar } from './layout/Navbar';
 export { Footer } from './layout/Footer';

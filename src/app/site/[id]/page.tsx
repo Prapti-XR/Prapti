@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
+import { QRCodeModal } from '@/components/ar/QRCodeModal';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -78,6 +79,7 @@ type ViewerMode = '3d' | 'panorama' | 'ar' | null;
 
 export default function SiteInfoPage({ params }: { params: { id: string } }) {
     const [viewerMode, setViewerMode] = useState<ViewerMode>(null);
+    const [showQRModal, setShowQRModal] = useState(false);
     const site = sitesData[params.id] || sitesData['sonda-fort'];
     return (
         <>
@@ -156,9 +158,9 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 onClick={() => setViewerMode('panorama')}
                             />
                             <ActionButton
-                                icon="�"
-                                label="AR Experience"
-                                onClick={() => setViewerMode('ar')}
+                                icon="📱"
+                                label="View in AR"
+                                onClick={() => setShowQRModal(true)}
                             />
                         </section>
 
@@ -258,6 +260,14 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                         </div>
                     </div>
                 )}
+
+                {/* QR Code Modal */}
+                <QRCodeModal
+                    siteId={params.id}
+                    siteName={site.name}
+                    isOpen={showQRModal}
+                    onClose={() => setShowQRModal(false)}
+                />
             </main>
         </>
     );

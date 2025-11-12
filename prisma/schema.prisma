@@ -99,9 +99,10 @@ model HeritageSite {
   accessibility   String? @db.Text
 
   // Status
-  isPublished Boolean @default(false)
-  isFeatured  Boolean @default(false)
-  viewCount   Int     @default(0)
+  isPublished     Boolean @default(false)
+  isFeatured      Boolean @default(false)
+  viewCount       Int     @default(0)
+  popularityScore Float   @default(0)
 
   // Timestamps
   createdAt DateTime @default(now())
