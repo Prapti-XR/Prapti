@@ -50,7 +50,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-            <body className="font-sans bg-gradient-to-br from-gray-50 via-white to-heritage-light/30 min-h-screen flex flex-col">
+            <body className="font-sans bg-white min-h-screen flex flex-col antialiased">
                 <main className="flex-grow">
                     {children}
                 </main>

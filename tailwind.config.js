@@ -9,11 +9,11 @@ module.exports = {
     extend: {
       colors: {
         heritage: {
-          primary: '#8B4513',
-          secondary: '#D2691E',
-          accent: '#CD853F',
-          dark: '#3E2723',
-          light: '#EFEBE9',
+          primary: '#FEB95F',      // Warm golden yellow - primary accent
+          secondary: '#8B4513',    // Saddle brown - heritage warmth
+          accent: '#96ADC8',       // Soft blue-gray - calm complement
+          dark: '#3E2723',         // Dark brown - text and headers
+          light: '#DAE0F2',        // Light blue-gray - backgrounds
         },
       },
       fontFamily: {

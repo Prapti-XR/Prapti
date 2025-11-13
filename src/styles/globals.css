@@ -19,15 +19,19 @@
 
 @layer components {
   .btn-primary {
-    @apply px-6 py-3 bg-heritage-primary text-white rounded-lg hover:bg-heritage-dark transition-colors duration-200;
+    @apply px-6 py-3 bg-heritage-primary text-heritage-dark font-medium rounded-lg hover:bg-heritage-primary/90 transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-heritage-secondary text-white rounded-lg hover:bg-heritage-primary transition-colors duration-200;
+    @apply px-6 py-3 bg-heritage-secondary text-white font-medium rounded-lg hover:bg-heritage-secondary/90 transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .btn-accent {
+    @apply px-6 py-3 bg-heritage-accent text-white font-medium rounded-lg hover:bg-heritage-accent/90 transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200;
+    @apply bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-heritage-light/20;
   }
 }
 

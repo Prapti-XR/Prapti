@@ -5,21 +5,19 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const searchVariants = cva(
-    // Base styles - neumorphic design with mobile-first approach
-    'flex items-center w-full max-w-full rounded-full bg-[#E8E4E6] transition-all duration-200 focus-within:ring-2 focus-within:ring-heritage-primary focus-within:ring-offset-2 border border-transparent focus-within:border-heritage-primary/20',
+    // Base styles - minimalist design with soft focus state
+    'flex items-center w-full max-w-full rounded-full bg-heritage-light transition-all duration-200 focus-within:ring-2 focus-within:ring-heritage-primary focus-within:ring-offset-2 border border-heritage-light/40 focus-within:border-heritage-primary/30',
     {
         variants: {
             variant: {
-                default:
-                    'shadow-[inset_4px_4px_8px_rgba(163,177,198,0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.8)] md:shadow-[inset_6px_6px_12px_rgba(163,177,198,0.6),inset_-6px_-6px_12px_rgba(255,255,255,0.8)]',
-                disabled:
-                    'shadow-[inset_4px_4px_8px_rgba(163,177,198,0.3),inset_-4px_-4px_8px_rgba(255,255,255,0.4)] md:shadow-[inset_6px_6px_12px_rgba(163,177,198,0.3),inset_-6px_-6px_12px_rgba(255,255,255,0.4)] opacity-50',
+                default: 'shadow-sm',
+                disabled: 'opacity-50 cursor-not-allowed',
             },
             size: {
-                sm: 'h-9 w-[240px] px-4 text-sm md:h-10 md:w-[420px] md:px-5',
-                md: 'h-11 w-[280px] px-5 text-base md:h-12 md:w-[520px] md:px-6',
-                lg: 'h-12 w-[320px] px-6 text-base md:h-14 md:w-[620px] md:px-7 md:text-lg',
-                xl: 'h-14 w-[360px] px-7 text-lg md:h-16 md:w-[720px] md:px-8 md:text-xl',
+                sm: 'h-9 px-4 text-sm md:h-10 md:px-5',
+                md: 'h-11 px-5 text-base md:h-12 md:px-6',
+                lg: 'h-12 px-6 text-base md:h-14 md:px-7 md:text-lg',
+                xl: 'h-14 px-7 text-lg md:h-16 md:px-8 md:text-xl',
             },
         },
         defaultVariants: {
@@ -89,7 +87,7 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                         type="button"
                         onClick={handleSearchClick}
                         disabled={disabled}
-                        className="flex-shrink-0 text-[#8B7D7B] hover:text-heritage-primary transition-colors disabled:cursor-not-allowed"
+                        className="flex-shrink-0 text-heritage-dark/60 hover:text-heritage-primary transition-colors disabled:cursor-not-allowed"
                         aria-label="Search"
                     >
                         <SearchIcon />
@@ -105,7 +103,7 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                     placeholder={placeholder}
                     disabled={disabled}
                     className={cn(
-                        'flex-1 bg-transparent outline-none placeholder:text-[#8B7D7B] placeholder:font-medium text-[#3E2723] font-medium disabled:cursor-not-allowed',
+                        'flex-1 bg-transparent outline-none placeholder:text-heritage-dark/50 placeholder:font-medium text-heritage-dark font-medium disabled:cursor-not-allowed',
                         iconPosition === 'left' ? 'ml-3' : 'mr-3',
                         className
                     )}
@@ -118,14 +116,14 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                         onClick={handleSearchClick}
                         disabled={disabled}
                         className={cn(
-                            'flex-shrink-0 flex items-center justify-center rounded-full transition-all duration-200 disabled:cursor-not-allowed border border-transparent',
+                            'flex-shrink-0 flex items-center justify-center rounded-full transition-all duration-200 disabled:cursor-not-allowed',
                             size === 'sm' && 'w-7 h-7 md:w-8 md:h-8',
                             size === 'md' && 'w-8 h-8 md:w-9 md:h-9',
                             size === 'lg' && 'w-9 h-9 md:w-10 md:h-10',
                             size === 'xl' && 'w-10 h-10 md:w-12 md:h-12',
                             disabled
-                                ? 'bg-[#E8E4E6] text-[#C7C7D1]'
-                                : 'bg-heritage-dark text-white hover:bg-heritage-primary hover:border-heritage-primary/30 shadow-[2px_2px_4px_rgba(163,177,198,0.4),-2px_-2px_4px_rgba(255,255,255,0.8)] md:shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.8)]'
+                                ? 'bg-heritage-light text-heritage-dark/40'
+                                : 'bg-heritage-primary text-heritage-dark hover:bg-heritage-primary/90 shadow-sm hover:shadow-md'
                         )}
                         aria-label="Search"
                     >
