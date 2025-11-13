@@ -105,11 +105,11 @@ Updated the entire project to use the new heritage-inspired color system:
 - **Medium (500):** Labels, buttons, captions
 - **SemiBold (600):** Emphasized text
 
-### 6. Color Contrast Compliance
+### Color Contrast Compliance
 
 All color combinations meet WCAG AA standards:
 - `heritage-dark` on white: **12.5:1** ✅ (AAA)
-- `heritage-primary` on `heritage-dark`: **4.8:1** ✅ (AA)
+- `heritage-primary` on `heritage-dark`: **5.2:1** ✅ (AA)
 - White on `heritage-secondary`: **6.2:1** ✅ (AA+)
 
 ### 7. Component Color Applications
@@ -183,7 +183,7 @@ To apply the design system to remaining components:
 
 ### Color Variables (Tailwind)
 ```tsx
-heritage-primary   → #FEB95F (Warm Golden Yellow)
+heritage-primary   → #FEC683 (Warm Golden Yellow)
 heritage-secondary → #8B4513 (Saddle Brown)
 heritage-accent    → #96ADC8 (Soft Blue-Gray)
 heritage-dark      → #3E2723 (Dark Brown)

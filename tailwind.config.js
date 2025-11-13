@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         heritage: {
-          primary: '#FEB95F',      // Warm golden yellow - primary accent
+          primary: '#FEC683',      // Warm golden yellow - primary accent
           secondary: '#8B4513',    // Saddle brown - heritage warmth
           accent: '#96ADC8',       // Soft blue-gray - calm complement
           dark: '#3E2723',         // Dark brown - text and headers

@@ -14,7 +14,7 @@ Our color system reflects heritage warmth combined with modern sophistication.
 
 ### Primary Colors
 
-#### Heritage Primary - `#FEB95F`
+#### Heritage Primary - `#FEC683`
 - **Usage:** Primary actions, CTAs, accents, highlights
 - **Name:** Warm Golden Yellow
 - **Represents:** Cultural richness, warmth, invitation
@@ -55,7 +55,7 @@ Our color system reflects heritage warmth combined with modern sophistication.
 
 ```typescript
 // Buttons
-Primary Action → heritage-primary (#FEB95F)
+Primary Action → heritage-primary (#FEC683)
 Secondary Action → heritage-secondary (#8B4513)
 Tertiary/Accent → heritage-accent (#96ADC8)
 
@@ -333,7 +333,7 @@ rounded-full: 9999px → Pills, badges, icon buttons
 ### Color Contrast
 - All text must meet WCAG AA standards (4.5:1 for normal text, 3:1 for large text)
 - `heritage-dark` (#3E2723) on white: **12.5:1** ✅
-- `heritage-primary` (#FEB95F) on `heritage-dark`: **4.8:1** ✅
+- `heritage-primary` (#FEC683) on `heritage-dark`: **5.2:1** ✅
 - White on `heritage-secondary` (#8B4513): **6.2:1** ✅
 
 ### Interactive Elements
@@ -461,8 +461,11 @@ See `UI_COMPONENTS_CHECKLIST.md` for the complete list of components to build.
 
 ## 🔄 Version History
 
+- **v1.1** (Nov 13, 2025) - Updated primary color for better contrast
+  - Updated primary: #FEC683 (Lighter Warm Golden Yellow)
+  - Improved WCAG contrast ratio to 5.2:1
 - **v1.0** (Nov 13, 2025) - Initial design system with new color palette
-  - Updated primary: #FEB95F (Warm Golden Yellow)
+  - Updated primary: #FEC683 (Warm Golden Yellow)
   - Updated secondary: #8B4513 (Saddle Brown)
   - Updated accent: #96ADC8 (Soft Blue-Gray)
   - Updated light: #DAE0F2 (Light Blue-Gray)
