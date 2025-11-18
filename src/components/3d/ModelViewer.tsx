@@ -37,33 +37,55 @@ interface ModelProps {
     onError?: (error: Error) => void;
 }
 
-function Model({ url, onLoad, onError }: ModelProps) {
+function Model({ url, onLoad }: ModelProps) {
     const groupRef = useRef<THREE.Group>(null);
+    const hasCalledOnLoad = useRef(false);
 
+    // useGLTF must be called unconditionally (React hooks rule)
+    // The hook throws promises that Suspense catches, or errors that Error Boundaries catch
+    let gltf;
     try {
-        const { scene } = useGLTF(url);
-
-        // Call onLoad when model is ready
-        if (onLoad) {
-            onLoad();
-        }
-
-        return (
-            <Center>
-                <primitive
-                    ref={groupRef}
-                    object={scene}
-                    dispose={null}
-                />
-            </Center>
-        );
+        gltf = useGLTF(url);
     } catch (error) {
-        console.error('Error loading model:', error);
-        if (onError) {
-            onError(error as Error);
+        // If useGLTF throws a promise, Suspense will catch it
+        // If it throws an error, we need to handle it
+        if (error instanceof Promise) {
+            // This is expected - Suspense will handle it
+            throw error;
         }
-        return null;
+        // Real error occurred
+        console.error('Error loading model:', error);
+        throw error; // Let Error Boundary handle it
     }
+
+    const { scene } = gltf;
+
+    // Call onLoad only once when model is successfully loaded
+    if (scene && onLoad && !hasCalledOnLoad.current) {
+        hasCalledOnLoad.current = true;
+        onLoad();
+    }
+
+    if (!scene) {
+        throw new Error('Model scene not available');
+    }
+
+    return (
+        <Center>
+            <primitive
+                ref={groupRef}
+                object={scene}
+                dispose={null}
+            />
+        </Center>
+    );
+}
+
+// Preload models to avoid loading delays
+if (typeof window !== 'undefined') {
+    useGLTF.preload('/models/sonda-fort.glb');
+    useGLTF.preload('/models/sahasralinga.glb');
+    useGLTF.preload('/models/somasagara.glb');
 }
 
 function LoadingPlaceholder() {

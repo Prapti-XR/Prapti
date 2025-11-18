@@ -1,5 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar';
-import { Button } from '@/components';
+import { StatCard, ActionCard, ActivityItem } from '@/components';
 
 export default function AdminPage() {
     return (
@@ -21,10 +21,10 @@ export default function AdminPage() {
                     <div className="max-w-6xl mx-auto space-y-8">
                         {/* Stats Overview */}
                         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                            <StatCard label="Total Sites" value="0" icon="🏛️" />
-                            <StatCard label="3D Models" value="0" icon="📦" />
-                            <StatCard label="360° Images" value="0" icon="🖼️" />
-                            <StatCard label="Active Users" value="0" icon="👥" />
+                            <StatCard label="Total Sites" value="0" icon="🏛️" variant="primary" />
+                            <StatCard label="3D Models" value="0" icon="📦" variant="secondary" />
+                            <StatCard label="360° Images" value="0" icon="🖼️" variant="accent" />
+                            <StatCard label="Active Users" value="0" icon="👥" variant="default" />
                         </section>
 
                         {/* Quick Actions */}
@@ -36,7 +36,8 @@ export default function AdminPage() {
                                 <ActionCard
                                     title="Add New Site"
                                     description="Upload a new heritage site with details"
-                                    icon="+"
+                                    icon="🏛️"
+                                    variant="primary"
                                 />
                                 <ActionCard
                                     title="Upload 3D Model"
@@ -72,9 +73,39 @@ export default function AdminPage() {
                                 Recent Activity
                             </h2>
                             <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
-                                {[1, 2, 3].map((item) => (
-                                    <ActivityItem key={item} />
-                                ))}
+                                <ActivityItem
+                                    title="New site added"
+                                    description="Sonda Fort heritage site was added with 3D model"
+                                    timestamp="2 hours ago"
+                                    iconBg="success"
+                                    icon={
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                    }
+                                />
+                                <ActivityItem
+                                    title="360° image uploaded"
+                                    description="Panoramic view added to Sahasralinga temple"
+                                    timestamp="5 hours ago"
+                                    iconBg="primary"
+                                    icon={
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    }
+                                />
+                                <ActivityItem
+                                    title="Content updated"
+                                    description="Somasagara Temple description was updated"
+                                    timestamp="Yesterday"
+                                    iconBg="accent"
+                                    icon={
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    }
+                                />
                             </div>
                         </section>
 
@@ -95,45 +126,5 @@ export default function AdminPage() {
                 </div>
             </main>
         </>
-    );
-}
-
-function StatCard({ label, value, icon }: { label: string; value: string; icon: string }) {
-    return (
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-3">
-                <span className="text-2xl">{icon}</span>
-                <div className="text-3xl font-bold text-heritage-dark">{value}</div>
-            </div>
-            <div className="text-sm text-gray-600">{label}</div>
-        </div>
-    );
-}
-
-function ActionCard({ title, description, icon }: { title: string; description: string; icon: string }) {
-    return (
-        <Button variant="default" className="text-left h-auto py-6 flex-col items-start">
-            <div className="text-2xl mb-3">{icon}</div>
-            <h3 className="font-semibold mb-1">{title}</h3>
-            <p className="text-sm opacity-80">{description}</p>
-        </Button>
-    );
-}
-
-function ActivityItem() {
-    return (
-        <div className="p-4 flex items-start gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-            </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700">
-                    <span className="font-medium">Activity description</span> • Content action performed
-                </p>
-                <p className="text-xs text-gray-500 mt-1">Just now</p>
-            </div>
-        </div>
     );
 }

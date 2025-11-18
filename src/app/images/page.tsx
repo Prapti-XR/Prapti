@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
-import { Button, Search } from '@/components';
+import { Button, Search, ImageCard } from '@/components';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
 import dynamic from 'next/dynamic';
 
@@ -104,7 +104,13 @@ export default function ImagesPage() {
                             {panoramas.map((panorama) => (
                                 <ImageCard
                                     key={panorama.id}
-                                    panorama={panorama}
+                                    id={panorama.id}
+                                    name={panorama.name}
+                                    location={panorama.location}
+                                    description={panorama.description}
+                                    imageUrl={panorama.imageUrl}
+                                    capturedYear={panorama.capturedYear}
+                                    site={panorama.site}
                                     onClick={() => setSelectedPanorama(panorama)}
                                 />
                             ))}
@@ -146,58 +152,5 @@ export default function ImagesPage() {
                 )}
             </main>
         </>
-    );
-}
-
-interface ImageCardProps {
-    panorama: typeof panoramas[0];
-    onClick: () => void;
-}
-
-function ImageCard({ panorama, onClick }: ImageCardProps) {
-    return (
-        <div className="cursor-pointer group" onClick={onClick}>
-            <div className="mb-4 overflow-hidden transition-all duration-200 border rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 aspect-video border-slate-700 hover:border-blue-500 hover:shadow-2xl">
-                <div className="relative flex items-center justify-center w-full h-full bg-gradient-to-br from-blue-900/20 to-purple-900/20">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtOS45NC04LjA2LTE4LTE4LTE4UzAgOC4wNiAwIDE4YzAgNC40MiAxLjYgOC40OCA0LjI0IDExLjZDLjkyIDMyLjkyLjA4IDM3LjMxLjA4IDQyYzAgOS45NCA4LjA2IDE4IDE4IDE4czE4LTguMDYgMTgtMThjMC00LjY5LS44NC05LjA4LTQuMTYtMTIuNEMzNC40IDI2LjQ4IDM2IDIyLjQyIDM2IDE4eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-                    <div className="relative">
-                        <div className="flex items-center justify-center w-20 h-20 mb-3 transition-transform rounded-full shadow-lg bg-gradient-to-br from-blue-500 to-purple-600 group-hover:scale-110">
-                            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div className="text-center">
-                            <span className="inline-block px-4 py-1.5 bg-blue-500/90 backdrop-blur-sm text-white text-sm font-bold rounded-full">
-                                360° Panorama
-                            </span>
-                        </div>
-                    </div>
-                    <span className="absolute px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg top-3 right-3 bg-gradient-to-r from-blue-600 to-purple-600 backdrop-blur-sm">
-                        360°
-                    </span>
-                </div>
-            </div>
-            <div className="space-y-2">
-                <h3 className="text-lg font-semibold transition-colors text-slate-900 group-hover:text-blue-600">
-                    {panorama.name}
-                </h3>
-                <p className="text-sm text-slate-600">
-                    {panorama.location} • Captured {panorama.capturedYear}
-                </p>
-                <p className="text-xs text-slate-500 line-clamp-2">
-                    {panorama.description}
-                </p>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <span className="inline-flex items-center gap-1">
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clipRule="evenodd" />
-                        </svg>
-                        Immersive View
-                    </span>
-                    <span>•</span>
-                    <span>{panorama.site}</span>
-                </div>
-            </div>
-        </div>
     );
 }
