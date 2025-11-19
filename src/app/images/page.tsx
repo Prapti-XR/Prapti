@@ -73,12 +73,12 @@ export default function ImagesPage() {
                 </header>
 
                 {/* Search and Filters */}
-                <section className="sticky z-10 px-4 py-6 border-b border-gray-100 md:py-8 md:px-6 bg-gray-50 top-16">
+                <section className="px-4 py-6 bg-white border-b border-gray-200 md:py-8 md:px-6">
                     <div className="max-w-6xl mx-auto space-y-4">
                         <Search
                             placeholder="Search 360° images..."
                             size="md"
-                            className="max-w-xl"
+                            containerClassName="max-w-2xl"
                         />
                         <div className="flex gap-2 pb-2 overflow-x-auto md:gap-3 scrollbar-hide">
                             <Button size="sm" variant="primary">
