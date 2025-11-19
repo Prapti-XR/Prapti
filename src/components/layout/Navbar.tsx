@@ -16,24 +16,33 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+    // Left section (before Prapti logo)
     {
         label: 'Gallery',
         children: [
-            { label: 'Images', href: '/images' },
+            { label: '360° Images', href: '/images' },
             { label: '3D Models', href: '/models' },
-            { label: 'Map View', href: '/map' },
         ],
+    },
+    {
+        label: 'Heritage Map',
+        href: '/map',
+    },
+    {
+        label: 'Site Details',
+        href: '/site/sonda-fort',
+    },
+    // Right section (after Prapti logo)
+    {
+        label: 'Trivia',
+        href: '/trivia',
     },
     {
         label: 'About',
         children: [
             { label: 'About Us', href: '/about' },
-            { label: 'Documentation', href: '/docs' },
+            { label: 'Walkthrough', href: '/doc' },
         ],
-    },
-    {
-        label: 'Trivia',
-        href: '/trivia',
     },
     {
         label: 'Profile',
@@ -50,12 +59,12 @@ export function Navbar() {
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
     return (
-        <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
+        <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl" style={{ position: 'fixed' }}>
             <div className="relative border rounded-full shadow-lg bg-white/70 backdrop-blur-xl border-gray-200/50 shadow-black/5">
                 <div className="flex items-center justify-between px-8 py-3">
-                    {/* Left section - Gallery & About */}
+                    {/* Left section - Gallery, Heritage Map, Site Details */}
                     <div className="flex items-center gap-1">
-                        {navItems.slice(0, 2).map((item) => (
+                        {navItems.slice(0, 3).map((item) => (
                             <NavItemComponent
                                 key={item.label}
                                 item={item}
@@ -74,9 +83,9 @@ export function Navbar() {
                         Prapti
                     </Link>
 
-                    {/* Right section - Trivia & Profile */}
+                    {/* Right section - Trivia, About, Profile */}
                     <div className="flex items-center gap-1">
-                        {navItems.slice(2).map((item) => (
+                        {navItems.slice(3).map((item) => (
                             <NavItemComponent
                                 key={item.label}
                                 item={item}

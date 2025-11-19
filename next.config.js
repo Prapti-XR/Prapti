@@ -3,6 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
   // Image optimization
   images: {
     remotePatterns: [
@@ -16,6 +21,12 @@ const nextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+  },
+
+  // Experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['@react-google-maps/api', '@react-three/fiber', '@react-three/drei'],
   },
 
   // Webpack configuration for Three.js
