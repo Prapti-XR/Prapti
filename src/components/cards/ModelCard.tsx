@@ -4,6 +4,8 @@
  * Built using MediaCard base component for modularity
  */
 
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -36,7 +38,7 @@ export function ModelCard({
     onClick,
     className,
 }: ModelCardProps) {
-    // Media content for the card
+    // Media content for the card with thumbnail image
     const mediaContent = (
         <MediaContent aspectRatio="square">
             {thumbnail ? (
@@ -45,14 +47,14 @@ export function ModelCard({
                         src={thumbnail}
                         alt={name}
                         className="object-cover w-full h-full"
+                        loading="lazy"
                     />
-                    {/* Gradient Overlay on image for text readability */}
                     <div className="absolute inset-0 bg-gradient-to-br from-heritage-dark/20 to-transparent"></div>
 
                     {/* Era Badge on image */}
                     {era && yearBuilt && (
-                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
-                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full text-heritage-dark bg-white/90 backdrop-blur-sm shadow-md">
+                        <div className="absolute text-center transform -translate-x-1/2 bottom-4 left-1/2">
+                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full shadow-md text-heritage-dark bg-white/90 backdrop-blur-sm">
                                 {era} • {yearBuilt}
                             </span>
                         </div>
@@ -71,7 +73,7 @@ export function ModelCard({
                     {/* Era Badge */}
                     {era && yearBuilt && (
                         <div className="text-center">
-                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full text-heritage-dark bg-white/80 backdrop-blur-sm shadow-sm">
+                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full shadow-sm text-heritage-dark bg-white/80 backdrop-blur-sm">
                                 {era} • {yearBuilt}
                             </span>
                         </div>

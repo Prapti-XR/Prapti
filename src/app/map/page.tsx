@@ -104,16 +104,8 @@ export default function MapPage() {
     }
     return (
         <>
-            <Navbar />
             <main className="h-screen bg-white flex flex-col">
-                {/* Search Bar */}
-                <div className="pt-20 md:pt-24 px-4 md:px-6 py-4 bg-white border-b border-gray-200 sticky top-16 z-10">
-                    <div className="max-w-6xl mx-auto">
-                        <Search placeholder="Search heritage sites..." size="lg" />
-                    </div>
-                </div>
-
-                {/* Map Container */}
+                {/* Map Container - Full Page */}
                 <div className="flex-1 relative" style={{ minHeight: '500px' }}>
                     <GoogleMap
                         center={mapCenter}
@@ -136,8 +128,24 @@ export default function MapPage() {
                         ))}
                     </GoogleMap>
 
-                    {/* Map Controls */}
-                    <div className="absolute bottom-24 right-4 md:bottom-4 flex flex-col gap-2">
+                    {/* Navbar Overlay */}
+                    <div className="absolute top-0 left-0 right-0 z-20">
+                        <Navbar />
+                    </div>
+
+                    {/* Search Bar - Overlay on Map (Left Aligned) */}
+                    <div className="absolute top-20 left-4 right-4 md:top-24 md:left-6 md:right-auto z-10">
+                        <div className="w-full md:w-[32rem] lg:w-[40rem]">
+                            <Search
+                                placeholder="Search heritage sites..."
+                                size="md"
+                                containerClassName="w-full shadow-lg"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Essential Map Controls - Bottom Left */}
+                    <div className="absolute bottom-28 left-16 md:bottom-4 md:left-24 lg:bottom-4 lg:left-28 flex gap-2 z-[5]">
                         {/* Locate Me */}
                         <button
                             onClick={handleLocateMe}
@@ -157,33 +165,11 @@ export default function MapPage() {
                                 </svg>
                             )}
                         </button>
-
-                        {/* Zoom Controls */}
-                        <div className="flex flex-col bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden">
-                            <button
-                                onClick={handleZoomIn}
-                                className="p-3 hover:bg-gray-50 transition-colors border-b border-gray-200"
-                                aria-label="Zoom in"
-                            >
-                                <svg className="w-5 h-5 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                            </button>
-                            <button
-                                onClick={handleZoomOut}
-                                className="p-3 hover:bg-gray-50 transition-colors"
-                                aria-label="Zoom out"
-                            >
-                                <svg className="w-5 h-5 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                                </svg>
-                            </button>
-                        </div>
                     </div>
 
                     {/* Site Preview Card or List */}
                     {isPreviewCardOpen && selectedSite ? (
-                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-4 md:right-4 md:bottom-4 md:w-96 z-20">
+                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-28 lg:top-32 md:right-4 lg:right-6 md:bottom-auto md:max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-9rem)] md:w-96 lg:w-[28rem] z-20">
                             <SitePreviewCard
                                 site={selectedSite}
                                 onView3D={() => handleView3D(selectedSite.id)}
@@ -193,7 +179,7 @@ export default function MapPage() {
                             />
                         </div>
                     ) : (
-                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-4 md:right-4 md:bottom-4 md:w-96 bg-white md:rounded-lg shadow-lg border-t md:border border-gray-200 overflow-hidden">
+                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-28 lg:top-32 md:right-4 lg:right-6 md:bottom-auto md:max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-9rem)] md:w-96 lg:w-[28rem] bg-white md:rounded-lg shadow-lg border-t md:border border-gray-200 overflow-hidden">
                             <div className="p-4 border-b border-gray-100">
                                 <h3 className="font-semibold text-heritage-dark">
                                     {sitesLoading ? 'Loading sites...' : `${sites.length} Sites Found`}

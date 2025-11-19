@@ -6,11 +6,17 @@ export const mapConfig = {
   minZoom: 3,
   maxZoom: 20,
   gestureHandling: 'greedy' as const,
-  disableDefaultUI: false,
+  disableDefaultUI: true,
   zoomControl: true,
+  zoomControlOptions: {
+    position: 6, // google.maps.ControlPosition.LEFT_BOTTOM
+  },
   mapTypeControl: false,
   streetViewControl: false,
   fullscreenControl: true,
+  fullscreenControlOptions: {
+    position: 6, // google.maps.ControlPosition.LEFT_BOTTOM
+  },
 };
 
 export const mapOptions: google.maps.MapOptions = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button, Search, ModelCard } from '@/components';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
@@ -50,6 +50,19 @@ const siteModels = [
 export default function ModelsPage() {
     const [selectedModel, setSelectedModel] = useState<typeof siteModels[0] | null>(null);
     const [filterTag, setFilterTag] = useState<string>('all');
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (selectedModel) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [selectedModel]);
+
     return (
         <>
             <Navbar />
@@ -70,12 +83,12 @@ export default function ModelsPage() {
                 </header>
 
                 {/* Search and Filters */}
-                <section className="sticky z-10 px-4 py-6 border-b border-gray-100 md:py-8 md:px-6 bg-gray-50 top-16">
+                <section className="px-4 py-6 bg-white border-b border-gray-200 md:py-8 md:px-6">
                     <div className="max-w-6xl mx-auto space-y-4">
                         <Search
                             placeholder="Search 3D models..."
                             size="md"
-                            className="max-w-xl"
+                            containerClassName="max-w-2xl"
                         />
                         <div className="flex gap-2 pb-2 overflow-x-auto md:gap-3 scrollbar-hide">
                             <Button
