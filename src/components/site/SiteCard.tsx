@@ -39,14 +39,14 @@ export function SiteCard({
 }: SiteCardProps) {
     return (
         <Link href={`/site/${id}`} className={cn('group block', className)}>
-            <div className="overflow-hidden transition-all duration-300 bg-white border rounded-xl border-heritage-light/30 hover:shadow-2xl hover:border-heritage-primary hover:-translate-y-1">
+            <div className="overflow-hidden transition-all duration-300 bg-white border rounded-xl shadow-lg border-heritage-primary/20 md:shadow-none md:hover:shadow-2xl md:border-heritage-light/30 md:hover:border-heritage-primary md:hover:-translate-y-1">
                 {/* Thumbnail */}
                 <div className="relative overflow-hidden aspect-video bg-gradient-to-br from-heritage-light/30 to-heritage-accent/20">
                     {thumbnail ? (
                         <img
                             src={thumbnail}
                             alt={name}
-                            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                            className="object-cover w-full h-full transition-transform duration-500 scale-105 md:scale-100 md:group-hover:scale-110"
                         />
                     ) : (
                         <div className="flex items-center justify-center w-full h-full">
@@ -73,7 +73,7 @@ export function SiteCard({
 
                 {/* Content */}
                 <div className="p-5 space-y-3">
-                    <h3 className="text-lg font-semibold transition-colors font-serif text-heritage-dark group-hover:text-heritage-secondary line-clamp-1">
+                    <h3 className="text-lg font-semibold transition-colors font-serif text-heritage-secondary md:text-heritage-dark md:group-hover:text-heritage-secondary line-clamp-1">
                         {name}
                     </h3>
 

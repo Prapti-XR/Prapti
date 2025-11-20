@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
     },
     {
         label: 'Site Details',
-        href: '/site/sonda-fort',
+        href: '/site',
     },
     // Right section (after Prapti logo)
     {

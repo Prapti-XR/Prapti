@@ -57,8 +57,10 @@ export function MediaCard({
     return (
         <div
             className={cn(
-                'group bg-white border border-gray-100 rounded-lg overflow-hidden',
-                'transition-all duration-200 hover:border-heritage-primary hover:shadow-md',
+                'group bg-white border rounded-lg overflow-hidden',
+                'transition-all duration-200',
+                'border-heritage-primary/20 shadow-md',
+                'md:border-gray-100 md:shadow-none md:hover:border-heritage-primary md:hover:shadow-md',
                 onClick && 'cursor-pointer',
                 className
             )}
@@ -85,7 +87,7 @@ export function MediaCard({
             {/* Card Content - Inside border */}
             <div className="p-6 space-y-3">
                 {/* Title */}
-                <h3 className="text-xl font-semibold transition-colors font-serif text-heritage-dark group-hover:text-heritage-secondary">
+                <h3 className="text-xl font-semibold transition-colors font-serif text-heritage-secondary md:text-heritage-dark md:group-hover:text-heritage-secondary">
                     {title}
                 </h3>
 
@@ -175,8 +177,8 @@ export function MediaContent({
         >
             <div
                 className={cn(
-                    'w-full h-full',
-                    hoverScale && 'group-hover:scale-110 transition-transform duration-500'
+                    'w-full h-full transition-transform duration-500',
+                    hoverScale && 'scale-105 md:scale-100 md:group-hover:scale-110'
                 )}
             >
                 {children}
