@@ -334,33 +334,99 @@ async function main() {
   console.log('❓ Creating trivia questions...');
 
   // Sonda Fort questions
-  const q1 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
-      question: 'During which historical period was Sonda Fort built?',
+      question: 'Who built Sonda Fort and during which empire?',
       difficulty: 'EASY',
       category: 'History',
       siteId: sondaFort.id,
       answers: {
         create: [
           {
-            answerText: 'The Vijayanagara Empire',
-            correct: true,
-            explanation: 'Sonda Fort was built around 1500 CE by the Sonda Nayakas, who were vassals of the mighty Vijayanagara Empire.',
+            answerText: 'Sonda Nayakas during the Vijayanagara Empire',
+            isCorrect: true,
+            explanation: 'Sonda Fort was built by the Sonda Nayakas around 1500 CE during the Vijayanagara period, serving as an important military outpost and administrative center in the Western Ghats.',
           },
           {
-            answerText: 'The Hoysala Dynasty',
-            correct: false,
-            explanation: 'While the Hoysalas were powerful in Karnataka, they ruled earlier (10th-14th century) and were not associated with Sonda Fort.',
+            answerText: 'Hoysala Dynasty',
+            isCorrect: false,
+            explanation: 'The Hoysalas ruled earlier (10th-14th century) and were not associated with Sonda Fort construction.',
           },
           {
-            answerText: 'The Kadamba Dynasty',
-            correct: false,
-            explanation: 'The Kadambas ruled Karnataka much earlier (345-525 CE) and were not the builders of Sonda Fort.',
+            answerText: 'British colonizers',
+            isCorrect: false,
+            explanation: 'The British came much later, in the colonial period, long after Sonda Fort was built.',
           },
           {
-            answerText: 'The British East India Company',
-            correct: false,
-            explanation: 'The British came to this region much later, in the colonial period, long after the fort was built.',
+            answerText: 'Kadamba rulers',
+            isCorrect: false,
+            explanation: 'The Kadambas ruled Karnataka much earlier (345-525 CE) and were not the builders of this fort.',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What was the strategic purpose of Sonda Fort\'s location?',
+      difficulty: 'MEDIUM',
+      category: 'History',
+      siteId: sondaFort.id,
+      answers: {
+        create: [
+          {
+            answerText: 'To control trade routes through the dense forests',
+            isCorrect: true,
+            explanation: 'Sonda Fort was strategically positioned to control important trade routes through the Western Ghats dense forests, making it a crucial military and economic outpost.',
+          },
+          {
+            answerText: 'To serve as a royal palace',
+            isCorrect: false,
+            explanation: 'While it had administrative functions, the fort\'s primary purpose was military and strategic control, not as a palace.',
+          },
+          {
+            answerText: 'To protect against naval invasions',
+            isCorrect: false,
+            explanation: 'Sonda Fort is located inland in the Western Ghats, not on the coast, so naval defense was not its purpose.',
+          },
+          {
+            answerText: 'To store religious artifacts',
+            isCorrect: false,
+            explanation: 'The fort was primarily a military outpost, not a religious storage facility.',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What is the best time to visit Sonda Fort?',
+      difficulty: 'EASY',
+      category: 'Travel',
+      siteId: sondaFort.id,
+      answers: {
+        create: [
+          {
+            answerText: 'October to February (cooler months)',
+            isCorrect: true,
+            explanation: 'The fort is best visited during cooler months from October to February for comfortable climbing and exploration. It\'s open daily from 6 AM to 6 PM.',
+          },
+          {
+            answerText: 'During monsoon season',
+            isCorrect: false,
+            explanation: 'Monsoons can make climbing difficult and dangerous due to slippery surfaces and heavy rainfall.',
+          },
+          {
+            answerText: 'Peak summer months',
+            isCorrect: false,
+            explanation: 'Summer heat makes climbing and exploration uncomfortable in the Western Ghats region.',
+          },
+          {
+            answerText: 'Only during festivals',
+            isCorrect: false,
+            explanation: 'The fort is open year-round, not just during festivals, though cooler months are preferable.',
           },
         ],
       },
@@ -368,107 +434,272 @@ async function main() {
   });
 
   // Sahasralinga questions
-  const q2 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
-      question: 'The carvings at Sahasralinga are dedicated to which Hindu deity?',
+      question: 'What does "Sahasralinga" literally mean?',
       difficulty: 'EASY',
       category: 'Culture & Religion',
       siteId: sahasralinga.id,
       answers: {
         create: [
           {
-            answerText: 'Lord Shiva',
-            correct: true,
-            explanation: 'Sahasralinga features thousands of Shiva lingas (symbols of Lord Shiva) carved on riverbed rocks, making it a sacred Shaivite pilgrimage site.',
+            answerText: 'Thousand lingas',
+            isCorrect: true,
+            explanation: 'Sahasralinga means "thousand lingas" in Sanskrit, referring to the thousands of intricately carved Shiva Lingas etched into the riverbed and surrounding rocks.',
           },
           {
-            answerText: 'Lord Vishnu',
-            correct: false,
-            explanation: 'While Vishnu is widely worshipped in Karnataka, Sahasralinga is specifically dedicated to Shiva.',
+            answerText: 'Sacred river',
+            isCorrect: false,
+            explanation: 'While the site is by a sacred river, the name specifically refers to the thousand lingas carved there.',
           },
           {
-            answerText: 'Lord Ganesha',
-            correct: false,
-            explanation: 'Ganesha is revered in the region, but Sahasralinga specifically features Shiva lingas.',
+            answerText: 'Temple of light',
+            isCorrect: false,
+            explanation: 'This is not the meaning of Sahasralinga. It refers to the thousand Shiva lingams carved in stone.',
           },
           {
-            answerText: 'Goddess Durga',
-            correct: false,
-            explanation: 'Though Durga worship is common in Karnataka, this particular site is dedicated to Shiva.',
+            answerText: 'Ancient pilgrimage',
+            isCorrect: false,
+            explanation: 'While it is an ancient pilgrimage site, the name directly translates to "thousand lingas".',
           },
         ],
       },
     },
   });
 
-  const q3 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
-      question: 'What makes Sahasralinga particularly spectacular during the monsoon season?',
+      question: 'When is Sahasralinga especially popular for pilgrimages?',
+      difficulty: 'EASY',
+      category: 'Culture & Religion',
+      siteId: sahasralinga.id,
+      answers: {
+        create: [
+          {
+            answerText: 'During Mahashivaratri festival',
+            isCorrect: true,
+            explanation: 'Sahasralinga attracts devotees especially during Mahashivaratri, when they come to worship the Lingas as symbols of Lord Shiva\'s presence.',
+          },
+          {
+            answerText: 'During Diwali',
+            isCorrect: false,
+            explanation: 'While Diwali is celebrated, Mahashivaratri is the primary festival associated with this Shiva pilgrimage site.',
+          },
+          {
+            answerText: 'During Holi',
+            isCorrect: false,
+            explanation: 'Holi is not particularly associated with Sahasralinga. Mahashivaratri is the main festival for this site.',
+          },
+          {
+            answerText: 'During Ganesh Chaturthi',
+            isCorrect: false,
+            explanation: 'Ganesh Chaturthi celebrates Lord Ganesha, while Sahasralinga is dedicated to Lord Shiva and celebrates Mahashivaratri.',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What makes Sahasralinga spectacular during monsoons?',
       difficulty: 'EASY',
       category: 'Geography & Nature',
       siteId: sahasralinga.id,
       answers: {
         create: [
           {
-            answerText: 'The river water flows over the thousand carved lingas',
-            correct: true,
-            explanation: 'During monsoons, the Shalmala river swells and flows over the rock carvings, creating a beautiful and spiritually significant sight.',
+            answerText: 'River water flows over the carved lingas',
+            isCorrect: true,
+            explanation: 'During monsoons, the site becomes particularly spectacular when water flows over the thousands of carved lingas, creating a beautiful and spiritually significant sight.',
           },
           {
-            answerText: 'The carvings glow in the moonlight',
-            correct: false,
-            explanation: 'While the site is beautiful at night, the carvings don\'t actually glow. The monsoon water flow is the main attraction.',
+            answerText: 'Waterfalls form around the temple',
+            isCorrect: false,
+            explanation: 'While water flow increases, the main spectacle is the water flowing over the carved lingas in the riverbed.',
           },
           {
-            answerText: 'New lingas appear from underground',
-            correct: false,
-            explanation: 'This is a myth. The lingas are permanent stone carvings that become visible when water recedes.',
+            answerText: 'New carvings become visible',
+            isCorrect: false,
+            explanation: 'The carvings are permanent. The spectacle is from water flowing over existing lingas, not revealing new ones.',
           },
           {
-            answerText: 'The rocks change color',
-            correct: false,
-            explanation: 'The rocks don\'t change color, though they may appear different when wet versus dry.',
+            answerText: 'The rocks change color dramatically',
+            isCorrect: false,
+            explanation: 'While wet rocks may appear different, the main attraction is the flowing water over the sacred carvings.',
           },
         ],
       },
     },
   });
 
-  // Somasagara Temple question
-  const q4 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
-      question: 'Which architectural style influenced the Somasagara Shiva Temple?',
+      question: 'What nearby attractions can visitors explore near Sahasralinga?',
+      difficulty: 'MEDIUM',
+      category: 'Travel',
+      siteId: sahasralinga.id,
+      answers: {
+        create: [
+          {
+            answerText: 'Jog Falls and Yana Rocks',
+            isCorrect: true,
+            explanation: 'Visitors to Sahasralinga have chances to explore other regional attractions like the magnificent Jog Falls and the unique Yana Rocks formations.',
+          },
+          {
+            answerText: 'Taj Mahal and Red Fort',
+            isCorrect: false,
+            explanation: 'These are famous North Indian monuments far from Karnataka. Sahasralinga is near Jog Falls and Yana Rocks.',
+          },
+          {
+            answerText: 'Goa beaches only',
+            isCorrect: false,
+            explanation: 'While Goa is relatively close, the region offers natural wonders like Jog Falls and Yana Rocks as primary nearby attractions.',
+          },
+          {
+            answerText: 'Hampi temples',
+            isCorrect: false,
+            explanation: 'Hampi is in a different part of Karnataka. Closer attractions include Jog Falls and Yana Rocks.',
+          },
+        ],
+      },
+    },
+  });
+
+  // Somasagara Temple questions
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'How old is the Somasagara Shiva Temple?',
+      difficulty: 'EASY',
+      category: 'History',
+      siteId: somasagaraTemple.id,
+      answers: {
+        create: [
+          {
+            answerText: 'About 400 years old',
+            isCorrect: true,
+            explanation: 'The Someshwar Temple at Somasagar was built during the Vijayanagara period, making it approximately 400 years old.',
+          },
+          {
+            answerText: 'Over 1000 years old',
+            isCorrect: false,
+            explanation: 'While ancient, the temple is about 400 years old, not 1000. It belongs to the Vijayanagara period.',
+          },
+          {
+            answerText: 'About 100 years old',
+            isCorrect: false,
+            explanation: 'The temple is much older than 100 years, dating back approximately 400 years to the Vijayanagara era.',
+          },
+          {
+            answerText: '50 years old',
+            isCorrect: false,
+            explanation: 'This is far too recent. The temple is a historic structure about 400 years old.',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What architectural style characterizes Somasagara Temple?',
       difficulty: 'MEDIUM',
       category: 'Architecture',
       siteId: somasagaraTemple.id,
       answers: {
         create: [
           {
-            answerText: 'Hoysala-influenced architecture',
-            correct: true,
-            explanation: 'Despite predating the Hoysala period, the temple shows architectural elements that would later be refined by Hoysala craftsmen.',
+            answerText: 'Traditional Dravidian architecture',
+            isCorrect: true,
+            explanation: 'The temple is known for its traditional Dravidian architectural style, typical of South Indian temples from the Vijayanagara period.',
           },
           {
-            answerText: 'Mughal architecture',
-            correct: false,
-            explanation: 'Mughal architecture came much later and is characterized by domes and arches, unlike this South Indian temple.',
+            answerText: 'Indo-Islamic architecture',
+            isCorrect: false,
+            explanation: 'This is a Hindu temple with Dravidian design, not Indo-Islamic which features domes and arches.',
           },
           {
-            answerText: 'Gothic architecture',
-            correct: false,
-            explanation: 'Gothic is a European architectural style with no influence on ancient Indian temples.',
+            answerText: 'Modern contemporary design',
+            isCorrect: false,
+            explanation: 'The temple is a 400-year-old historic structure with traditional Dravidian architecture, not modern design.',
           },
           {
-            answerText: 'Modern minimalist design',
-            correct: false,
-            explanation: 'This is an ancient temple with traditional Indian architectural elements, not modern design.',
+            answerText: 'Buddhist stupa style',
+            isCorrect: false,
+            explanation: 'This is a Shiva temple with Dravidian Hindu architecture, not Buddhist stupa design.',
           },
         ],
       },
     },
   });
 
-  console.log('✓ Created 4 trivia questions\n');
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What makes Somasagara Temple special for local devotees?',
+      difficulty: 'MEDIUM',
+      category: 'Culture & Religion',
+      siteId: somasagaraTemple.id,
+      answers: {
+        create: [
+          {
+            answerText: 'It reflects strong Shaivite traditions and hosts key rituals',
+            isCorrect: true,
+            explanation: 'The temple is an important place of worship reflecting the region\'s strong Shaivite traditions, hosting key religious rituals especially during festivals like Mahashivaratri.',
+          },
+          {
+            answerText: 'It\'s the largest temple in Karnataka',
+            isCorrect: false,
+            explanation: 'While significant locally, it\'s not the largest temple in Karnataka. Its importance lies in its spiritual and historical value.',
+          },
+          {
+            answerText: 'It houses ancient treasure',
+            isCorrect: false,
+            explanation: 'The temple\'s value is spiritual and historical, not related to material treasure.',
+          },
+          {
+            answerText: 'It\'s a UNESCO World Heritage site',
+            isCorrect: false,
+            explanation: 'While historically significant, it\'s not designated as a UNESCO site. Its importance is to local devotees and regional heritage.',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.triviaQuestion.create({
+    data: {
+      question: 'What accessibility features does Somasagara Temple offer?',
+      difficulty: 'EASY',
+      category: 'Travel',
+      siteId: somasagaraTemple.id,
+      answers: {
+        create: [
+          {
+            answerText: 'Paved pathways, wheelchair access, parking, and basic facilities',
+            isCorrect: true,
+            explanation: 'The temple offers good accessibility with paved pathways, wheelchair accessible main areas, parking, and basic facilities like restrooms and drinking water.',
+          },
+          {
+            answerText: 'Only accessible by steep mountain climb',
+            isCorrect: false,
+            explanation: 'Unlike some hilltop temples, Somasagara has good accessibility with paved pathways and wheelchair access.',
+          },
+          {
+            answerText: 'No facilities available',
+            isCorrect: false,
+            explanation: 'The temple provides basic facilities including parking, restrooms, and drinking water.',
+          },
+          {
+            answerText: 'Only accessible during specific hours',
+            isCorrect: false,
+            explanation: 'While there may be visiting hours, the question asks about accessibility features (physical access), which are good year-round.',
+          },
+        ],
+      },
+    },
+  });
+
+  console.log('✓ Created 12 comprehensive trivia questions\n');
 
   console.log('✅ Database seeded successfully!\n');
   console.log('📊 Summary:');
