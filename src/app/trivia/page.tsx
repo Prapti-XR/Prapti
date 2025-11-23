@@ -4,79 +4,30 @@ import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components';
 
-// Trivia data based on heritage sites
-const triviaData = [
-    {
-        site: 'Sonda Fort',
-        difficulty: 'EASY',
-        questions: [
-            {
-                question: 'Which dynasty built Sonda Fort?',
-                answers: [
-                    { text: 'The Sonda Nayakas under the Vijayanagara Empire', correct: true },
-                    { text: 'The Hoysala Dynasty', correct: false },
-                    { text: 'The Kadamba Dynasty', correct: false },
-                    { text: 'The British East India Company', correct: false },
-                ],
-                explanation: 'Sonda Fort was built by the Sonda Nayakas during the Vijayanagara Empire period around 1500 CE. The fort served as an important military outpost.',
-            },
-            {
-                question: 'What era does Sonda Fort belong to?',
-                answers: [
-                    { text: 'Medieval', correct: true },
-                    { text: 'Ancient', correct: false },
-                    { text: 'Modern', correct: false },
-                    { text: 'Colonial', correct: false },
-                ],
-                explanation: 'Sonda Fort belongs to the Medieval era, built around 1500 CE during the Vijayanagara period.',
-            },
-        ],
-    },
-    {
-        site: 'Sahasralinga',
-        difficulty: 'EASY',
-        questions: [
-            {
-                question: 'The carvings at Sahasralinga are dedicated to which Hindu deity?',
-                answers: [
-                    { text: 'Lord Shiva', correct: true },
-                    { text: 'Lord Vishnu', correct: false },
-                    { text: 'Lord Ganesha', correct: false },
-                    { text: 'Goddess Durga', correct: false },
-                ],
-                explanation: 'Sahasralinga features thousands of Shiva lingas carved on riverbed rocks, making it a sacred Shaivite pilgrimage site.',
-            },
-            {
-                question: 'What makes Sahasralinga particularly spectacular during the monsoon season?',
-                answers: [
-                    { text: 'The river water flows over the thousand carved lingas', correct: true },
-                    { text: 'The carvings glow in the moonlight', correct: false },
-                    { text: 'New lingas appear from underground', correct: false },
-                    { text: 'The rocks change color', correct: false },
-                ],
-                explanation: 'During monsoons, the Shalmala river swells and flows over the rock carvings, creating a beautiful and spiritually significant sight.',
-            },
-        ],
-    },
-    {
-        site: 'Somasagara Temple',
-        difficulty: 'MEDIUM',
-        questions: [
-            {
-                question: 'Which architectural style influenced the Somasagara Shiva Temple?',
-                answers: [
-                    { text: 'Hoysala-influenced architecture', correct: true },
-                    { text: 'Mughal architecture', correct: false },
-                    { text: 'Gothic architecture', correct: false },
-                    { text: 'Modern minimalist design', correct: false },
-                ],
-                explanation: 'Despite predating the Hoysala period, the temple shows architectural elements that would later be refined by Hoysala craftsmen.',
-            },
-        ],
-    },
-];
+interface TriviaAnswer {
+    id?: string;
+    text: string;
+    correct: boolean;
+}
+
+interface TriviaQuestion {
+    id?: string;
+    question: string;
+    answers: TriviaAnswer[];
+    explanation: string | null;
+}
+
+interface TriviaLevel {
+    siteId: string;
+    siteName: string;
+    difficulty: string;
+    questions: TriviaQuestion[];
+}
 
 export default function TriviaPage() {
+    const [triviaData, setTriviaData] = useState<TriviaLevel[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [gameState, setGameState] = useState<'menu' | 'playing' | 'result'>('menu');
     const [currentLevel, setCurrentLevel] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -84,6 +35,27 @@ export default function TriviaPage() {
     const [showExplanation, setShowExplanation] = useState(false);
     const [score, setScore] = useState(0);
     const [levelScores, setLevelScores] = useState<number[]>([]);
+
+    // Fetch trivia data from database
+    useEffect(() => {
+        async function fetchTrivia() {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/trivia');
+                if (!response.ok) throw new Error('Failed to fetch trivia questions');
+
+                const result = await response.json();
+                setTriviaData(result.data || []);
+            } catch (err) {
+                console.error('Error fetching trivia:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load trivia');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchTrivia();
+    }, []);
 
     const currentLevelData = triviaData[currentLevel];
     const question = currentLevelData?.questions[currentQuestion];
@@ -148,67 +120,97 @@ export default function TriviaPage() {
 
                 {/* Content */}
                 <div className="px-4 py-12 md:px-6 md:py-16">
-                    <div className="max-w-4xl mx-auto">{gameState === 'menu' && (
-                        <div className="space-y-8">
-                            {/* Score Display */}
-                            {levelScores.length > 0 && (
-                                <div className="p-6 text-center border border-gray-200 rounded-lg bg-gradient-to-br from-heritage-light to-gray-50">
-                                    <h2 className="mb-2 text-xl font-semibold text-heritage-dark">Total Score</h2>
-                                    <p className="text-4xl font-bold text-heritage-primary">
-                                        {levelScores.reduce((a, b) => a + b, 0)} points
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Level Selection */}
-                            <div className="space-y-4">
-                                <h2 className="text-2xl font-semibold text-center font-serif text-heritage-dark">
-                                    Choose a Heritage Site
-                                </h2>
-                                <div className="grid gap-4 sm:grid-cols-3">
-                                    {triviaData.map((level, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => startLevel(index)}
-                                            className="p-6 text-left transition-all bg-white border-2 border-gray-200 rounded-lg hover:border-heritage-primary hover:shadow-md"
-                                        >
-                                            <div className="mb-3 text-3xl">
-                                                {index === 0 ? '♜' : index === 1 ? '🕉️' : '🛕'}
-                                            </div>
-                                            <h3 className="mb-2 text-lg font-semibold text-heritage-dark">
-                                                {level.site}
-                                            </h3>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm text-gray-600">
-                                                    {level.questions.length} questions
-                                                </span>
-                                                <span className={`text-xs px-2 py-1 rounded ${level.difficulty === 'EASY'
-                                                        ? 'bg-green-100 text-green-700'
-                                                        : 'bg-orange-100 text-orange-700'
-                                                    }`}>
-                                                    {level.difficulty}
-                                                </span>
-                                            </div>
-                                            {levelScores[index] !== undefined && (
-                                                <div className="pt-3 mt-3 border-t border-gray-200">
-                                                    <p className="text-sm font-medium text-heritage-primary">
-                                                        Best: {levelScores[index]} points
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </button>
-                                    ))}
+                    <div className="max-w-4xl mx-auto">
+                        {loading ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="text-center">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heritage-primary mx-auto mb-4"></div>
+                                    <p className="text-gray-600">Loading trivia questions...</p>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        ) : error ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="text-center max-w-md">
+                                    <svg className="w-12 h-12 text-red-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p className="text-gray-600 font-medium mb-2">Failed to load trivia</p>
+                                    <p className="text-sm text-gray-500">{error}</p>
+                                </div>
+                            </div>
+                        ) : triviaData.length === 0 ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="text-center max-w-md">
+                                    <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p className="text-gray-600 font-medium mb-2">No trivia available yet</p>
+                                    <p className="text-sm text-gray-500">Trivia questions will be added soon!</p>
+                                </div>
+                            </div>
+                        ) : gameState === 'menu' && (
+                            <div className="space-y-8">
+                                {/* Score Display */}
+                                {levelScores.length > 0 && (
+                                    <div className="p-6 text-center border border-gray-200 rounded-lg bg-gradient-to-br from-heritage-light to-gray-50">
+                                        <h2 className="mb-2 text-xl font-semibold text-heritage-dark">Total Score</h2>
+                                        <p className="text-4xl font-bold text-heritage-primary">
+                                            {levelScores.reduce((a, b) => a + b, 0)} points
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Level Selection */}
+                                <div className="space-y-4">
+                                    <h2 className="text-2xl font-semibold text-center font-serif text-heritage-dark">
+                                        Choose a Heritage Site
+                                    </h2>
+                                    <div className="grid gap-4 sm:grid-cols-3">
+                                        {triviaData.map((level, index) => (
+                                            <button
+                                                key={level.siteId}
+                                                onClick={() => startLevel(index)}
+                                                className="p-6 text-left transition-all bg-white border-2 border-gray-200 rounded-lg hover:border-heritage-primary hover:shadow-md"
+                                            >
+                                                <div className="mb-3 text-3xl">
+                                                    {index === 0 ? '♜' : index === 1 ? '🕉️' : '🛕'}
+                                                </div>
+                                                <h3 className="mb-2 text-lg font-semibold text-heritage-dark">
+                                                    {level.siteName}
+                                                </h3>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-sm text-gray-600">
+                                                        {level.questions.length} questions
+                                                    </span>
+                                                    <span className={`text-xs px-2 py-1 rounded ${level.difficulty === 'EASY'
+                                                        ? 'bg-green-100 text-green-700'
+                                                        : level.difficulty === 'MEDIUM'
+                                                            ? 'bg-orange-100 text-orange-700'
+                                                            : 'bg-red-100 text-red-700'
+                                                        }`}>
+                                                        {level.difficulty}
+                                                    </span>
+                                                </div>
+                                                {levelScores[index] !== undefined && (
+                                                    <div className="pt-3 mt-3 border-t border-gray-200">
+                                                        <p className="text-sm font-medium text-heritage-primary">
+                                                            Best: {levelScores[index]} points
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {gameState === 'playing' && question && (
                             <div className="space-y-6">
                                 {/* Progress */}
                                 <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-gray-50">
                                     <div>
-                                        <p className="text-sm text-gray-600">Level: {currentLevelData.site}</p>
+                                        <p className="text-sm text-gray-600">Level: {currentLevelData.siteName}</p>
                                         <p className="text-xs text-gray-500">
                                             Question {currentQuestion + 1} of {totalQuestions}
                                         </p>
@@ -238,14 +240,14 @@ export default function TriviaPage() {
                                                     onClick={() => handleAnswerSelect(index)}
                                                     disabled={showExplanation}
                                                     className={`w-full p-4 text-left border-2 rounded-lg transition-all ${!showResult
-                                                            ? 'border-gray-200 hover:border-heritage-primary hover:bg-heritage-light/20'
-                                                            : isSelected && isCorrect
-                                                                ? 'border-green-500 bg-green-50'
-                                                                : isSelected && !isCorrect
-                                                                    ? 'border-red-500 bg-red-50'
-                                                                    : isCorrect
-                                                                        ? 'border-green-500 bg-green-50'
-                                                                        : 'border-gray-200 opacity-50'
+                                                        ? 'border-gray-200 hover:border-heritage-primary hover:bg-heritage-light/20'
+                                                        : isSelected && isCorrect
+                                                            ? 'border-green-500 bg-green-50'
+                                                            : isSelected && !isCorrect
+                                                                ? 'border-red-500 bg-red-50'
+                                                                : isCorrect
+                                                                    ? 'border-green-500 bg-green-50'
+                                                                    : 'border-gray-200 opacity-50'
                                                         } ${showExplanation ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                                 >
                                                     <div className="flex items-center justify-between">
@@ -303,7 +305,7 @@ export default function TriviaPage() {
                                         Level Complete!
                                     </h2>
                                     <p className="mb-6 text-gray-600">
-                                        You completed {currentLevelData.site}
+                                        You completed {currentLevelData.siteName}
                                     </p>
                                     <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg">
                                         <p className="mb-2 text-sm text-gray-600">Your Score</p>

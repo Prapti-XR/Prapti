@@ -334,7 +334,7 @@ async function main() {
   console.log('❓ Creating trivia questions...');
 
   // Sonda Fort questions
-  const q1 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
       question: 'During which historical period was Sonda Fort built?',
       difficulty: 'EASY',
@@ -344,22 +344,22 @@ async function main() {
         create: [
           {
             answerText: 'The Vijayanagara Empire',
-            correct: true,
+            isCorrect: true,
             explanation: 'Sonda Fort was built around 1500 CE by the Sonda Nayakas, who were vassals of the mighty Vijayanagara Empire.',
           },
           {
             answerText: 'The Hoysala Dynasty',
-            correct: false,
+            isCorrect: false,
             explanation: 'While the Hoysalas were powerful in Karnataka, they ruled earlier (10th-14th century) and were not associated with Sonda Fort.',
           },
           {
             answerText: 'The Kadamba Dynasty',
-            correct: false,
+            isCorrect: false,
             explanation: 'The Kadambas ruled Karnataka much earlier (345-525 CE) and were not the builders of Sonda Fort.',
           },
           {
             answerText: 'The British East India Company',
-            correct: false,
+            isCorrect: false,
             explanation: 'The British came to this region much later, in the colonial period, long after the fort was built.',
           },
         ],
@@ -368,7 +368,7 @@ async function main() {
   });
 
   // Sahasralinga questions
-  const q2 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
       question: 'The carvings at Sahasralinga are dedicated to which Hindu deity?',
       difficulty: 'EASY',
@@ -378,22 +378,22 @@ async function main() {
         create: [
           {
             answerText: 'Lord Shiva',
-            correct: true,
+            isCorrect: true,
             explanation: 'Sahasralinga features thousands of Shiva lingas (symbols of Lord Shiva) carved on riverbed rocks, making it a sacred Shaivite pilgrimage site.',
           },
           {
             answerText: 'Lord Vishnu',
-            correct: false,
+            isCorrect: false,
             explanation: 'While Vishnu is widely worshipped in Karnataka, Sahasralinga is specifically dedicated to Shiva.',
           },
           {
             answerText: 'Lord Ganesha',
-            correct: false,
+            isCorrect: false,
             explanation: 'Ganesha is revered in the region, but Sahasralinga specifically features Shiva lingas.',
           },
           {
             answerText: 'Goddess Durga',
-            correct: false,
+            isCorrect: false,
             explanation: 'Though Durga worship is common in Karnataka, this particular site is dedicated to Shiva.',
           },
         ],
@@ -401,7 +401,7 @@ async function main() {
     },
   });
 
-  const q3 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
       question: 'What makes Sahasralinga particularly spectacular during the monsoon season?',
       difficulty: 'EASY',
@@ -411,22 +411,22 @@ async function main() {
         create: [
           {
             answerText: 'The river water flows over the thousand carved lingas',
-            correct: true,
+            isCorrect: true,
             explanation: 'During monsoons, the Shalmala river swells and flows over the rock carvings, creating a beautiful and spiritually significant sight.',
           },
           {
             answerText: 'The carvings glow in the moonlight',
-            correct: false,
+            isCorrect: false,
             explanation: 'While the site is beautiful at night, the carvings don\'t actually glow. The monsoon water flow is the main attraction.',
           },
           {
             answerText: 'New lingas appear from underground',
-            correct: false,
+            isCorrect: false,
             explanation: 'This is a myth. The lingas are permanent stone carvings that become visible when water recedes.',
           },
           {
             answerText: 'The rocks change color',
-            correct: false,
+            isCorrect: false,
             explanation: 'The rocks don\'t change color, though they may appear different when wet versus dry.',
           },
         ],
@@ -435,7 +435,7 @@ async function main() {
   });
 
   // Somasagara Temple question
-  const q4 = await prisma.triviaQuestion.create({
+  await prisma.triviaQuestion.create({
     data: {
       question: 'Which architectural style influenced the Somasagara Shiva Temple?',
       difficulty: 'MEDIUM',
@@ -445,22 +445,22 @@ async function main() {
         create: [
           {
             answerText: 'Hoysala-influenced architecture',
-            correct: true,
+            isCorrect: true,
             explanation: 'Despite predating the Hoysala period, the temple shows architectural elements that would later be refined by Hoysala craftsmen.',
           },
           {
             answerText: 'Mughal architecture',
-            correct: false,
+            isCorrect: false,
             explanation: 'Mughal architecture came much later and is characterized by domes and arches, unlike this South Indian temple.',
           },
           {
             answerText: 'Gothic architecture',
-            correct: false,
+            isCorrect: false,
             explanation: 'Gothic is a European architectural style with no influence on ancient Indian temples.',
           },
           {
             answerText: 'Modern minimalist design',
-            correct: false,
+            isCorrect: false,
             explanation: 'This is an ancient temple with traditional Indian architectural elements, not modern design.',
           },
         ],

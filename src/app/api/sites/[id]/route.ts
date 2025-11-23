@@ -20,6 +20,11 @@ export async function GET(
           where: { isPublic: true },
           orderBy: { createdAt: 'desc' },
         },
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
         triviaQuestions: {
           include: {
             answers: true,

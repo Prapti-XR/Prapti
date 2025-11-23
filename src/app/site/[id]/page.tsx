@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
@@ -24,64 +24,110 @@ const ARViewer = dynamic(
     { ssr: false }
 );
 
-// Sample data - in production, this would come from the database
-const sitesData: Record<string, any> = {
-    'sonda-fort': {
-        name: 'Sonda Fort',
-        description: 'An ancient hill fort located near Sonda on Yellapur Road, known for its historic ruins and scenic surroundings. Built during the Vijayanagara period, this fort stands as a testament to the architectural prowess of the Sonda Nayakas.',
-        location: 'Yellapur Road, Sonda, Uttara Kannada, Karnataka',
-        country: 'India',
-        city: 'Sonda',
-        era: 'Medieval',
-        yearBuilt: 1500,
-        culturalContext: 'Built by the Sonda Nayakas during the Vijayanagara Empire, this fort served as an important military outpost and administrative center in the Western Ghats region.',
-        historicalFacts: 'The fort was strategically positioned to control trade routes through the dense forests. It features unique architectural elements combining Dravidian and local Kannada styles.',
-        visitingInfo: 'Open daily from 6 AM to 6 PM. Best visited during cooler months (October to February). Wear comfortable shoes for climbing.',
-        accessibility: 'Moderate difficulty. Requires climbing steps. Not wheelchair accessible. Parking available at the base.',
-        modelUrl: '/models/sonda-fort.glb',
-        panoramaUrl: '/360-images/sonda-fort-1.jpg',
-        tags: ['fort', 'medieval', 'vijayanagara', 'karnataka', 'temple']
-    },
-    'sahasralinga': {
-        name: 'Sahasralinga',
-        description: 'A unique pilgrimage site near Somasagara village on the Shalmala river with thousands of Shiva lingas carved on rocks. During the monsoon, the river flows over these carvings, creating a mesmerizing spiritual experience.',
-        location: 'Yellapur Road, near Somasagara, Sirsi, Uttara Kannada, Karnataka',
-        country: 'India',
-        city: 'Sirsi',
-        era: 'Ancient',
-        yearBuilt: 900,
-        culturalContext: 'A sacred site dedicated to Lord Shiva, featuring thousands of lingams carved on riverbed rocks. The site represents the deep Shaivite traditions of the region and has been a pilgrimage destination for over a millennium.',
-        historicalFacts: "The name 'Sahasralinga' literally means 'thousand lingas'. Local legends suggest these were carved by devotees over centuries. The site becomes particularly spectacular during monsoons when water flows over the carvings.",
-        visitingInfo: 'Best visited during monsoon season (June-September) to see water flowing over the lingas. Open year-round. Early morning visits recommended for peaceful atmosphere.',
-        accessibility: 'Moderate accessibility. Involves walking on uneven riverbed rocks. Use caution during monsoons due to water flow. Limited parking available.',
-        modelUrl: '/models/sahasralinga.glb',
-        panoramaUrl: '/360-images/sahasra-linga.jpg',
-        tags: ['temple', 'pilgrimage', 'shiva', 'river', 'ancient', 'karnataka']
-    },
-    'somasagara-temple': {
-        name: 'Somasagara Shiva Temple',
-        description: 'A serene Shiva temple known for its peaceful setting near Sahasralinga, surrounded by dense forests and streams. This ancient temple showcases beautiful stone architecture and intricate carvings.',
-        location: 'Somasagara, Sirsi, Uttara Kannada, Karnataka',
-        country: 'India',
-        city: 'Sirsi',
-        era: 'Ancient',
-        yearBuilt: 850,
-        culturalContext: 'An important Shaivite temple nestled in the Western Ghats forests. The temple has been a center of devotion and learning for centuries, attracting pilgrims and scholars alike.',
-        historicalFacts: 'The temple features Hoysala-influenced architecture despite predating the Hoysala period. It served as a major religious center during the Kadamba dynasty. The temple complex includes several smaller shrines and a sacred pond.',
-        visitingInfo: 'Temple timings: 6 AM - 12 PM and 4 PM - 8 PM. Modest dress required. Photography allowed in outer areas only. Special pujas during Shivaratri.',
-        accessibility: 'Good accessibility with paved pathways. Wheelchair accessible main areas. Parking available. Basic facilities like restrooms and drinking water provided.',
-        modelUrl: '/models/somasagara.glb',
-        panoramaUrl: '/360-images/somasagara.jpg',
-        tags: ['temple', 'shiva', 'ancient', 'hoysala', 'karnataka', 'pilgrimage']
-    }
-};
+interface SiteData {
+    id: string;
+    name: string;
+    description: string;
+    location: string;
+    country: string;
+    city: string | null;
+    era: string | null;
+    yearBuilt: number | null;
+    culturalContext: string | null;
+    historicalFacts: string | null;
+    visitingInfo: string | null;
+    accessibility: string | null;
+    modelUrl: string | null;
+    panoramaUrl: string | null;
+    tags: string[];
+}
 
 type ViewerMode = '3d' | 'panorama' | 'ar' | null;
 
 export default function SiteInfoPage({ params }: { params: { id: string } }) {
     const [viewerMode, setViewerMode] = useState<ViewerMode>(null);
     const [showQRModal, setShowQRModal] = useState(false);
-    const site = sitesData[params.id] || sitesData['sonda-fort'];
+    const [site, setSite] = useState<SiteData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch site data from database
+    useEffect(() => {
+        async function fetchSite() {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/sites/${params.id}`);
+                if (!response.ok) throw new Error('Site not found');
+
+                const result = await response.json();
+                const dbSite = result.data;
+
+                // Transform database site to component format
+                const modelAsset = dbSite.assets?.find((a: any) => a.type === 'MODEL_3D');
+                const panoramaAsset = dbSite.assets?.find((a: any) => a.type === 'PANORAMA_360');
+                const tags = dbSite.tags?.map((t: any) => t.tag?.name).filter(Boolean) || [];
+
+                setSite({
+                    id: dbSite.id,
+                    name: dbSite.name,
+                    description: dbSite.description,
+                    location: dbSite.location,
+                    country: dbSite.country,
+                    city: dbSite.city,
+                    era: dbSite.era,
+                    yearBuilt: dbSite.yearBuilt,
+                    culturalContext: dbSite.culturalContext,
+                    historicalFacts: dbSite.historicalFacts,
+                    visitingInfo: dbSite.visitingInfo,
+                    accessibility: dbSite.accessibility,
+                    modelUrl: modelAsset?.storageUrl || null,
+                    panoramaUrl: panoramaAsset?.storageUrl || null,
+                    tags,
+                });
+            } catch (err) {
+                console.error('Error fetching site:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load site');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchSite();
+    }, [params.id]);
+
+    if (loading) {
+        return (
+            <>
+                <Navbar />
+                <main className="min-h-screen bg-white flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-heritage-primary mx-auto mb-4"></div>
+                        <p className="text-gray-600 font-medium">Loading site details...</p>
+                    </div>
+                </main>
+            </>
+        );
+    }
+
+    if (error || !site) {
+        return (
+            <>
+                <Navbar />
+                <main className="min-h-screen bg-white flex items-center justify-center">
+                    <div className="text-center max-w-md p-8">
+                        <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-gray-600 font-medium mb-2">Site Not Found</p>
+                        <p className="text-sm text-gray-500 mb-6">{error || 'The requested heritage site could not be found.'}</p>
+                        <Link href="/site">
+                            <Button variant="primary">View All Sites</Button>
+                        </Link>
+                    </div>
+                </main>
+            </>
+        );
+    }
     return (
         <>
             <Navbar />
@@ -183,9 +229,9 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 Details
                             </h2>
                             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6">
-                                <DetailItem label="Era" value={site.era} />
-                                <DetailItem label="Year Built" value={site.yearBuilt.toString()} />
-                                <DetailItem label="City" value={site.city} />
+                                <DetailItem label="Era" value={site.era || 'Unknown'} />
+                                <DetailItem label="Year Built" value={site.yearBuilt ? site.yearBuilt.toString() : 'Unknown'} />
+                                <DetailItem label="City" value={site.city || 'Unknown'} />
                                 <DetailItem label="Country" value={site.country} />
                             </div>
                         </section>
@@ -201,7 +247,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 </h3>
                             </div>
                             <p className="text-sm sm:text-base leading-relaxed text-heritage-dark/70">
-                                {site.historicalFacts}
+                                {site.historicalFacts || 'No historical facts available.'}
                             </p>
                         </section>
 
@@ -214,7 +260,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 }
-                                content={site.visitingInfo}
+                                content={site.visitingInfo || 'No visiting information available.'}
                             />
                             <InfoCard
                                 title="Accessibility"
@@ -223,7 +269,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 }
-                                content={site.accessibility}
+                                content={site.accessibility || 'No accessibility information available.'}
                             />
                         </section>
                     </div>
@@ -250,7 +296,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                     </svg>
                                 </button>
                                 <ThreeErrorBoundary>
-                                    {viewerMode === '3d' && (
+                                    {viewerMode === '3d' && site.modelUrl && (
                                         <ModelViewer
                                             modelUrl={site.modelUrl}
                                             title={`${site.name} - 3D Model`}
@@ -260,7 +306,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                             environmentPreset="sunset"
                                         />
                                     )}
-                                    {viewerMode === 'panorama' && (
+                                    {viewerMode === 'panorama' && site.panoramaUrl && (
                                         <PanoramaViewer
                                             imageUrl={site.panoramaUrl}
                                             title={`${site.name} - 360° View`}
@@ -269,7 +315,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                             initialFov={75}
                                         />
                                     )}
-                                    {viewerMode === 'ar' && (
+                                    {viewerMode === 'ar' && site.modelUrl && (
                                         <ARViewer
                                             modelUrl={site.modelUrl}
                                             title={`${site.name} - AR Experience`}

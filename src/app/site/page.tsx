@@ -1,55 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button, Search, SiteCard } from '@/components';
 
-// Site data - in production, this would come from the database
-const sites = [
-    {
-        id: 'sonda-fort',
-        name: 'Sonda Fort',
-        location: 'Yellapur Road, Sonda, Uttara Kannada, Karnataka',
-        description: 'An ancient hill fort located near Sonda on Yellapur Road, known for its historic ruins and scenic surroundings. Built during the Vijayanagara period.',
-        thumbnail: '/360-images/sonda-fort-1.jpg',
-        category: 'Fort',
-        yearBuilt: 1500,
-        tags: ['fort', 'medieval', 'vijayanagara'],
-        hasModel: true,
-        hasPanorama: true,
-        hasAR: true,
-    },
-    {
-        id: 'sahasralinga',
-        name: 'Sahasralinga',
-        location: 'Yellapur Road, near Somasagara, Sirsi, Uttara Kannada, Karnataka',
-        description: 'A unique pilgrimage site near Somasagara village on the Shalmala river with thousands of Shiva lingas carved on rocks.',
-        thumbnail: '/360-images/sahasra-linga.jpg',
-        category: 'Temple',
-        yearBuilt: 900,
-        tags: ['temple', 'pilgrimage', 'ancient'],
-        hasModel: true,
-        hasPanorama: true,
-        hasAR: true,
-    },
-    {
-        id: 'somasagara-temple',
-        name: 'Somasagara Shiva Temple',
-        location: 'Somasagara, Sirsi, Uttara Kannada, Karnataka',
-        description: 'A serene Shiva temple known for its peaceful setting near Sahasralinga, surrounded by dense forests and streams.',
-        thumbnail: '/360-images/somasagara.jpg',
-        category: 'Temple',
-        yearBuilt: 850,
-        tags: ['temple', 'ancient', 'hoysala'],
-        hasModel: true,
-        hasPanorama: true,
-        hasAR: true,
-    },
-];
+interface SiteCardData {
+    id: string;
+    name: string;
+    location: string;
+    description: string;
+    thumbnail: string;
+    category: string;
+    yearBuilt: number | undefined;
+    tags: string[];
+    hasModel: boolean;
+    hasPanorama: boolean;
+    hasAR: boolean;
+}
 
 export default function SitesPage() {
+    const [sites, setSites] = useState<SiteCardData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [filterCategory, setFilterCategory] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
+
+    // Fetch sites from database
+    useEffect(() => {
+        async function fetchSites() {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/sites?limit=100');
+                if (!response.ok) throw new Error('Failed to fetch sites');
+
+                const result = await response.json();
+                const dbSites = result.data || [];
+
+                // Transform database sites to card format
+                const transformedSites: SiteCardData[] = dbSites.map((site: any) => {
+                    const thumbnail = site.assets?.find((a: any) => a.type === 'IMAGE')?.storageUrl || '/360-images/placeholder.jpg';
+                    const hasModel = site.assets?.some((a: any) => a.type === 'MODEL_3D') || false;
+                    const hasPanorama = site.assets?.some((a: any) => a.type === 'PANORAMA_360') || false;
+
+                    // Extract tags from site tags relation
+                    const tags = site.tags?.map((t: any) => t.tag?.name).filter(Boolean) || [];
+
+                    // Determine category from era or tags
+                    let category = 'Monument';
+                    if (tags.some((t: string) => t.toLowerCase().includes('fort'))) category = 'Fort';
+                    else if (tags.some((t: string) => t.toLowerCase().includes('temple'))) category = 'Temple';
+
+                    return {
+                        id: site.id,
+                        name: site.name,
+                        location: site.location,
+                        description: site.description,
+                        thumbnail,
+                        category,
+                        yearBuilt: site.yearBuilt ?? undefined,
+                        tags,
+                        hasModel,
+                        hasPanorama,
+                        hasAR: hasModel,
+                    };
+                });
+
+                setSites(transformedSites);
+            } catch (err) {
+                console.error('Error fetching sites:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load sites');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchSites();
+    }, []);
 
     // Filter sites based on category and search query
     const filteredSites = sites.filter((site) => {
@@ -128,7 +154,24 @@ export default function SitesPage() {
                 {/* Sites Grid */}
                 <section className="px-4 py-12 md:py-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
-                        {filteredSites.length > 0 ? (
+                        {loading ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="text-center">
+                                    <div className="w-12 h-12 mx-auto mb-4 border-b-2 rounded-full animate-spin border-heritage-primary"></div>
+                                    <p className="text-gray-600">Loading heritage sites...</p>
+                                </div>
+                            </div>
+                        ) : error ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="max-w-md text-center">
+                                    <svg className="w-12 h-12 mx-auto mb-4 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p className="mb-2 font-medium text-gray-600">Failed to load sites</p>
+                                    <p className="text-sm text-gray-500">{error}</p>
+                                </div>
+                            </div>
+                        ) : filteredSites.length > 0 ? (
                             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
                                 {filteredSites.map((site) => (
                                     <SiteCard

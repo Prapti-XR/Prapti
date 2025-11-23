@@ -37,6 +37,11 @@ export async function GET(request: NextRequest) {
             mimeType: true,
           },
         },
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
         _count: {
           select: {
             triviaQuestions: true,
