@@ -94,9 +94,6 @@ export default function MapPage() {
                     <div className="text-center p-8">
                         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-heritage-primary mx-auto mb-4"></div>
                         <p className="text-gray-600 font-medium">Loading Maps...</p>
-                        <p className="text-xs text-gray-400 mt-2">
-                            API Key: {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? '✓ Set' : '✗ Missing'}
-                        </p>
                     </div>
                 </main>
             </>

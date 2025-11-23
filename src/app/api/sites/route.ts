@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { serializeBigInt } from '@/lib/utils';
 
 /**
  * GET /api/sites
@@ -59,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: sites,
+      data: serializeBigInt(sites),
       count: sites.length,
     });
   } catch (error) {
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: site,
+      data: serializeBigInt(site),
     }, { status: 201 });
   } catch (error) {
     console.error('Error creating site:', error);

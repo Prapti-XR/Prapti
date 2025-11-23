@@ -80,3 +80,46 @@ export function slugify(text: string): string {
     .replace(/^-+/, '')
     .replace(/-+$/, '');
 }
+
+/**
+ * Convert BigInt values to Numbers in an object recursively
+ * Needed for JSON serialization since JSON.stringify can't handle BigInt
+ */
+export function serializeBigInt<T>(obj: T): T {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (typeof obj === 'bigint') {
+    return Number(obj) as any;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(serializeBigInt) as any;
+  }
+
+  if (typeof obj === 'object') {
+    const serialized: any = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        serialized[key] = serializeBigInt(obj[key]);
+      }
+    }
+    return serialized;
+  }
+
+  return obj;
+}
+
+/**
+ * Create a JSON response with BigInt serialization support
+ */
+export function jsonResponse<T>(data: T, init?: ResponseInit): Response {
+  return new Response(JSON.stringify(serializeBigInt(data)), {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...init?.headers,
+    },
+  });
+}

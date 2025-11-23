@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { serializeBigInt } from '@/lib/utils';
 
 /**
  * GET /api/sites/[id]
@@ -48,7 +49,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: site,
+      data: serializeBigInt(site),
     });
   } catch (error) {
     console.error('Error fetching site:', error);
@@ -103,7 +104,7 @@ export async function PATCH(
 
     return NextResponse.json({
       success: true,
-      data: site,
+      data: serializeBigInt(site),
     });
   } catch (error) {
     console.error('Error updating site:', error);

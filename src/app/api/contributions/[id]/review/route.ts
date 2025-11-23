@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/utils';
 
 /**
  * POST /api/contributions/[id]/review
@@ -128,7 +129,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      data: review,
+      data: serializeBigInt(review),
       message: 'Review submitted successfully',
     }, { status: 201 });
   } catch (error) {
@@ -176,7 +177,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: reviews,
+      data: serializeBigInt(reviews),
     });
   } catch (error) {
     console.error('Error fetching reviews:', error);

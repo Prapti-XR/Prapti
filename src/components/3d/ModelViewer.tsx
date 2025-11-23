@@ -113,7 +113,7 @@ export function ModelViewer({
     showGrid = false,
     autoRotate = true,
     environmentPreset = 'sunset',
-    cameraPosition = [5, 3, 5],
+    cameraPosition = [1.5, 1, 1.5],
     onLoad,
     onError
 }: ModelViewerProps) {
@@ -149,14 +149,9 @@ export function ModelViewer({
             className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg overflow-hidden shadow-xl"
         >
             {/* Header */}
-            {(title || description) && (
+            {title && (
                 <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4">
-                    {title && (
-                        <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-                    )}
-                    {description && (
-                        <p className="text-sm text-gray-200">{description}</p>
-                    )}
+                    <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
                 </div>
             )}
 
@@ -178,16 +173,6 @@ export function ModelViewer({
                     )}
                 </button>
             </div>
-
-            {/* Loading Indicator */}
-            {isLoading && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
-                    <div className="flex flex-col items-center">
-                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mb-4"></div>
-                        <p className="text-white text-lg font-semibold">Loading 3D Model...</p>
-                    </div>
-                </div>
-            )}
 
             {/* Canvas */}
             <Canvas

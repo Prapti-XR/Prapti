@@ -207,7 +207,6 @@ export default function ModelsPage() {
                                     <ModelViewer
                                         modelUrl={selectedModel.modelUrl}
                                         title={selectedModel.name}
-                                        description={selectedModel.description}
                                         showGrid={true}
                                         autoRotate={true}
                                         environmentPreset="sunset"

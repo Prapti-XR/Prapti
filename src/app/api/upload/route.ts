@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { uploadToR2, generatePresignedUploadUrl } from '@/lib/upload';
 import { generateAssetKey } from '@/lib/r2';
+import { serializeBigInt } from '@/lib/utils';
 
 /**
  * POST /api/upload
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: {
+      data: serializeBigInt({
         asset: {
           id: asset.id,
           type: asset.type,
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
           mimeType: asset.mimeType,
         },
         uploadResult,
-      },
+      }),
     }, { status: 201 });
 
   } catch (error) {

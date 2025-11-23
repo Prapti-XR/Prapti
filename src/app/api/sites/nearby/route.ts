@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cache } from '@/lib/redis';
+import { serializeBigInt } from '@/lib/utils';
 
 // Cache TTL in seconds
 const CACHE_TTL = process.env.NODE_ENV === 'production' ? 60 : 10; // 60s prod, 10s dev
@@ -130,7 +131,7 @@ export async function GET(request: NextRequest) {
     // No need to sort here if no user location - already sorted by database
 
     const response = {
-      sites: sites.slice(0, 100),
+      sites: serializeBigInt(sites.slice(0, 100)),
       source: 'database',
       count: sites.length,
     };

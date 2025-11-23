@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { serializeBigInt } from '@/lib/utils';
 
 /**
  * GET /api/trivia
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: {
+        data: serializeBigInt({
           site: {
             id: site.id,
             name: site.name,
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest) {
               correct: a.isCorrect,
             })),
           })),
-        },
+        }),
       });
     }
 
@@ -109,7 +110,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: triviaData,
+      data: serializeBigInt(triviaData),
     });
   } catch (error) {
     console.error('Error fetching trivia questions:', error);
