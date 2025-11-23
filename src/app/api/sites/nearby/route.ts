@@ -1,31 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { cache } from '@/lib/redis';
 
-// Simple in-memory cache for site queries (60 second TTL)
-const queryCache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_TTL = 60 * 1000; // 60 seconds
+// Cache TTL in seconds
+const CACHE_TTL = process.env.NODE_ENV === 'production' ? 60 : 10; // 60s prod, 10s dev
 
 function getCacheKey(params: URLSearchParams): string {
   const keys = ['north', 'south', 'east', 'west', 'era', 'country', 'hasAR', 'has3D', 'hasPanorama'];
-  return keys.map(k => `${k}:${params.get(k)}`).join('|');
-}
-
-function getFromCache(key: string) {
-  const cached = queryCache.get(key);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
-  }
-  queryCache.delete(key);
-  return null;
-}
-
-function setCache(key: string, data: any) {
-  // Prevent cache from growing indefinitely
-  if (queryCache.size > 100) {
-    const firstKey = queryCache.keys().next().value;
-    if (firstKey) queryCache.delete(firstKey);
-  }
-  queryCache.set(key, { data, timestamp: Date.now() });
+  return `sites:nearby:${keys.map(k => `${k}:${params.get(k)}`).join('|')}`;
 }
 
 // Haversine formula to calculate distance between two points
@@ -53,11 +35,14 @@ function calculateDistance(
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
-  // Check cache first (exclude user location from cache key)
+  // Check Redis cache first (exclude user location from cache key)
   const cacheKey = getCacheKey(searchParams);
-  const cachedResult = getFromCache(cacheKey);
+  const cachedResult = await cache.get(cacheKey);
   if (cachedResult) {
-    return NextResponse.json({ ...cachedResult, source: 'cache' });
+    return NextResponse.json({ 
+      ...cachedResult, 
+      source: cache.isAvailable() ? 'redis-cache' : 'memory-cache' 
+    });
   }
 
   // User location for distance calculation
@@ -150,8 +135,10 @@ export async function GET(request: NextRequest) {
       count: sites.length,
     };
 
-    // Cache the result
-    setCache(cacheKey, response);
+    // Cache the result in Redis (non-blocking)
+    cache.set(cacheKey, response, CACHE_TTL).catch(err => 
+      console.error('Failed to cache result:', err)
+    );
 
     return NextResponse.json(response);
   } catch (error) {
