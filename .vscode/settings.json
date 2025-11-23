@@ -16,5 +16,6 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "prisma.fileWatcher": false,
-  "prisma.showPrismaDataPlatformNotification": false
+  "prisma.showPrismaDataPlatformNotification": false,
+  "prisma.pinToPrisma6": true
 }
