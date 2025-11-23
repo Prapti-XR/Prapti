@@ -29,8 +29,11 @@ model User {
   favoriteSites  FavoriteSite[]
   triviaScores   TriviaScore[]
   uploadedAssets Asset[]        @relation("UploadedBy")
+  contributions  Contribution[] @relation("ContributionAuthor")
+  reviews        Review[]       @relation("Reviewer")
 
   @@index([email])
+  @@index([role])
 }
 
 // OAuth Accounts (NextAuth)
@@ -76,9 +79,10 @@ model VerificationToken {
 }
 
 enum UserRole {
-  USER
-  ADMIN
-  MODERATOR
+  USER        // Can view, favorite, take quizzes
+  CONTRIBUTOR // Can submit contributions (like GitHub fork/PR)
+  MODERATOR   // Can review and approve contributions
+  ADMIN       // Full access - can create/edit/delete directly
 }
 
 // Heritage Sites
@@ -113,6 +117,7 @@ model HeritageSite {
   triviaQuestions TriviaQuestion[]
   favoritedBy     FavoriteSite[]
   tags            SiteTag[]
+  contributions   Contribution[]
 
   @@index([country, city])
   @@index([latitude, longitude])
@@ -149,23 +154,29 @@ model Asset {
   attribution String? @db.Text
   license     String? // e.g., "CC-BY-4.0"
 
-  // Status
+  // Status & Approval
   isProcessed   Boolean @default(false)
   isPublic      Boolean @default(true)
   downloadCount Int     @default(0)
+  status        AssetStatus @default(PENDING) // For approval workflow
+  rejectionReason String? @db.Text // If rejected by moderator
 
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  approvedAt DateTime? // When approved by moderator
 
   // Relations
   siteId       String
   site         HeritageSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
   uploadedById String?
   uploadedBy   User?        @relation("UploadedBy", fields: [uploadedById], references: [id])
+  contributionId String? @unique
+  contribution Contribution? @relation(fields: [contributionId], references: [id])
 
   @@index([siteId, type])
   @@index([type, isPublic])
+  @@index([status])
 }
 
 enum AssetType {
@@ -278,4 +289,104 @@ model SiteView {
   country   String?
 
   @@index([siteId, viewedAt])
+}
+
+// Contribution System (GitHub-style workflow)
+model Contribution {
+  id          String             @id @default(cuid())
+  title       String
+  description String             @db.Text
+  type        ContributionType
+  status      ContributionStatus @default(PENDING)
+
+  // What is being contributed
+  contributionData Json // Flexible data structure for different types
+
+  // Site information
+  siteId       String? // If editing existing site
+  site         HeritageSite? @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  newSiteData  Json? // If proposing new site
+
+  // Asset uploads
+  assets       Asset[] // Assets attached to this contribution
+
+  // Author & Review
+  authorId     String
+  author       User     @relation("ContributionAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  reviews      Review[]
+  
+  // Approval tracking
+  approvedBy   String?
+  approvedAt   DateTime?
+  rejectedBy   String?
+  rejectedAt   DateTime?
+  rejectionReason String? @db.Text
+  mergedAt     DateTime? // When contribution was accepted and merged
+
+  // Metadata
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([status])
+  @@index([type])
+  @@index([siteId])
+}
+
+// Review system for contributions
+model Review {
+  id             String       @id @default(cuid())
+  contributionId String
+  contribution   Contribution @relation(fields: [contributionId], references: [id], onDelete: Cascade)
+  
+  reviewerId     String
+  reviewer       User         @relation("Reviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  
+  status         ReviewStatus
+  comment        String?      @db.Text
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([contributionId])
+  @@index([reviewerId])
+  @@unique([contributionId, reviewerId]) // One review per reviewer per contribution
+}
+
+// Enums for Asset Status
+enum AssetStatus {
+  PENDING   // Waiting for review
+  APPROVED  // Approved by moderator
+  REJECTED  // Rejected by moderator
+  ARCHIVED  // Removed from public view
+}
+
+// Contribution Types
+enum ContributionType {
+  NEW_SITE           // Proposing a new heritage site
+  EDIT_SITE          // Editing existing site information
+  ADD_ASSET          // Adding 3D model, panorama, or image
+  ADD_TRIVIA         // Adding trivia questions
+  EDIT_TRIVIA        // Editing existing trivia
+  FIX_INFO           // Correcting information
+  TRANSLATION        // Adding translations (future)
+}
+
+// Contribution Status
+enum ContributionStatus {
+  DRAFT      // Still being worked on by author
+  PENDING    // Submitted and waiting for review
+  UNDER_REVIEW // Being reviewed by moderators
+  APPROVED   // Approved and ready to merge
+  REJECTED   // Rejected by moderators
+  MERGED     // Successfully merged into main content
+  CLOSED     // Closed without merging
+}
+
+// Review Status
+enum ReviewStatus {
+  APPROVED        // Reviewer approves
+  CHANGES_REQUESTED // Reviewer requests changes
+  REJECTED        // Reviewer rejects
+  COMMENTED       // Just a comment, no decision
 }
