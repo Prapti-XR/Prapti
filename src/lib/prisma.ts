@@ -13,6 +13,13 @@ const createPrismaClient = () => {
         url: process.env.DATABASE_URL,
       },
     },
+    // Optimize connection pooling for serverless
+    // Neon uses pgBouncer (pooler) so we can keep connections longer
+    __internal: {
+      engine: {
+        connectionTimeout: 10000, // 10 seconds
+      },
+    },
   });
 
   // Enhanced error handling with user-friendly messages

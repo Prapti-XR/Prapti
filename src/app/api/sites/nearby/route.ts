@@ -3,8 +3,11 @@ import { prisma } from '@/lib/prisma';
 import { cache } from '@/lib/redis';
 import { serializeBigInt } from '@/lib/utils';
 
-// Cache TTL in seconds
-const CACHE_TTL = process.env.NODE_ENV === 'production' ? 60 : 10; // 60s prod, 10s dev
+// Enable edge runtime for faster cold starts (optional)
+// export const runtime = 'edge'; // Uncomment if using edge runtime
+
+// Cache TTL in seconds - increased for better performance
+const CACHE_TTL = process.env.NODE_ENV === 'production' ? 180 : 10; // 3min prod, 10s dev
 
 function getCacheKey(params: URLSearchParams): string {
   const keys = ['north', 'south', 'east', 'west', 'era', 'country', 'hasAR', 'has3D', 'hasPanorama'];
@@ -43,6 +46,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ 
       ...cachedResult, 
       source: cache.isAvailable() ? 'redis-cache' : 'memory-cache' 
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
     });
   }
 
@@ -141,7 +148,11 @@ export async function GET(request: NextRequest) {
       console.error('Failed to cache result:', err)
     );
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+      },
+    });
   } catch (error) {
     console.error('Error fetching nearby sites:', error);
     return NextResponse.json(
