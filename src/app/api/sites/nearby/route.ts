@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
-// Static data for development/testing (will be replaced with database queries later)
+// Haversine formula to calculate distance between two points
+function calculateDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Static data for development/testing (fallback if database is empty)
 const STATIC_SITES = [
   {
     id: '1',
@@ -128,21 +148,120 @@ const STATIC_SITES = [
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
+  // User location for distance calculation
+  const userLat = parseFloat(searchParams.get('lat') || '0');
+  const userLon = parseFloat(searchParams.get('lon') || '0');
+  
+  // Bounding box
   const north = parseFloat(searchParams.get('north') || '90');
   const south = parseFloat(searchParams.get('south') || '-90');
   const east = parseFloat(searchParams.get('east') || '180');
   const west = parseFloat(searchParams.get('west') || '-180');
 
+  // Filters
   const era = searchParams.get('era');
   const country = searchParams.get('country');
   const hasAR = searchParams.get('hasAR') === 'true';
   const has3D = searchParams.get('has3D') === 'true';
   const hasPanorama = searchParams.get('hasPanorama') === 'true';
+  const radius = parseFloat(searchParams.get('radius') || '50'); // km
 
   try {
-    // Filter static sites based on bounds and filters
-    let sites = STATIC_SITES.filter((site) => {
-      // Check if within bounds
+    // Build where clause
+    const where: any = {
+      isPublished: true,
+      latitude: { gte: south, lte: north },
+      longitude: { gte: west, lte: east },
+    };
+
+    if (era) where.era = era;
+    if (country) where.country = country;
+
+    // Asset type filters
+    if (hasAR || has3D) {
+      where.assets = { some: { type: 'MODEL_3D', isPublic: true } };
+    }
+    if (hasPanorama) {
+      where.assets = { some: { type: 'PANORAMA_360', isPublic: true } };
+    }
+
+    // Fetch sites from database
+    let sites = await prisma.heritageSite.findMany({
+      where,
+      include: {
+        assets: {
+          where: { isPublic: true },
+          select: {
+            id: true,
+            type: true,
+            storageUrl: true,
+            title: true,
+            mimeType: true,
+          },
+        },
+        _count: {
+          select: {
+            triviaQuestions: true,
+            favoritedBy: true,
+          },
+        },
+      },
+      take: 200,
+    });
+
+    // If database is empty, use static data as fallback
+    if (sites.length === 0) {
+      let staticSites = STATIC_SITES.filter((site) => {
+        if (
+          site.latitude < south ||
+          site.latitude > north ||
+          site.longitude < west ||
+          site.longitude > east
+        ) {
+          return false;
+        }
+        if (era && site.era !== era) return false;
+        if (country && site.country !== country) return false;
+        if (hasAR || has3D) {
+          const hasModel = site.assets.some((a) => a.type === 'MODEL_3D');
+          if (!hasModel) return false;
+        }
+        if (hasPanorama) {
+          const hasPano = site.assets.some((a) => a.type === 'PANORAMA_360');
+          if (!hasPano) return false;
+        }
+        return true;
+      });
+
+      return NextResponse.json({ 
+        sites: staticSites.slice(0, 100),
+        source: 'static',
+      });
+    }
+
+    // Calculate distances and filter by radius if user location provided
+    if (userLat && userLon) {
+      sites = sites
+        .map((site) => ({
+          ...site,
+          distance: calculateDistance(userLat, userLon, site.latitude, site.longitude),
+        }))
+        .filter((site) => site.distance <= radius)
+        .sort((a, b) => a.distance - b.distance);
+    } else {
+      // Sort by popularity if no user location
+      sites = sites.sort((a, b) => b.popularityScore - a.popularityScore);
+    }
+
+    return NextResponse.json({
+      sites: sites.slice(0, 100),
+      source: 'database',
+    });
+  } catch (error) {
+    console.error('Error fetching nearby sites:', error);
+    
+    // Fallback to static data on error
+    let staticSites = STATIC_SITES.filter((site) => {
       if (
         site.latitude < south ||
         site.latitude > north ||
@@ -151,34 +270,16 @@ export async function GET(request: NextRequest) {
       ) {
         return false;
       }
-
-      // Apply filters
       if (era && site.era !== era) return false;
       if (country && site.country !== country) return false;
-
-      if (hasAR || has3D) {
-        const hasModel = site.assets.some((a) => a.type === 'MODEL_3D');
-        if (!hasModel) return false;
-      }
-
-      if (hasPanorama) {
-        const hasPano = site.assets.some((a) => a.type === 'PANORAMA_360');
-        if (!hasPano) return false;
-      }
-
       return true;
     });
 
-    // Limit results
-    sites = sites.slice(0, 100);
-
-    return NextResponse.json({ sites });
-  } catch (error) {
-    console.error('Error fetching sites:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch sites' },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      sites: staticSites.slice(0, 100),
+      source: 'static-fallback',
+      error: 'Database error, using static data',
+    });
   }
 }
 
