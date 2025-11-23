@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button, Search, ImageCard } from '@/components';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
@@ -11,48 +11,62 @@ const PanoramaViewer = dynamic(
     { ssr: false }
 );
 
-// Using actual 360° images from public folder
-const panoramas = [
-    {
-        id: 'sonda-fort-1',
-        name: 'Sonda Fort - Main View',
-        location: 'Sonda, Karnataka',
-        imageUrl: '/360-images/sonda-fort-1.jpg',
-        description: '360° view of the historic Sonda Fort',
-        capturedYear: 2024,
-        site: 'Sonda Fort',
-    },
-    {
-        id: 'sonda-fort-2',
-        name: 'Sonda Fort - Panoramic View',
-        location: 'Sonda, Karnataka',
-        imageUrl: '/360-images/sonda-fort-2.jpg',
-        description: 'Panoramic view from the fort ramparts',
-        capturedYear: 2024,
-        site: 'Sonda Fort',
-    },
-    {
-        id: 'sahasralinga-river',
-        name: 'Sahasralinga - River View',
-        location: 'Sirsi, Karnataka',
-        imageUrl: '/360-images/sahasra-linga.jpg',
-        description: '360° view of the thousand lingas on the riverbed',
-        capturedYear: 2024,
-        site: 'Sahasralinga',
-    },
-    {
-        id: 'somasagara-temple',
-        name: 'Somasagara Temple',
-        location: 'Somasagara, Karnataka',
-        imageUrl: '/360-images/somasagara.jpg',
-        description: '360° view of the ancient Shiva temple',
-        capturedYear: 2024,
-        site: 'Somasagara Temple',
-    },
-];
+interface Panorama {
+    id: string;
+    name: string;
+    location: string;
+    imageUrl: string;
+    description: string;
+    capturedYear: number;
+    site: string;
+}
 
 export default function ImagesPage() {
-    const [selectedPanorama, setSelectedPanorama] = useState<typeof panoramas[0] | null>(null);
+    const [panoramas, setPanoramas] = useState<Panorama[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedPanorama, setSelectedPanorama] = useState<Panorama | null>(null);
+
+    // Fetch panoramas from database
+    useEffect(() => {
+        async function fetchPanoramas() {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/sites?limit=100');
+                if (!response.ok) throw new Error('Failed to fetch sites');
+
+                const result = await response.json();
+                const sites = result.data || [];
+
+                // Extract panoramas from sites
+                const allPanoramas: Panorama[] = [];
+                sites.forEach((site: any) => {
+                    const panoramaAssets = site.assets?.filter((a: any) =>
+                        a.type === 'PANORAMA_360' || a.type === 'PANORAMA_180'
+                    ) || [];
+
+                    panoramaAssets.forEach((asset: any) => {
+                        allPanoramas.push({
+                            id: asset.id,
+                            name: asset.title || `${site.name} - Panorama`,
+                            location: site.location,
+                            imageUrl: asset.storageUrl,
+                            description: asset.description || site.description,
+                            capturedYear: new Date(asset.createdAt).getFullYear(),
+                            site: site.name,
+                        });
+                    });
+                });
+
+                setPanoramas(allPanoramas);
+            } catch (error) {
+                console.error('Error fetching panoramas:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchPanoramas();
+    }, []);
     return (
         <>
             <Navbar />
@@ -100,21 +114,34 @@ export default function ImagesPage() {
                 {/* Images Grid */}
                 <section className="px-4 py-12 md:py-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
-                        <div className="grid gap-6 sm:grid-cols-2 md:gap-8">
-                            {panoramas.map((panorama) => (
-                                <ImageCard
-                                    key={panorama.id}
-                                    id={panorama.id}
-                                    name={panorama.name}
-                                    location={panorama.location}
-                                    description={panorama.description}
-                                    imageUrl={panorama.imageUrl}
-                                    capturedYear={panorama.capturedYear}
-                                    site={panorama.site}
-                                    onClick={() => setSelectedPanorama(panorama)}
-                                />
-                            ))}
-                        </div>
+                        {loading ? (
+                            <div className="flex items-center justify-center py-16">
+                                <div className="text-center">
+                                    <div className="w-12 h-12 mx-auto mb-4 border-4 rounded-full border-heritage-primary border-t-transparent animate-spin"></div>
+                                    <p className="text-gray-600">Loading 360° images...</p>
+                                </div>
+                            </div>
+                        ) : panoramas.length === 0 ? (
+                            <div className="py-16 text-center">
+                                <p className="text-gray-600">No 360° images found.</p>
+                            </div>
+                        ) : (
+                            <div className="grid gap-6 sm:grid-cols-2 md:gap-8">
+                                {panoramas.map((panorama) => (
+                                    <ImageCard
+                                        key={panorama.id}
+                                        id={panorama.id}
+                                        name={panorama.name}
+                                        location={panorama.location}
+                                        description={panorama.description}
+                                        imageUrl={panorama.imageUrl}
+                                        capturedYear={panorama.capturedYear}
+                                        site={panorama.site}
+                                        onClick={() => setSelectedPanorama(panorama)}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </section>
 

@@ -81,13 +81,6 @@ function Model({ url, onLoad }: ModelProps) {
     );
 }
 
-// Preload models to avoid loading delays
-if (typeof window !== 'undefined') {
-    useGLTF.preload('/models/sonda-fort.glb');
-    useGLTF.preload('/models/sahasralinga.glb');
-    useGLTF.preload('/models/somasagara.glb');
-}
-
 function LoadingPlaceholder() {
     return (
         <Html center>

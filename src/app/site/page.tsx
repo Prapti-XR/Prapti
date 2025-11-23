@@ -38,7 +38,10 @@ export default function SitesPage() {
 
                 // Transform database sites to card format
                 const transformedSites: SiteCardData[] = dbSites.map((site: any) => {
-                    const thumbnail = site.assets?.find((a: any) => a.type === 'IMAGE')?.storageUrl || '/360-images/placeholder.jpg';
+                    // Use first available image or panorama as thumbnail
+                    const thumbnail = site.assets?.find((a: any) =>
+                        a.type === 'IMAGE' || a.type === 'THUMBNAIL' || a.type === 'PANORAMA_360'
+                    )?.storageUrl || '';
                     const hasModel = site.assets?.some((a: any) => a.type === 'MODEL_3D') || false;
                     const hasPanorama = site.assets?.some((a: any) => a.type === 'PANORAMA_360') || false;
 

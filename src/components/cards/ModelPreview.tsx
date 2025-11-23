@@ -70,8 +70,3 @@ export function ModelPreview({ modelUrl }: ModelPreviewProps) {
         </div>
     );
 }
-
-// Preload models to improve initial load performance
-useGLTF.preload('/models/sonda-fort.glb');
-useGLTF.preload('/models/sahasralinga.glb');
-useGLTF.preload('/models/somasagara.glb');

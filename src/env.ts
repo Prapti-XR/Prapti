@@ -43,6 +43,7 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z.string().url(),
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(1),
     NEXT_PUBLIC_APP_NAME: z.string().default("Prapti"),
+    NEXT_PUBLIC_USE_ASSET_PROXY: z.enum(["true", "false"]).default("false"),
   },
 
   /**
@@ -72,6 +73,7 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+    NEXT_PUBLIC_USE_ASSET_PROXY: process.env.NEXT_PUBLIC_USE_ASSET_PROXY,
   },
 
   /**

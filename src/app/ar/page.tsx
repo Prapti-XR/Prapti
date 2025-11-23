@@ -21,33 +21,50 @@ const ModelViewer = dynamic(
     { ssr: false }
 );
 
-// Sample site data - in production, this would come from the database
-const sitesData: Record<string, any> = {
-    'sonda-fort': {
-        name: 'Sonda Fort',
-        description: 'An ancient hill fort located near Sonda on Yellapur Road',
-        modelUrl: '/models/sonda-fort.glb',
-    },
-    'sahasralinga': {
-        name: 'Sahasralinga',
-        description: 'A unique pilgrimage site with thousands of Shiva lingas carved on rocks',
-        modelUrl: '/models/sahasralinga.glb',
-    },
-    'somasagara-temple': {
-        name: 'Somasagara Shiva Temple',
-        description: 'A serene Shiva temple known for its peaceful setting',
-        modelUrl: '/models/somasagara.glb',
-    }
-};
+interface SiteData {
+    name: string;
+    description: string;
+    modelUrl: string;
+}
 
 function ARPageContent() {
     const searchParams = useSearchParams();
-    const siteId = searchParams.get('site') || 'sonda-fort';
-    const site = sitesData[siteId] || sitesData['sonda-fort'];
+    const siteId = searchParams.get('site') || '';
 
+    const [site, setSite] = useState<SiteData | null>(null);
     const [isARSupported, setIsARSupported] = useState<boolean | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [viewerMode, setViewerMode] = useState<'ar' | '3d'>('ar');
+
+    // Fetch site data from database
+    useEffect(() => {
+        async function fetchSiteData() {
+            if (!siteId) return;
+
+            try {
+                const response = await fetch(`/api/sites/${siteId}`);
+                if (!response.ok) throw new Error('Failed to fetch site');
+
+                const result = await response.json();
+                const siteData = result.data;
+
+                // Find the 3D model asset
+                const modelAsset = siteData.assets?.find((a: any) => a.type === 'MODEL_3D');
+
+                if (modelAsset) {
+                    setSite({
+                        name: siteData.name,
+                        description: siteData.description,
+                        modelUrl: modelAsset.storageUrl,
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching site data:', error);
+            }
+        }
+
+        fetchSiteData();
+    }, [siteId]);
 
     useEffect(() => {
         // Check if AR is supported
@@ -75,7 +92,7 @@ function ARPageContent() {
         checkARSupport();
     }, []);
 
-    if (isLoading) {
+    if (isLoading || !site) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-amber-900 via-orange-900 to-red-900">
                 <div className="text-center">
@@ -83,7 +100,7 @@ function ARPageContent() {
                         <div className="inline-block w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
                     </div>
                     <p className="text-white text-lg font-medium">Loading AR Experience...</p>
-                    <p className="text-white/70 text-sm mt-2">{site.name}</p>
+                    {site && <p className="text-white/70 text-sm mt-2">{site.name}</p>}
                 </div>
             </div>
         );
@@ -146,8 +163,8 @@ function ARPageContent() {
                             onClick={() => setViewerMode('ar')}
                             disabled={!isARSupported}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewerMode === 'ar'
-                                    ? 'bg-white text-black'
-                                    : 'text-white hover:bg-white/10'
+                                ? 'bg-white text-black'
+                                : 'text-white hover:bg-white/10'
                                 } ${!isARSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             AR View
@@ -155,8 +172,8 @@ function ARPageContent() {
                         <button
                             onClick={() => setViewerMode('3d')}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewerMode === '3d'
-                                    ? 'bg-white text-black'
-                                    : 'text-white hover:bg-white/10'
+                                ? 'bg-white text-black'
+                                : 'text-white hover:bg-white/10'
                                 }`}
                         >
                             3D View

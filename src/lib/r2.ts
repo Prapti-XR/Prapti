@@ -27,6 +27,27 @@ export function getR2PublicUrl(key: string): string {
 }
 
 /**
+ * Get proxied URL for R2 assets (to avoid CORS issues)
+ * Use this in browser/client-side code when loading 3D models or images
+ */
+export function getProxiedAssetUrl(storageUrl: string): string {
+  if (typeof window === 'undefined') {
+    // Server-side: return direct URL
+    return storageUrl;
+  }
+  
+  // Client-side: use proxy to avoid CORS issues
+  // Only proxy if CORS is not configured on R2
+  const useProxy = process.env.NEXT_PUBLIC_USE_ASSET_PROXY === 'true';
+  
+  if (useProxy) {
+    return `/api/proxy-asset?url=${encodeURIComponent(storageUrl)}`;
+  }
+  
+  return storageUrl;
+}
+
+/**
  * Generate storage key for assets
  */
 export function generateAssetKey(

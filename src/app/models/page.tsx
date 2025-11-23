@@ -11,45 +11,68 @@ const ModelViewer = dynamic(
     { ssr: false }
 );
 
-const siteModels = [
-    {
-        id: 'sonda-fort',
-        name: 'Sonda Fort',
-        location: 'Sonda, Uttara Kannada, Karnataka',
-        modelUrl: '/models/sonda-fort.glb',
-        thumbnail: '/360-images/sonda-fort-1.jpg',
-        description: 'Ancient hill fort from the Vijayanagara period',
-        tags: ['fort', 'medieval', 'vijayanagara'],
-        era: 'Medieval',
-        yearBuilt: 1500,
-    },
-    {
-        id: 'sahasralinga',
-        name: 'Sahasralinga',
-        location: 'Sirsi, Uttara Kannada, Karnataka',
-        modelUrl: '/models/sahasralinga.glb',
-        thumbnail: '/360-images/sahasra-linga.jpg',
-        description: 'Riverbed with thousands of carved Shiva lingas',
-        tags: ['temple', 'pilgrimage', 'ancient'],
-        era: 'Ancient',
-        yearBuilt: 900,
-    },
-    {
-        id: 'somasagara-temple',
-        name: 'Somasagara Temple',
-        location: 'Somasagara, Sirsi, Karnataka',
-        modelUrl: '/models/somasagara.glb',
-        thumbnail: '/360-images/somasagara.jpg',
-        description: 'Ancient Shiva temple with Hoysala-influenced architecture',
-        tags: ['temple', 'ancient', 'hoysala'],
-        era: 'Ancient',
-        yearBuilt: 850,
-    },
-];
+interface SiteModel {
+    id: string;
+    name: string;
+    location: string;
+    modelUrl: string;
+    thumbnail: string;
+    description: string;
+    tags: string[];
+    era: string;
+    yearBuilt: number | undefined;
+}
 
 export default function ModelsPage() {
-    const [selectedModel, setSelectedModel] = useState<typeof siteModels[0] | null>(null);
+    const [siteModels, setSiteModels] = useState<SiteModel[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedModel, setSelectedModel] = useState<SiteModel | null>(null);
     const [filterTag, setFilterTag] = useState<string>('all');
+
+    // Fetch models from database
+    useEffect(() => {
+        async function fetchModels() {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/sites?limit=100');
+                if (!response.ok) throw new Error('Failed to fetch sites');
+
+                const result = await response.json();
+                const sites = result.data || [];
+
+                // Filter sites that have 3D models and transform to model format
+                const models: SiteModel[] = sites
+                    .filter((site: any) => site.assets?.some((a: any) => a.type === 'MODEL_3D'))
+                    .map((site: any) => {
+                        const modelAsset = site.assets.find((a: any) => a.type === 'MODEL_3D');
+                        const thumbnailAsset = site.assets.find((a: any) =>
+                            a.type === 'PANORAMA_360' || a.type === 'IMAGE'
+                        );
+                        const tags = site.tags?.map((t: any) => t.tag?.name).filter(Boolean) || [];
+
+                        return {
+                            id: site.id,
+                            name: site.name,
+                            location: site.location,
+                            modelUrl: modelAsset?.storageUrl || '',
+                            thumbnail: thumbnailAsset?.storageUrl || '',
+                            description: site.description,
+                            tags,
+                            era: site.era || 'Unknown',
+                            yearBuilt: site.yearBuilt ?? undefined,
+                        };
+                    });
+
+                setSiteModels(models);
+            } catch (error) {
+                console.error('Error fetching models:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchModels();
+    }, []);
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -126,25 +149,38 @@ export default function ModelsPage() {
                 {/* Models Grid */}
                 <section className="px-4 py-12 md:py-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
-                            {siteModels
-                                .filter(model => filterTag === 'all' || model.tags.includes(filterTag))
-                                .map((model) => (
-                                    <ModelCard
-                                        key={model.id}
-                                        id={model.id}
-                                        name={model.name}
-                                        location={model.location}
-                                        description={model.description}
-                                        modelUrl={model.modelUrl}
-                                        thumbnail={model.thumbnail}
-                                        era={model.era}
-                                        yearBuilt={model.yearBuilt}
-                                        tags={model.tags}
-                                        onClick={() => setSelectedModel(model)}
-                                    />
-                                ))}
-                        </div>
+                        {loading ? (
+                            <div className="flex items-center justify-center py-16">
+                                <div className="text-center">
+                                    <div className="w-12 h-12 mx-auto mb-4 border-4 rounded-full border-heritage-primary border-t-transparent animate-spin"></div>
+                                    <p className="text-gray-600">Loading 3D models...</p>
+                                </div>
+                            </div>
+                        ) : siteModels.length === 0 ? (
+                            <div className="py-16 text-center">
+                                <p className="text-gray-600">No 3D models found.</p>
+                            </div>
+                        ) : (
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
+                                {siteModels
+                                    .filter(model => filterTag === 'all' || model.tags.includes(filterTag))
+                                    .map((model) => (
+                                        <ModelCard
+                                            key={model.id}
+                                            id={model.id}
+                                            name={model.name}
+                                            location={model.location}
+                                            description={model.description}
+                                            modelUrl={model.modelUrl}
+                                            thumbnail={model.thumbnail}
+                                            era={model.era}
+                                            yearBuilt={model.yearBuilt}
+                                            tags={model.tags}
+                                            onClick={() => setSelectedModel(model)}
+                                        />
+                                    ))}
+                            </div>
+                        )}
                     </div>
                 </section>
 
