@@ -212,46 +212,79 @@ async function main() {
   const admin = await getAdminUser();
 
   // ===========================================================
-  // CONFIGURATION: Edit this section for your uploads
+  // Karnataka Heritage Sites Asset Upload
   // ===========================================================
 
-  const SITE_ID = 'your-site-id-here'; // Replace with actual site ID
+  console.log('\n📤 Uploading assets for Karnataka heritage sites...\n');
 
-  // Example 1: Upload a single 3D model
+  // Sonda Fort Assets
+  console.log('🏰 Sonda Fort:');
   await uploadAsset({
-    filePath: './public/models/example-model.glb',
-    siteId: SITE_ID,
+    filePath: './public/models/sonda-fort.glb',
+    siteId: 'sonda-fort',
     assetType: 'models',
-    title: 'Example 3D Model',
-    description: '3D model of the heritage site',
+    title: 'Sonda Fort 3D Model',
+    description: 'Interactive 3D model of the historic Sonda Fort',
     userId: admin.id,
   });
 
-  // Example 2: Upload a single image
   await uploadAsset({
-    filePath: './public/images/example-photo.jpg',
-    siteId: SITE_ID,
-    assetType: 'images',
-    title: 'Heritage Site Photo',
-    description: 'Beautiful view of the site',
+    filePath: './public/360-images/sonda-fort-1.jpg',
+    siteId: 'sonda-fort',
+    assetType: 'panoramas',
+    title: 'Sonda Fort Panorama View 1',
+    description: '360° view of Sonda Fort exterior',
     userId: admin.id,
   });
 
-  // Example 3: Bulk upload all models from a directory
-  // await uploadDirectory({
-  //   directoryPath: './public/models',
-  //   siteId: SITE_ID,
-  //   assetType: 'models',
-  //   userId: admin.id,
-  // });
+  await uploadAsset({
+    filePath: './public/360-images/sonda-fort-2.jpg',
+    siteId: 'sonda-fort',
+    assetType: 'panoramas',
+    title: 'Sonda Fort Panorama View 2',
+    description: '360° view of Sonda Fort interior',
+    userId: admin.id,
+  });
 
-  // Example 4: Bulk upload all images from a directory
-  // await uploadDirectory({
-  //   directoryPath: './public/images',
-  //   siteId: SITE_ID,
-  //   assetType: 'images',
-  //   userId: admin.id,
-  // });
+  // Sahasralinga Assets
+  console.log('\n🕉️  Sahasralinga:');
+  await uploadAsset({
+    filePath: './public/models/sahasralinga.glb',
+    siteId: 'sahasralinga',
+    assetType: 'models',
+    title: 'Sahasralinga 3D Model',
+    description: 'Interactive 3D model of Sahasralinga riverbed carvings',
+    userId: admin.id,
+  });
+
+  await uploadAsset({
+    filePath: './public/360-images/sahasra-linga.jpg',
+    siteId: 'sahasralinga',
+    assetType: 'panoramas',
+    title: 'Sahasralinga Panorama View',
+    description: '360° view of the thousand Shiva lingas',
+    userId: admin.id,
+  });
+
+  // Somasagara Temple Assets
+  console.log('\n🛕 Somasagara Shiva Temple:');
+  await uploadAsset({
+    filePath: './public/models/somasagara.glb',
+    siteId: 'somasagara-temple',
+    assetType: 'models',
+    title: 'Somasagara Temple 3D Model',
+    description: 'Interactive 3D model of Somasagara Shiva Temple',
+    userId: admin.id,
+  });
+
+  await uploadAsset({
+    filePath: './public/360-images/somasagara.jpg',
+    siteId: 'somasagara-temple',
+    assetType: 'panoramas',
+    title: 'Somasagara Temple Panorama View',
+    description: '360° view of the ancient Dravidian temple',
+    userId: admin.id,
+  });
 
   console.log('\n✨ All uploads complete!');
 }
