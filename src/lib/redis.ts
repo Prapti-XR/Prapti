@@ -1,20 +1,30 @@
 import { Redis } from '@upstash/redis';
 
-// Initialize Redis client (will be undefined if env vars not set)
+// Initialize Redis client lazily (will be undefined if env vars not set)
 let redis: Redis | undefined;
+let initialized = false;
 
-try {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    });
-  } else {
-    console.warn('⚠️  Redis not configured - using in-memory cache fallback');
+function initializeRedis() {
+  if (initialized) return;
+  initialized = true;
+  
+  try {
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+    
+    if (url && token) {
+      redis = new Redis({ url, token });
+      console.log('✅ Redis connected:', url.substring(0, 30) + '...');
+    } else {
+      console.warn('⚠️  Redis not configured - using in-memory cache fallback');
+    }
+  } catch (error) {
+    console.error('Failed to initialize Redis:', error);
   }
-} catch (error) {
-  console.error('Failed to initialize Redis:', error);
 }
+
+// Initialize on first import
+initializeRedis();
 
 // Cache utilities
 export const cache = {
