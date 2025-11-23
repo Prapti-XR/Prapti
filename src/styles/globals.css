@@ -12,6 +12,10 @@
     @apply border-heritage-light;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-white text-heritage-dark antialiased;
   }
