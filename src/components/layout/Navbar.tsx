@@ -100,7 +100,7 @@ export function Navbar() {
         <>
             {/* Desktop Navigation */}
             <nav 
-                className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl hidden md:block transition-all duration-300 ${
+                className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-5xl hidden md:block transition-all duration-300 ${
                     scrolled ? 'top-4' : 'top-6'
                 }`}
                 aria-label="Main navigation"
@@ -108,9 +108,9 @@ export function Navbar() {
                 <div className={`relative border rounded-full shadow-lg bg-white/70 backdrop-blur-xl border-gray-200/50 transition-all duration-300 ${
                     scrolled ? 'shadow-xl shadow-black/10' : 'shadow-black/5'
                 }`}>
-                    <div className="flex items-center justify-between px-8 py-3 gap-8">
+                    <div className="relative flex items-center px-10 py-4">
                         {/* Left section - Gallery, Heritage Map, Site Details */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 flex-1 justify-start">
                             {navItems.slice(0, 3).map((item) => (
                                 <NavItemComponent
                                     key={item.label}
@@ -125,14 +125,14 @@ export function Navbar() {
                         {/* Center - Prapti Logo/Home */}
                         <Link
                             href="/"
-                            className="font-serif text-xl font-semibold transition-all duration-200 text-heritage-dark hover:text-heritage-primary hover:scale-105 px-6"
+                            className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl font-semibold transition-all duration-200 text-heritage-dark hover:text-heritage-primary hover:scale-105 px-8"
                             aria-label="Prapti Home"
                         >
                             Prapti
                         </Link>
 
                         {/* Right section - Trivia, About, Profile */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 flex-1 justify-end">
                             {navItems.slice(3).map((item) => (
                                 <NavItemComponent
                                     key={item.label}
@@ -279,7 +279,7 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: NavIt
             {item.href ? (
                 <Link
                     href={item.href}
-                    className={`block px-4 py-1.5 text-sm rounded-full transition-all duration-200 ${
+                    className={`block px-5 py-2 text-base rounded-full transition-all duration-200 ${
                         isActive
                             ? 'text-heritage-primary bg-heritage-primary/10 font-medium'
                             : 'text-gray-700 hover:text-heritage-dark hover:bg-gray-100/50'
@@ -290,7 +290,7 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: NavIt
                 </Link>
             ) : (
                 <button
-                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm rounded-full transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-5 py-2 text-base rounded-full transition-all duration-200 ${
                         isActive || hoveredItem === item.label
                             ? 'text-heritage-primary bg-heritage-primary/10 font-medium'
                             : 'text-gray-700 hover:text-heritage-dark hover:bg-gray-100/50'
@@ -302,7 +302,7 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: NavIt
                     <span>{item.label}</span>
                     {hasDropdown && (
                         <svg
-                            className={`w-3 h-3 transition-transform duration-200 ${
+                            className={`w-4 h-4 transition-transform duration-200 ${
                                 isDropdownOpen ? 'rotate-180' : ''
                             }`}
                             fill="none"
@@ -332,7 +332,7 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: NavIt
                             <Link
                                 key={child.href}
                                 href={child.href}
-                                className={`block px-4 py-2.5 text-sm rounded-xl transition-all duration-150 ${
+                                className={`block px-5 py-3 text-base rounded-xl transition-all duration-150 ${
                                     pathname === child.href
                                         ? 'text-heritage-primary bg-heritage-primary/10 font-medium'
                                         : 'text-gray-700 hover:text-heritage-dark hover:bg-gray-100/70'
