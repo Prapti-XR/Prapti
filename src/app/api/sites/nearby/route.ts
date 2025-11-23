@@ -1,6 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Simple in-memory cache for site queries (60 second TTL)
+const queryCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 60 * 1000; // 60 seconds
+
+function getCacheKey(params: URLSearchParams): string {
+  const keys = ['north', 'south', 'east', 'west', 'era', 'country', 'hasAR', 'has3D', 'hasPanorama'];
+  return keys.map(k => `${k}:${params.get(k)}`).join('|');
+}
+
+function getFromCache(key: string) {
+  const cached = queryCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  queryCache.delete(key);
+  return null;
+}
+
+function setCache(key: string, data: any) {
+  // Prevent cache from growing indefinitely
+  if (queryCache.size > 100) {
+    const firstKey = queryCache.keys().next().value;
+    if (firstKey) queryCache.delete(firstKey);
+  }
+  queryCache.set(key, { data, timestamp: Date.now() });
+}
+
 // Haversine formula to calculate distance between two points
 function calculateDistance(
   lat1: number,
@@ -25,6 +52,13 @@ function calculateDistance(
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
+
+  // Check cache first (exclude user location from cache key)
+  const cacheKey = getCacheKey(searchParams);
+  const cachedResult = getFromCache(cacheKey);
+  if (cachedResult) {
+    return NextResponse.json({ ...cachedResult, source: 'cache' });
+  }
 
   // User location for distance calculation
   const userLat = parseFloat(searchParams.get('lat') || '0');
@@ -63,33 +97,39 @@ export async function GET(request: NextRequest) {
       where.assets = { some: { type: 'PANORAMA_360', isPublic: true } };
     }
 
-    // Fetch sites from database
+    // Fetch sites from database with optimized query
     let sites = await prisma.heritageSite.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        location: true,
+        latitude: true,
+        longitude: true,
+        country: true,
+        city: true,
+        era: true,
+        yearBuilt: true,
+        isFeatured: true,
+        popularityScore: true,
+        // Only load thumbnail assets for map markers (huge performance gain)
         assets: {
-          where: { isPublic: true },
+          where: { 
+            isPublic: true,
+            type: { in: ['THUMBNAIL', 'IMAGE'] } // Only thumbnails for map view
+          },
           select: {
             id: true,
             type: true,
             storageUrl: true,
             title: true,
-            mimeType: true,
           },
-        },
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        _count: {
-          select: {
-            triviaQuestions: true,
-            favoritedBy: true,
-          },
+          take: 1, // Only need one image for the marker
         },
       },
       take: 200,
+      orderBy: userLat && userLon ? undefined : { popularityScore: 'desc' },
     });
 
     // Calculate distances and filter by radius if user location provided
@@ -101,15 +141,19 @@ export async function GET(request: NextRequest) {
         }))
         .filter((site) => site.distance <= radius)
         .sort((a, b) => a.distance - b.distance);
-    } else {
-      // Sort by popularity if no user location
-      sites = sites.sort((a, b) => b.popularityScore - a.popularityScore);
     }
+    // No need to sort here if no user location - already sorted by database
 
-    return NextResponse.json({
+    const response = {
       sites: sites.slice(0, 100),
       source: 'database',
-    });
+      count: sites.length,
+    };
+
+    // Cache the result
+    setCache(cacheKey, response);
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching nearby sites:', error);
     return NextResponse.json(

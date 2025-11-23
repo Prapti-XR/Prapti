@@ -122,6 +122,10 @@ model HeritageSite {
   @@index([country, city])
   @@index([latitude, longitude])
   @@index([isPublished, isFeatured])
+  @@index([isPublished, latitude, longitude]) // For bounding box queries
+  @@index([isPublished, era]) // For era filtering
+  @@index([isPublished, country]) // For country filtering
+  @@index([isPublished, popularityScore]) // For sorting by popularity
 }
 
 // Assets (3D Models, Panoramas, Images)
@@ -177,6 +181,7 @@ model Asset {
   @@index([siteId, type])
   @@index([type, isPublic])
   @@index([status])
+  @@index([siteId, isPublic, type]) // Optimized for site asset queries
 }
 
 enum AssetType {
