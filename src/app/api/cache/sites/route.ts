@@ -28,13 +28,20 @@ export async function DELETE() {
       );
     }
 
-    // Clear all site-related cache keys
-    const deletedCount = await cache.delPattern('sites:*');
+    // Clear all cache keys (sites, models, images)
+    const patterns = ['sites:*', 'site:*', 'models:*', 'images:*'];
+    let totalDeleted = 0;
+    
+    for (const pattern of patterns) {
+      const count = await cache.delPattern(pattern);
+      totalDeleted += count;
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Cleared ${deletedCount} cache entries`,
-      deletedCount,
+      message: `Cleared ${totalDeleted} cache entries across all patterns`,
+      deletedCount: totalDeleted,
+      patterns,
     });
   } catch (error) {
     console.error('Error clearing cache:', error);

@@ -3,8 +3,12 @@
  * S3-compatible storage for 3D models, panoramas, and images
  */
 
+import { config } from 'dotenv';
 import { S3Client } from '@aws-sdk/client-s3';
 import { env } from '@/env';
+
+// Load environment variables from .env file
+config();
 
 // Configure R2 client with S3-compatible API
 export const r2Client = new S3Client({

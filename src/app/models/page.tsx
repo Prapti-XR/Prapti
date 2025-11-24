@@ -34,8 +34,8 @@ export default function ModelsPage() {
         async function fetchModels() {
             try {
                 setLoading(true);
-                const response = await fetch('/api/sites?limit=100');
-                if (!response.ok) throw new Error('Failed to fetch sites');
+                const response = await fetch('/api/models?limit=100');
+                if (!response.ok) throw new Error('Failed to fetch models');
 
                 const result = await response.json();
                 const sites = result.data || [];
@@ -150,10 +150,25 @@ export default function ModelsPage() {
                 <section className="px-4 py-12 md:py-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
                         {loading ? (
-                            <div className="flex items-center justify-center py-16">
-                                <div className="text-center">
-                                    <div className="w-12 h-12 mx-auto mb-4 border-4 rounded-full border-heritage-primary border-t-transparent animate-spin"></div>
-                                    <p className="text-gray-600">Loading 3D models...</p>
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="h-6 w-40 bg-heritage-light/30 rounded animate-pulse" />
+                                    <div className="h-9 w-32 bg-heritage-light/30 rounded-full animate-pulse" />
+                                </div>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6">
+                                    {Array.from({ length: 12 }).map((_, i) => (
+                                        <div key={i} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                                            <div className="aspect-square w-full bg-heritage-light/30 animate-pulse" />
+                                            <div className="p-4 space-y-3">
+                                                <div className="h-6 w-2/3 bg-heritage-light/30 rounded animate-pulse" />
+                                                <div className="h-4 w-full bg-heritage-light/30 rounded animate-pulse" />
+                                                <div className="flex items-center justify-between pt-2">
+                                                    <div className="h-4 w-24 bg-heritage-light/30 rounded animate-pulse" />
+                                                    <div className="h-9 w-24 bg-heritage-light/30 rounded-full animate-pulse" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         ) : siteModels.length === 0 ? (

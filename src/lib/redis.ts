@@ -1,4 +1,8 @@
 import { Redis } from '@upstash/redis';
+import { config } from 'dotenv';
+
+// Load environment variables from .env file (same as Prisma)
+config();
 
 // Initialize Redis client lazily (will be undefined if env vars not set)
 let redis: Redis | undefined;
@@ -50,7 +54,8 @@ export const cache = {
     if (!redis) return false;
     
     try {
-      await redis.setex(key, ttl, JSON.stringify(value));
+      // Upstash Redis automatically handles JSON serialization
+      await redis.setex(key, ttl, value);
       return true;
     } catch (error) {
       console.error('Redis set error:', error);

@@ -3,6 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { serializeBigInt } from '@/lib/utils';
+import { cache } from '@/lib/redis';
+
+// Cache TTL: 10 minutes for individual sites
+const CACHE_TTL = 600;
 
 /**
  * GET /api/sites/[id]
@@ -14,6 +18,21 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    
+    // Try cache first
+    const cacheKey = `site:detail:${id}`;
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json({
+        ...cached,
+        source: 'redis-cache'
+      }, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      });
+    }
+    
     const site = await prisma.heritageSite.findUnique({
       where: { id },
       include: {
@@ -41,15 +60,27 @@ export async function GET(
       );
     }
 
-    // Increment view count
-    await prisma.heritageSite.update({
+    // Increment view count (non-blocking)
+    prisma.heritageSite.update({
       where: { id },
       data: { viewCount: { increment: 1 } },
-    });
+    }).catch(err => console.error('Failed to increment view count:', err));
 
-    return NextResponse.json({
+    const response = {
       success: true,
       data: serializeBigInt(site),
+      source: 'database'
+    };
+
+    // Cache the result (non-blocking)
+    cache.set(cacheKey, response, CACHE_TTL).catch(err =>
+      console.error('Failed to cache site detail:', err)
+    );
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=360',
+      },
     });
   } catch (error) {
     console.error('Error fetching site:', error);

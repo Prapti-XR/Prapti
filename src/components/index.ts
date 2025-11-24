@@ -3,6 +3,7 @@
 
 // UI Components
 export * from './ui';
+export * from './ui/Skeleton';
 
 // 3D Components - Must be dynamically imported in client components
 export { ModelViewer } from './3d/ModelViewer';

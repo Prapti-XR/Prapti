@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -6,6 +7,9 @@ import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 
 import { env } from "@/env";
+
+// Load environment variables from .env file
+config();
 
 export const authOptions: NextAuthOptions = {
   // Adapter stores OAuth accounts and links them to users
