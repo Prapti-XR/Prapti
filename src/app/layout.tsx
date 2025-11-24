@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '@/styles/globals.css';
 import { Footer } from '@/components/layout/Footer';
+import { SessionProvider } from '@/components/layout/SessionProvider';
 
 const inter = Inter({
     subsets: ['latin'],
@@ -51,10 +52,12 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
             <body className="font-sans bg-white min-h-screen flex flex-col antialiased">
-                <main className="flex-grow">
-                    {children}
-                </main>
-                <Footer />
+                <SessionProvider>
+                    <main className="flex-grow">
+                        {children}
+                    </main>
+                    <Footer />
+                </SessionProvider>
             </body>
         </html>
     );

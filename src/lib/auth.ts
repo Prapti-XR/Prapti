@@ -158,12 +158,12 @@ export const authOptions: NextAuthOptions = {
   
   events: {
     async createUser({ user }) {
-      console.log("New user created:", user.email);
+      // User created - logging removed for security
     },
     async signIn({ user, isNewUser }) {
-      console.log("User signed in:", user.email, "New user:", isNewUser);
+      // User signed in - logging removed for security
     }
   },
   
-  debug: process.env.NODE_ENV === "development",
+  debug: false, // Disabled to prevent sensitive data exposure in logs
 };

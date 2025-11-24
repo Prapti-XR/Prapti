@@ -1,7 +1,40 @@
+'use client';
+
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ProfilePage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/auth/signin');
+        }
+    }, [status, router]);
+
+    if (status === 'loading') {
+        return (
+            <>
+                <Navbar />
+                <main className="min-h-screen bg-white">
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="w-8 h-8 border-4 border-heritage-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                </main>
+            </>
+        );
+    }
+
+    if (!session) {
+        return null;
+    }
+
+    const userInitial = session.user.name?.charAt(0)?.toUpperCase() || session.user.email?.charAt(0)?.toUpperCase() || 'U';
+
     return (
         <>
             <Navbar />
@@ -10,16 +43,21 @@ export default function ProfilePage() {
                 <header className="pt-24 md:pt-32 pb-12 md:pb-16 px-4 md:px-6 border-b border-gray-100">
                     <div className="max-w-4xl mx-auto">
                         <div className="flex flex-col md:flex-row md:items-center gap-6">
-                            <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                                <svg className="w-10 h-10 md:w-12 md:h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                            <div className="w-20 h-20 md:w-24 md:h-24 bg-heritage-primary/20 rounded-full flex items-center justify-center">
+                                <span className="text-3xl md:text-4xl font-bold text-heritage-dark">
+                                    {userInitial}
+                                </span>
                             </div>
                             <div className="flex-1">
                                 <h1 className="text-3xl md:text-4xl font-bold text-heritage-dark font-serif mb-2">
-                                    User Name
+                                    {session.user.name || 'User'}
                                 </h1>
-                                <p className="text-gray-600">user@example.com</p>
+                                <p className="text-gray-600">{session.user.email}</p>
+                                {session.user.role && (
+                                    <span className="inline-block mt-2 px-3 py-1 text-xs font-medium rounded-full bg-heritage-primary/20 text-heritage-dark capitalize">
+                                        {session.user.role.toLowerCase()}
+                                    </span>
+                                )}
                             </div>
                             <Button variant="default" size="md" className="w-full md:w-auto">
                                 Edit Profile

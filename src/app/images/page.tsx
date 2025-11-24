@@ -132,67 +132,63 @@ export default function ImagesPage() {
                                     ))}
                                 </div>
                             </div>
-                                    <p className="text-gray-600">Loading 360° images...</p>
-                                </div>
-                </div>
-                ) : panoramas.length === 0 ? (
-                <div className="py-16 text-center">
-                    <p className="text-gray-600">No 360° images found.</p>
-                </div>
-                ) : (
-                <div className="grid gap-6 sm:grid-cols-2 md:gap-8">
-                    {panoramas.map((panorama) => (
-                        <ImageCard
-                            key={panorama.id}
-                            id={panorama.id}
-                            name={panorama.name}
-                            location={panorama.location}
-                            description={panorama.description}
-                            imageUrl={panorama.imageUrl}
-                            capturedYear={panorama.capturedYear}
-                            site={panorama.site}
-                            onClick={() => setSelectedPanorama(panorama)}
-                        />
-                    ))}
-                </div>
+                        ) : panoramas.length === 0 ? (
+                            <div className="py-16 text-center">
+                                <p className="text-gray-600">No 360° images found.</p>
+                            </div>
+                        ) : (
+                            <div className="grid gap-6 sm:grid-cols-2 md:gap-8">
+                                {panoramas.map((panorama) => (
+                                    <ImageCard
+                                        key={panorama.id}
+                                        id={panorama.id}
+                                        name={panorama.name}
+                                        location={panorama.location}
+                                        description={panorama.description}
+                                        imageUrl={panorama.imageUrl}
+                                        capturedYear={panorama.capturedYear}
+                                        site={panorama.site}
+                                        onClick={() => setSelectedPanorama(panorama)}
+                                    />
+                                ))}
+                            </div>
                         )}
-            </div>
-        </section >
-
-            {/* Panorama Viewer Modal */ }
-    {
-        selectedPanorama && (
-            <div
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
-                onClick={() => setSelectedPanorama(null)}
-            >
-                <div
-                    className="w-full max-w-7xl h-[85vh] bg-black rounded-lg overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="relative h-full">
-                        <button
-                            onClick={() => setSelectedPanorama(null)}
-                            className="absolute z-10 p-2 text-white transition-colors rounded-lg top-4 right-4 bg-black/50 hover:bg-black/70 backdrop-blur-sm"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <ThreeErrorBoundary>
-                            <PanoramaViewer
-                                imageUrl={selectedPanorama.imageUrl}
-                                title={selectedPanorama.name}
-                                description={selectedPanorama.description}
-                                autoRotate={true}
-                                initialFov={75}
-                            />
-                        </ThreeErrorBoundary>
                     </div>
-                </div>
-            </div>
-        )
-    }
+                </section>
+
+                {/* Panorama Viewer Modal */}
+                {selectedPanorama && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+                        onClick={() => setSelectedPanorama(null)}
+                    >
+                        <div
+                            className="w-full max-w-7xl h-[85vh] bg-black rounded-lg overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="relative h-full">
+                                <button
+                                    onClick={() => setSelectedPanorama(null)}
+                                    className="absolute z-10 p-2 text-white transition-colors rounded-lg top-4 right-4 bg-black/50 hover:bg-black/70 backdrop-blur-sm"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <ThreeErrorBoundary>
+                                    <PanoramaViewer
+                                        imageUrl={selectedPanorama.imageUrl}
+                                        title={selectedPanorama.name}
+                                        description={selectedPanorama.description}
+                                        autoRotate={true}
+                                        initialFov={75}
+                                    />
+                                </ThreeErrorBoundary>
+                            </div>
+                        </div>
+                    </div>
+                )
+                }
             </main >
         </>
     );

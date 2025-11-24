@@ -19,6 +19,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'pub-*.r2.dev',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 3600, // Increased from 60s to 1 hour
