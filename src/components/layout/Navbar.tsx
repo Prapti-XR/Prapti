@@ -85,7 +85,7 @@ export function Navbar() {
     return (
         <>
             <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl hidden md:block transition-all duration-300 ${scrolled ? 'top-4' : 'top-6'}`}>
-                <div className={`relative border rounded-full shadow-lg bg-white/70 backdrop-blur-xl border-gray-200/50 transition-all duration-300 ${scrolled ? 'shadow-xl shadow-black/10' : 'shadow-black/5'}`}>
+                <div className={`relative border rounded-full shadow-lg bg-white/70 backdrop-blur-xl border-heritage-light/40/50 transition-all duration-300 ${scrolled ? 'shadow-xl shadow-black/10' : 'shadow-black/5'}`}>
                     <div className="relative flex items-center px-10 py-4">
                         <div className="flex items-center justify-start flex-1 gap-3">
                             {navItems.slice(0, 3).map((item) => (
@@ -103,7 +103,7 @@ export function Navbar() {
                                 <div className="w-8 h-8 rounded-full bg-heritage-light/30 animate-pulse" />
                             ) : session ? (
                                 <div className="relative" ref={userMenuRef}>
-                                    <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 px-3 py-2 transition-all duration-200 rounded-full hover:bg-heritage-light/50">
+                                    <button onClick={() => setUserMenuOpen(!userMenuOpen)} aria-label="Account menu" aria-expanded={userMenuOpen} className="flex items-center gap-2 px-3 py-2 min-h-[44px] transition-all duration-200 rounded-full hover:bg-heritage-light/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary">
                                         <div className="flex items-center justify-center w-8 h-8 text-sm font-semibold rounded-full bg-heritage-primary/20 text-heritage-dark">
                                             {session.user.name?.charAt(0)?.toUpperCase() || session.user.email?.charAt(0)?.toUpperCase() || 'U'}
                                         </div>
@@ -112,10 +112,10 @@ export function Navbar() {
                                         </svg>
                                     </button>
                                     {userMenuOpen && (
-                                        <div className="absolute right-0 z-50 w-56 py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl">
-                                            <div className="px-4 py-3 border-b border-gray-100">
+                                        <div className="absolute right-0 z-50 w-56 py-2 mt-2 bg-white border border-heritage-light/40 rounded-lg shadow-xl">
+                                            <div className="px-4 py-3 border-b border-heritage-light/30">
                                                 <p className="font-semibold truncate text-heritage-dark">{session.user.name || 'User'}</p>
-                                                <p className="text-sm text-gray-500 truncate">{session.user.email}</p>
+                                                <p className="text-sm text-heritage-dark/60 truncate">{session.user.email}</p>
                                                 <p className="mt-1 text-xs capitalize text-heritage-primary">{session.user.role?.toLowerCase()}</p>
                                             </div>
                                             {getUserMenuItems().map((item) => (
@@ -150,17 +150,17 @@ export function Navbar() {
             </nav>
 
             <nav className="fixed top-0 left-0 right-0 z-50 md:hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b shadow-md bg-white/90 backdrop-blur-xl border-gray-200/50">
+                <div className="flex items-center justify-between px-4 py-3 border-b shadow-md bg-white/90 backdrop-blur-xl border-heritage-light/40/50">
                     <Link href="/" className="font-serif text-xl font-semibold text-heritage-dark">Prapti</Link>
                     <div className="flex items-center gap-3">
                         {session && (
-                            <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="p-1">
+                            <button onClick={() => setUserMenuOpen(!userMenuOpen)} aria-label="Account menu" aria-expanded={userMenuOpen} className="flex items-center justify-center w-11 h-11 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary">
                                 <div className="flex items-center justify-center w-8 h-8 text-sm font-semibold rounded-full bg-heritage-primary/20">
                                     {session.user.name?.charAt(0)?.toUpperCase() || session.user.email?.charAt(0)?.toUpperCase() || 'U'}
                                 </div>
                             </button>
                         )}
-                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 transition-colors rounded-lg">
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileMenuOpen} className="flex items-center justify-center w-11 h-11 transition-colors rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary">
                             <div className="relative w-6 h-5">
                                 <span className={`absolute w-6 h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'top-2 rotate-45' : 'top-0'}`} />
                                 <span className={`absolute top-2 w-6 h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
@@ -176,7 +176,7 @@ export function Navbar() {
                                 <MobileNavItem key={item.label} item={item} pathname={pathname} />
                             ))}
                             {!session ? (
-                                <div className="pt-4 space-y-2 border-t border-gray-200">
+                                <div className="pt-4 space-y-2 border-t border-heritage-light/40">
                                     <Link href="/auth/signin" className="block px-4 py-3 font-medium text-center border rounded-lg border-heritage-primary text-heritage-primary">
                                         Sign In
                                     </Link>
@@ -185,7 +185,7 @@ export function Navbar() {
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="pt-4 space-y-2 border-t border-gray-200">
+                                <div className="pt-4 space-y-2 border-t border-heritage-light/40">
                                     {getUserMenuItems().map((item) => (
                                         item.label === 'Sign Out' ? (
                                             <button key={item.label} onClick={() => signOut({ callbackUrl: '/' })} className="flex items-center w-full gap-2 px-4 py-3 text-left rounded-lg hover:bg-heritage-light/30">
@@ -218,7 +218,7 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: any) 
                     {item.label}
                 </button>
                 {hoveredItem === item.label && (
-                    <div className="absolute left-0 z-50 w-48 py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl">
+                    <div className="absolute left-0 z-50 w-48 py-2 mt-2 bg-white border border-heritage-light/40 rounded-lg shadow-xl">
                         {item.children.map((child: any) => (
                             <Link key={child.href} href={child.href} className="block px-4 py-2 text-sm transition-colors hover:bg-heritage-light/30">
                                 {child.label}

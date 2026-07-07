@@ -60,14 +60,14 @@ export default function SignInPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
-            <div className="max-w-md w-full space-y-8">
+            <div className="max-w-md w-full space-y-8 animate-slide-up">
                 {/* Header */}
                 <div className="text-center">
                     <Link href="/" className="inline-block mb-6">
                         <span className="text-2xl font-bold text-heritage-dark">Prapti</span>
                     </Link>
                     <h1 className="text-3xl md:text-4xl font-bold text-heritage-dark font-serif mb-2">Welcome Back</h1>
-                    <p className="text-gray-600">
+                    <p className="text-heritage-dark/70">
                         Sign in to explore heritage sites
                     </p>
                 </div>
@@ -83,7 +83,7 @@ export default function SignInPage() {
                 <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="email" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Email Address
                             </label>
                             <input
@@ -94,13 +94,13 @@ export default function SignInPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="password" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Password
                             </label>
                             <input
@@ -111,7 +111,7 @@ export default function SignInPage() {
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -123,9 +123,9 @@ export default function SignInPage() {
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-gray-300 rounded"
+                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-heritage-light/60 rounded"
                             />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                            <label htmlFor="remember-me" className="ml-2 block text-sm text-heritage-dark/80">
                                 Remember me
                             </label>
                         </div>
@@ -151,10 +151,10 @@ export default function SignInPage() {
                 {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-200"></div>
+                        <div className="w-full border-t border-heritage-light/40"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        <span className="px-2 bg-white text-heritage-dark/60">Or continue with</span>
                     </div>
                 </div>
 
@@ -189,7 +189,7 @@ export default function SignInPage() {
                 </Button>
 
                 {/* Sign Up Link */}
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-heritage-dark/70">
                     Don't have an account?{' '}
                     <Link href="/auth/signup" className="font-medium text-heritage-dark hover:text-heritage-primary">
                         Sign up

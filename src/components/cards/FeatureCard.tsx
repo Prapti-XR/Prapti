@@ -43,7 +43,7 @@ export function FeatureCard({
                 {title}
             </h3>
 
-            <p className="text-sm leading-relaxed text-gray-600">
+            <p className="text-sm leading-relaxed text-heritage-dark/70">
                 {description}
             </p>
         </Card>

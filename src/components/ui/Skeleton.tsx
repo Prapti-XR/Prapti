@@ -21,7 +21,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
 
 export function SkeletonCard() {
     return (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-heritage-light/40 bg-white shadow-sm">
             <Skeleton className="aspect-[4/3] w-full" />
             <div className="p-4 space-y-3">
                 <Skeleton className="h-6 w-3/4" />
@@ -38,7 +38,7 @@ export function SkeletonCard() {
 
 export function SkeletonModelCard() {
     return (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-heritage-light/40 bg-white shadow-sm">
             <Skeleton className="aspect-square w-full" />
             <div className="p-4 space-y-3">
                 <Skeleton className="h-6 w-2/3" />
@@ -54,7 +54,7 @@ export function SkeletonModelCard() {
 
 export function SkeletonImageCard() {
     return (
-        <div className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="group relative overflow-hidden rounded-lg border border-heritage-light/40 bg-white shadow-sm">
             <Skeleton className="aspect-[16/9] w-full" />
             <div className="p-3 space-y-2">
                 <Skeleton className="h-5 w-3/4" />
@@ -90,7 +90,7 @@ export function SkeletonText({ lines = 3 }: { lines?: number }) {
 
 export function SkeletonHeader() {
     return (
-        <div className="px-4 pt-24 pb-12 border-b border-gray-100 md:pt-32 md:pb-16 md:px-6">
+        <div className="px-4 pt-24 pb-12 border-b border-heritage-light/30 md:pt-32 md:pb-16 md:px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="max-w-3xl space-y-4">
                     <Skeleton className="h-12 w-3/4 md:h-16" />
@@ -122,7 +122,7 @@ export function SkeletonList({ count = 5 }: { count?: number }) {
     return (
         <div className="space-y-4">
             {Array.from({ length: count }).map((_, i) => (
-                <div key={i} className="flex gap-4 p-4 border border-gray-200 rounded-lg">
+                <div key={i} className="flex gap-4 p-4 border border-heritage-light/40 rounded-lg">
                     <Skeleton className="w-24 h-24 rounded-md flex-shrink-0" />
                     <div className="flex-1 space-y-3">
                         <Skeleton className="h-6 w-2/3" />
@@ -177,7 +177,7 @@ export function SkeletonSiteDetail() {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        <div className="border border-gray-200 rounded-lg p-6 space-y-4">
+                        <div className="border border-heritage-light/40 rounded-lg p-6 space-y-4">
                             <Skeleton className="h-6 w-32" />
                             <div className="space-y-3">
                                 <Skeleton className="h-4 w-full" />
@@ -186,7 +186,7 @@ export function SkeletonSiteDetail() {
                             </div>
                         </div>
 
-                        <div className="border border-gray-200 rounded-lg p-6 space-y-4">
+                        <div className="border border-heritage-light/40 rounded-lg p-6 space-y-4">
                             <Skeleton className="h-6 w-40" />
                             <Skeleton className="h-10 w-full rounded-full" />
                             <Skeleton className="h-10 w-full rounded-full" />

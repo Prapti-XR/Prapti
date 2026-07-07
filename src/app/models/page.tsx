@@ -91,13 +91,13 @@ export default function ModelsPage() {
             <Navbar />
             <main className="min-h-screen bg-white">
                 {/* Header */}
-                <header className="px-4 pt-24 pb-12 border-b border-gray-100 md:pt-32 md:pb-16 md:px-6">
+                <header className="px-4 pt-24 pb-12 border-b border-heritage-light/30 md:pt-32 md:pb-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
                         <div className="max-w-3xl">
                             <h1 className="mb-4 font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-heritage-dark md:mb-6">
                                 3D Models Gallery
                             </h1>
-                            <p className="text-lg leading-relaxed text-gray-600 md:text-xl">
+                            <p className="text-lg leading-relaxed text-heritage-dark/70 md:text-xl">
                                 Explore interactive 3D reconstructions of heritage sites.
                                 Rotate, zoom, and examine every detail of historical monuments.
                             </p>
@@ -106,7 +106,7 @@ export default function ModelsPage() {
                 </header>
 
                 {/* Search and Filters */}
-                <section className="px-4 py-6 bg-white border-b border-gray-200 md:py-8 md:px-6">
+                <section className="px-4 py-6 bg-white border-b border-heritage-light/40 md:py-8 md:px-6">
                     <div className="max-w-6xl mx-auto space-y-4">
                         <Search
                             placeholder="Search 3D models..."
@@ -157,7 +157,7 @@ export default function ModelsPage() {
                                 </div>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6">
                                     {Array.from({ length: 12 }).map((_, i) => (
-                                        <div key={i} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                                        <div key={i} className="overflow-hidden rounded-lg border border-heritage-light/40 bg-white shadow-sm">
                                             <div className="aspect-square w-full bg-heritage-light/30 animate-pulse" />
                                             <div className="p-4 space-y-3">
                                                 <div className="h-6 w-2/3 bg-heritage-light/30 rounded animate-pulse" />
@@ -173,7 +173,7 @@ export default function ModelsPage() {
                             </div>
                         ) : siteModels.length === 0 ? (
                             <div className="py-16 text-center">
-                                <p className="text-gray-600">No 3D models found.</p>
+                                <p className="text-heritage-dark/70">No 3D models found.</p>
                             </div>
                         ) : (
                             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
@@ -206,7 +206,7 @@ export default function ModelsPage() {
                         onClick={() => setSelectedModel(null)}
                     >
                         <div
-                            className="w-full max-w-6xl h-[80vh] bg-slate-900 rounded-lg overflow-hidden"
+                            className="w-full max-w-6xl h-[80vh] bg-heritage-dark-deep rounded-lg overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="relative h-full">

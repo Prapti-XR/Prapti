@@ -8,12 +8,12 @@ export default function AboutPage() {
             <Navbar />
             <main className="min-h-screen bg-white">
                 {/* Header */}
-                <header className="pt-24 md:pt-32 pb-12 md:pb-16 px-4 md:px-6">
+                <header className="pt-24 md:pt-32 pb-12 md:pb-16 px-4 md:px-6 animate-fade-in">
                     <div className="max-w-4xl mx-auto">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-heritage-dark font-serif mb-6 md:mb-8 tracking-tight">
                             About Prapti
                         </h1>
-                        <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                        <p className="text-xl md:text-2xl text-heritage-dark/70 leading-relaxed font-light">
                             Bridging the past and future through immersive technology
                         </p>
                     </div>
@@ -28,7 +28,7 @@ export default function AboutPage() {
                                 Our Mission
                             </h2>
                             <div className="prose prose-lg max-w-none">
-                                <p className="text-gray-700 leading-relaxed">
+                                <p className="text-heritage-dark/80 leading-relaxed">
                                     Prapti is dedicated to preserving and sharing cultural heritage through
                                     cutting-edge AR/VR technology. We believe that everyone should have access
                                     to explore and learn about historical sites, regardless of physical location
@@ -38,7 +38,7 @@ export default function AboutPage() {
                         </section>
 
                         {/* Divider */}
-                        <div className="border-t border-gray-200"></div>
+                        <div className="border-t border-heritage-light/40"></div>
 
                         {/* What We Offer */}
                         <section className="space-y-6">
@@ -66,7 +66,7 @@ export default function AboutPage() {
                         </section>
 
                         {/* Divider */}
-                        <div className="border-t border-gray-200"></div>
+                        <div className="border-t border-heritage-light/40"></div>
 
                         {/* Technology */}
                         <section className="space-y-4">
@@ -74,7 +74,7 @@ export default function AboutPage() {
                                 Technology
                             </h2>
                             <div className="prose prose-lg max-w-none">
-                                <p className="text-gray-700 leading-relaxed">
+                                <p className="text-heritage-dark/80 leading-relaxed">
                                     Built with modern web technologies including Next.js, Three.js, and WebXR,
                                     Prapti delivers seamless experiences across devices. Our platform supports
                                     both augmented reality (AR) on mobile devices and virtual reality (VR)
@@ -85,11 +85,11 @@ export default function AboutPage() {
 
                         {/* CTA */}
                         <section className="pt-8">
-                            <div className="bg-gray-50 rounded-lg p-8 md:p-10 border border-gray-200">
+                            <div className="bg-heritage-light/20 rounded-lg p-8 md:p-10 border border-heritage-light/40">
                                 <h3 className="text-xl md:text-2xl font-semibold text-heritage-dark mb-4">
                                     Ready to explore?
                                 </h3>
-                                <p className="text-gray-600 mb-6">
+                                <p className="text-heritage-dark/70 mb-6">
                                     Start your journey through heritage sites around the world.
                                 </p>
                                 <Link href="/map">
@@ -115,7 +115,7 @@ function FeatureItem({ title, description }: { title: string; description: strin
             <div className="flex-shrink-0 w-2 h-2 bg-heritage-primary rounded-full mt-2"></div>
             <div>
                 <h3 className="text-lg font-semibold text-heritage-dark mb-1">{title}</h3>
-                <p className="text-gray-600 leading-relaxed">{description}</p>
+                <p className="text-heritage-dark/70 leading-relaxed">{description}</p>
             </div>
         </div>
     );

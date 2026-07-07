@@ -58,12 +58,12 @@ export default function NewSitePage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-gray-100">
+                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-heritage-light/30 animate-fade-in">
                     <div className="max-w-4xl mx-auto">
                         <h1 className="text-4xl font-bold text-heritage-dark font-serif mb-2">
                             Add New Heritage Site
                         </h1>
-                        <p className="text-gray-600">Create a new heritage site entry</p>
+                        <p className="text-heritage-dark/70">Create a new heritage site entry</p>
                     </div>
                 </header>
 
@@ -77,13 +77,13 @@ export default function NewSitePage() {
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Basic Information */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Basic Information
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="name" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Name *
                                     </label>
                                     <input
@@ -91,12 +91,12 @@ export default function NewSitePage() {
                                         id="name"
                                         name="name"
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="description" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Description *
                                     </label>
                                     <textarea
@@ -104,13 +104,13 @@ export default function NewSitePage() {
                                         name="description"
                                         required
                                         rows={4}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="era" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="era" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             Era
                                         </label>
                                         <input
@@ -118,12 +118,12 @@ export default function NewSitePage() {
                                             id="era"
                                             name="era"
                                             placeholder="e.g., Ancient, Medieval"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="yearBuilt" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="yearBuilt" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             Year Built
                                         </label>
                                         <input
@@ -131,20 +131,20 @@ export default function NewSitePage() {
                                             id="yearBuilt"
                                             name="yearBuilt"
                                             placeholder="e.g., 1632"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
                                 </div>
                             </section>
 
                             {/* Location */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Location
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="location" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Location Address *
                                     </label>
                                     <input
@@ -152,13 +152,13 @@ export default function NewSitePage() {
                                         id="location"
                                         name="location"
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="country" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             Country *
                                         </label>
                                         <input
@@ -166,26 +166,26 @@ export default function NewSitePage() {
                                             id="country"
                                             name="country"
                                             required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="city" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             City
                                         </label>
                                         <input
                                             type="text"
                                             id="city"
                                             name="city"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="latitude" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             Latitude *
                                         </label>
                                         <input
@@ -195,12 +195,12 @@ export default function NewSitePage() {
                                             step="any"
                                             required
                                             placeholder="e.g., 27.1751"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label htmlFor="longitude" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                             Longitude *
                                         </label>
                                         <input
@@ -210,69 +210,69 @@ export default function NewSitePage() {
                                             step="any"
                                             required
                                             placeholder="e.g., 78.0421"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         />
                                     </div>
                                 </div>
                             </section>
 
                             {/* Additional Information */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Additional Information
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="culturalContext" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="culturalContext" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Cultural Context
                                     </label>
                                     <textarea
                                         id="culturalContext"
                                         name="culturalContext"
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="historicalFacts" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="historicalFacts" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Historical Facts
                                     </label>
                                     <textarea
                                         id="historicalFacts"
                                         name="historicalFacts"
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="visitingInfo" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="visitingInfo" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Visiting Information
                                     </label>
                                     <textarea
                                         id="visitingInfo"
                                         name="visitingInfo"
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="accessibility" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="accessibility" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Accessibility
                                     </label>
                                     <textarea
                                         id="accessibility"
                                         name="accessibility"
                                         rows={2}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
                             </section>
 
                             {/* Publishing Options */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Publishing Options
                                 </h2>
@@ -282,18 +282,18 @@ export default function NewSitePage() {
                                         <input
                                             type="checkbox"
                                             name="isPublished"
-                                            className="w-5 h-5 text-heritage-primary border-gray-300 rounded focus:ring-heritage-primary"
+                                            className="w-5 h-5 text-heritage-primary border-heritage-light/60 rounded focus:ring-heritage-primary"
                                         />
-                                        <span className="text-sm text-gray-700">Publish immediately</span>
+                                        <span className="text-sm text-heritage-dark/80">Publish immediately</span>
                                     </label>
 
                                     <label className="flex items-center space-x-3 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             name="isFeatured"
-                                            className="w-5 h-5 text-heritage-primary border-gray-300 rounded focus:ring-heritage-primary"
+                                            className="w-5 h-5 text-heritage-primary border-heritage-light/60 rounded focus:ring-heritage-primary"
                                         />
-                                        <span className="text-sm text-gray-700">Feature this site</span>
+                                        <span className="text-sm text-heritage-dark/80">Feature this site</span>
                                     </label>
                                 </div>
                             </section>
@@ -303,7 +303,7 @@ export default function NewSitePage() {
                                 <button
                                     type="button"
                                     onClick={() => router.back()}
-                                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                                    className="px-6 py-2 border border-heritage-light/60 rounded-lg text-heritage-dark/80 hover:bg-heritage-light/20 transition-colors"
                                 >
                                     Cancel
                                 </button>

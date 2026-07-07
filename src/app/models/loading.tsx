@@ -10,7 +10,7 @@ export default function ModelsLoading() {
                 <SkeletonHeader />
 
                 {/* Search and Filters Skeleton */}
-                <section className="px-4 py-6 bg-white border-b border-gray-200 md:py-8 md:px-6">
+                <section className="px-4 py-6 bg-white border-b border-heritage-light/40 md:py-8 md:px-6">
                     <div className="max-w-6xl mx-auto space-y-4">
                         <Skeleton className="h-12 max-w-2xl" />
                         <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide">

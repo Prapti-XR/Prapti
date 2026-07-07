@@ -24,6 +24,11 @@ const ARViewer = dynamic(
     { ssr: false }
 );
 
+const ImmersiveViewer = dynamic(
+    () => import('@/components/3d/ImmersiveViewer').then(mod => ({ default: mod.ImmersiveViewer })),
+    { ssr: false }
+);
+
 interface SiteData {
     id: string;
     name: string;
@@ -42,7 +47,7 @@ interface SiteData {
     tags: string[];
 }
 
-type ViewerMode = '3d' | 'panorama' | 'ar' | null;
+type ViewerMode = '3d' | 'panorama' | 'ar' | 'vr' | null;
 
 export default function SiteInfoPage({ params }: { params: { id: string } }) {
     const [viewerMode, setViewerMode] = useState<ViewerMode>(null);
@@ -102,7 +107,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                 <main className="min-h-screen bg-white flex items-center justify-center">
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-heritage-primary mx-auto mb-4"></div>
-                        <p className="text-gray-600 font-medium">Loading site details...</p>
+                        <p className="text-heritage-dark/70 font-medium">Loading site details...</p>
                     </div>
                 </main>
             </>
@@ -118,8 +123,8 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                         <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p className="text-gray-600 font-medium mb-2">Site Not Found</p>
-                        <p className="text-sm text-gray-500 mb-6">{error || 'The requested heritage site could not be found.'}</p>
+                        <p className="text-heritage-dark/70 font-medium mb-2">Site Not Found</p>
+                        <p className="text-sm text-heritage-dark/60 mb-6">{error || 'The requested heritage site could not be found.'}</p>
                         <Link href="/site">
                             <Button variant="primary">View All Sites</Button>
                         </Link>
@@ -183,7 +188,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                         </header>
 
                         {/* Quick Actions */}
-                        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-12">
+                        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
                             <ActionButton
                                 icon={
                                     <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -210,6 +215,16 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 }
                                 label="View in AR"
                                 onClick={() => setShowQRModal(true)}
+                            />
+                            <ActionButton
+                                icon={
+                                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                }
+                                label="VR Experience"
+                                onClick={() => setViewerMode('vr')}
                             />
                         </section>
 
@@ -282,7 +297,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                         onClick={() => setViewerMode(null)}
                     >
                         <div
-                            className="w-full max-w-7xl h-[90vh] sm:h-[85vh] bg-slate-900 rounded-lg sm:rounded-xl overflow-hidden"
+                            className="w-full max-w-7xl h-[90vh] sm:h-[85vh] bg-heritage-dark-deep rounded-lg sm:rounded-xl overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="relative h-full">
@@ -320,6 +335,13 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                             modelUrl={site.modelUrl}
                                             title={`${site.name} - AR Experience`}
                                             scale={0.5}
+                                        />
+                                    )}
+                                    {viewerMode === 'vr' && (
+                                        <ImmersiveViewer
+                                            modelUrl={site.modelUrl}
+                                            panoramaUrl={site.panoramaUrl}
+                                            title={`${site.name} - VR Experience`}
                                         />
                                     )}
                                 </ThreeErrorBoundary>

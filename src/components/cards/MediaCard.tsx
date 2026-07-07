@@ -60,7 +60,7 @@ export function MediaCard({
                 'group bg-white border rounded-lg overflow-hidden',
                 'transition-all duration-200',
                 'border-heritage-primary/20 shadow-md',
-                'md:border-gray-100 md:shadow-none md:hover:border-heritage-primary md:hover:shadow-md',
+                'md:border-heritage-light/30 md:shadow-none md:hover:border-heritage-primary md:hover:shadow-md',
                 onClick && 'cursor-pointer',
                 className
             )}
@@ -92,7 +92,7 @@ export function MediaCard({
                 </h3>
 
                 {/* Location */}
-                <p className="text-sm text-gray-600 flex items-center gap-1.5">
+                <p className="text-sm text-heritage-dark/70 flex items-center gap-1.5">
                     <svg
                         className="w-4 h-4 text-heritage-secondary flex-shrink-0"
                         fill="currentColor"
@@ -109,13 +109,13 @@ export function MediaCard({
                 </p>
 
                 {/* Description */}
-                <p className="text-sm leading-relaxed text-gray-600 line-clamp-2">
+                <p className="text-sm leading-relaxed text-heritage-dark/70 line-clamp-2">
                     {description}
                 </p>
 
                 {/* Metadata/Features */}
                 {metadata && metadata.length > 0 && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 text-xs text-heritage-dark/60">
                         {metadata.map((item, index) => (
                             <React.Fragment key={index}>
                                 <span className="inline-flex items-center gap-1">

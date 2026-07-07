@@ -155,15 +155,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     }
   },
-  
-  events: {
-    async createUser({ user }) {
-      // User created - logging removed for security
-    },
-    async signIn({ user, isNewUser }) {
-      // User signed in - logging removed for security
-    }
-  },
-  
+
   debug: false, // Disabled to prevent sensitive data exposure in logs
 };

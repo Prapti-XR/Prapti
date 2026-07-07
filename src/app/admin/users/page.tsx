@@ -61,13 +61,13 @@ export default function UsersPage() {
     const getRoleBadgeColor = (role: string) => {
         switch (role) {
             case 'ADMIN':
-                return 'bg-red-100 text-red-800';
+                return 'bg-heritage-secondary text-white';
             case 'MODERATOR':
-                return 'bg-purple-100 text-purple-800';
+                return 'bg-heritage-accent text-white';
             case 'CONTRIBUTOR':
-                return 'bg-blue-100 text-blue-800';
+                return 'bg-heritage-primary text-heritage-dark';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-heritage-light text-heritage-dark';
         }
     };
 
@@ -75,12 +75,12 @@ export default function UsersPage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-gray-100">
+                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-heritage-light/30 animate-fade-in">
                     <div className="max-w-6xl mx-auto">
                         <h1 className="text-4xl font-bold text-heritage-dark font-serif mb-2">
                             User Management
                         </h1>
-                        <p className="text-gray-600">Manage user accounts and roles</p>
+                        <p className="text-heritage-dark/70">Manage user accounts and roles</p>
                     </div>
                 </header>
 
@@ -95,50 +95,50 @@ export default function UsersPage() {
                         {loading ? (
                             <div className="text-center py-12">
                                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-heritage-primary"></div>
-                                <p className="mt-4 text-gray-600">Loading users...</p>
+                                <p className="mt-4 text-heritage-dark/70">Loading users...</p>
                             </div>
                         ) : users.length === 0 ? (
-                            <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200">
-                                <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="bg-heritage-light/20 rounded-lg p-8 text-center border border-heritage-light/40">
+                                <svg className="w-12 h-12 text-heritage-dark/20 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
-                                <p className="text-gray-600">No users found</p>
+                                <p className="text-heritage-dark/70">No users found</p>
                             </div>
                         ) : (
-                            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                            <div className="bg-white border border-heritage-light/40 rounded-lg overflow-hidden">
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
+                                    <table className="min-w-full divide-y divide-heritage-light/40">
+                                        <thead className="bg-heritage-light/20">
                                             <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     User
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     Role
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     Contributions
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     Uploads
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     Joined
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                     Actions
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
+                                        <tbody className="bg-white divide-y divide-heritage-light/40">
                                             {users.map((user) => (
-                                                <tr key={user.id} className="hover:bg-gray-50">
+                                                <tr key={user.id} className="hover:bg-heritage-light/20">
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div>
-                                                            <div className="text-sm font-medium text-gray-900">
+                                                            <div className="text-sm font-medium text-heritage-dark">
                                                                 {user.name || 'No name'}
                                                             </div>
-                                                            <div className="text-sm text-gray-500">
+                                                            <div className="text-sm text-heritage-dark/60">
                                                                 {user.email}
                                                             </div>
                                                         </div>
@@ -148,20 +148,20 @@ export default function UsersPage() {
                                                             {user.role}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark/60">
                                                         {user._count.contributions}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark/60">
                                                         {user._count.uploadedAssets}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark/60">
                                                         {new Date(user.createdAt).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                         <select
                                                             value={user.role}
                                                             onChange={(e) => updateUserRole(user.id, e.target.value)}
-                                                            className="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                                            className="border border-heritage-light/60 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                                         >
                                                             <option value="USER">User</option>
                                                             <option value="CONTRIBUTOR">Contributor</option>

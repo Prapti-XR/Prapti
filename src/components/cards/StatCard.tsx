@@ -63,7 +63,7 @@ export function StatCard({
 
             {/* Label and Trend */}
             <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-gray-600">{label}</div>
+                <div className="text-sm font-medium text-heritage-dark/70">{label}</div>
 
                 {trend && (
                     <div className={cn(

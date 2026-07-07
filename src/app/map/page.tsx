@@ -48,15 +48,6 @@ export default function MapPage() {
         }
     }, [requestLocation, location]);
 
-    // Zoom controls
-    const handleZoomIn = useCallback(() => {
-        setZoom((prev) => Math.min(prev + 1, 20));
-    }, []);
-
-    const handleZoomOut = useCallback(() => {
-        setZoom((prev) => Math.max(prev - 1, 3));
-    }, []);
-
     if (loadError) {
         console.error('Google Maps load error:', loadError);
         return (
@@ -67,13 +58,13 @@ export default function MapPage() {
                         <svg className="w-16 h-16 text-red-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
-                        <p className="text-gray-600 font-medium mb-2">Error Loading Maps</p>
-                        <p className="text-sm text-gray-500 mb-4">
+                        <p className="text-heritage-dark/70 font-medium mb-2">Error Loading Maps</p>
+                        <p className="text-sm text-heritage-dark/60 mb-4">
                             {loadError.message || 'Please check your Google Maps API key configuration'}
                         </p>
-                        <div className="bg-gray-50 p-4 rounded-lg text-left">
-                            <p className="text-xs text-gray-600 mb-2">To fix this:</p>
-                            <ol className="text-xs text-gray-600 list-decimal list-inside space-y-1">
+                        <div className="bg-heritage-light/20 p-4 rounded-lg text-left">
+                            <p className="text-xs text-heritage-dark/70 mb-2">To fix this:</p>
+                            <ol className="text-xs text-heritage-dark/70 list-decimal list-inside space-y-1">
                                 <li>Check if NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set in .env.local</li>
                                 <li>Verify the API key is valid</li>
                                 <li>Enable Maps JavaScript API in Google Cloud Console</li>
@@ -93,7 +84,7 @@ export default function MapPage() {
                 <main className="min-h-screen bg-white flex items-center justify-center">
                     <div className="text-center p-8">
                         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-heritage-primary mx-auto mb-4"></div>
-                        <p className="text-gray-600 font-medium">Loading Maps...</p>
+                        <p className="text-heritage-dark/70 font-medium">Loading Maps...</p>
                     </div>
                 </main>
             </>
@@ -147,7 +138,7 @@ export default function MapPage() {
                         <button
                             onClick={handleLocateMe}
                             disabled={geoLoading}
-                            className="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow border border-gray-200 disabled:opacity-50"
+                            className="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow border border-heritage-light/40 disabled:opacity-50"
                             aria-label="Locate me"
                         >
                             {geoLoading ? (
@@ -176,8 +167,8 @@ export default function MapPage() {
                             />
                         </div>
                     ) : (
-                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-28 lg:top-32 md:right-4 lg:right-6 md:bottom-auto md:max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-9rem)] md:w-96 lg:w-[28rem] bg-white md:rounded-lg shadow-lg border-t md:border border-gray-200 overflow-hidden">
-                            <div className="p-4 border-b border-gray-100">
+                        <div className="absolute bottom-0 left-0 right-0 md:left-auto md:top-28 lg:top-32 md:right-4 lg:right-6 md:bottom-auto md:max-h-[calc(100vh-8rem)] lg:max-h-[calc(100vh-9rem)] md:w-96 lg:w-[28rem] bg-white md:rounded-lg shadow-lg border-t md:border border-heritage-light/40 overflow-hidden">
+                            <div className="p-4 border-b border-heritage-light/30">
                                 <h3 className="font-semibold text-heritage-dark">
                                     {sitesLoading ? 'Loading sites...' : `${sites.length} Sites Found`}
                                 </h3>
@@ -189,7 +180,7 @@ export default function MapPage() {
                                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-heritage-primary mx-auto"></div>
                                         </div>
                                     ) : sites.length === 0 ? (
-                                        <div className="text-center py-8 text-gray-500">
+                                        <div className="text-center py-8 text-heritage-dark/60">
                                             <p>No sites found in this area</p>
                                         </div>
                                     ) : (
@@ -230,7 +221,7 @@ function SitePreviewCard({
     const thumbnail = site.assets.find((a: any) => a.type === 'IMAGE')?.storageUrl;
 
     return (
-        <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-xl border border-gray-200 overflow-hidden animate-slide-up">
+        <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-xl border border-heritage-light/40 overflow-hidden animate-slide-up">
             {/* Header with Close Button */}
             <div className="relative">
                 <button
@@ -238,18 +229,18 @@ function SitePreviewCard({
                     className="absolute top-3 right-3 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-colors"
                     aria-label="Close"
                 >
-                    <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-heritage-dark/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
 
                 {/* Thumbnail */}
-                <div className="relative w-full h-40 bg-gray-100">
+                <div className="relative w-full h-40 bg-heritage-light/30">
                     {thumbnail ? (
                         <img src={thumbnail} alt={site.name} className="w-full h-full object-cover" />
                     ) : (
                         <div className="flex items-center justify-center h-full">
-                            <svg className="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-16 h-16 text-heritage-dark/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
@@ -264,7 +255,7 @@ function SitePreviewCard({
                     <h3 className="text-xl font-bold text-heritage-dark font-serif mb-1">
                         {site.name}
                     </h3>
-                    <p className="text-sm text-gray-600 flex items-center gap-1">
+                    <p className="text-sm text-heritage-dark/70 flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         </svg>
@@ -273,7 +264,7 @@ function SitePreviewCard({
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-gray-700 line-clamp-2">
+                <p className="text-sm text-heritage-dark/80 line-clamp-2">
                     {site.description}
                 </p>
 
@@ -297,7 +288,7 @@ function SitePreviewCard({
                     )}
                     <button
                         onClick={onViewDetails}
-                        className="px-4 py-2 bg-gray-100 text-heritage-dark rounded-lg hover:bg-gray-200 transition-colors text-sm col-span-2"
+                        className="px-4 py-2 bg-heritage-light/30 text-heritage-dark rounded-lg hover:bg-heritage-light/50 transition-colors text-sm col-span-2"
                     >
                         View Details
                     </button>
@@ -313,14 +304,14 @@ function SiteListCard({ site, onClick }: { site: any; onClick: () => void }) {
     return (
         <div
             onClick={onClick}
-            className="flex gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-heritage-primary transition-colors cursor-pointer"
+            className="flex gap-3 p-3 bg-heritage-light/20 rounded-lg border border-heritage-light/30 hover:border-heritage-primary transition-colors cursor-pointer"
         >
-            <div className="w-16 h-16 flex-shrink-0 bg-gray-200 rounded-md overflow-hidden">
+            <div className="w-16 h-16 flex-shrink-0 bg-heritage-light/50 rounded-md overflow-hidden">
                 {thumbnail ? (
                     <img src={thumbnail} alt={site.name} className="w-full h-full object-cover" />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-8 h-8 text-heritage-dark/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
@@ -330,11 +321,11 @@ function SiteListCard({ site, onClick }: { site: any; onClick: () => void }) {
                 <h4 className="font-semibold text-heritage-dark text-sm mb-1 truncate">
                     {site.name}
                 </h4>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-heritage-dark/70 mb-2">
                     {site.city}, {site.country}
                 </p>
                 {site.era && (
-                    <span className="inline-block px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded-full">
+                    <span className="inline-block px-2 py-1 text-xs bg-heritage-accent/20 text-heritage-dark rounded-full">
                         {site.era}
                     </span>
                 )}

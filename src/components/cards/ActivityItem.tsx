@@ -30,12 +30,12 @@ export function ActivityItem({
     className,
 }: ActivityItemProps) {
     const iconBgStyles = {
-        default: 'bg-gray-100 text-gray-600',
+        default: 'bg-heritage-light/40 text-heritage-dark/60',
         primary: 'bg-heritage-primary/20 text-heritage-secondary',
         secondary: 'bg-heritage-secondary/20 text-heritage-secondary',
         accent: 'bg-heritage-accent/20 text-heritage-accent',
         success: 'bg-green-100 text-green-600',
-        warning: 'bg-yellow-100 text-yellow-600',
+        warning: 'bg-heritage-primary/30 text-heritage-secondary',
         error: 'bg-red-100 text-red-600',
     };
 
@@ -70,7 +70,7 @@ export function ActivityItem({
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-heritage-dark/80">
                     {userName && <span className="font-medium text-heritage-dark">{userName}</span>}
                     {userName && ' • '}
                     <span className={cn(!userName && 'font-medium text-heritage-dark')}>
@@ -79,18 +79,18 @@ export function ActivityItem({
                 </p>
 
                 {description && (
-                    <p className="mt-1 text-xs text-gray-600 line-clamp-2">
+                    <p className="mt-1 text-xs text-heritage-dark/70 line-clamp-2">
                         {description}
                     </p>
                 )}
 
-                <p className="mt-1 text-xs text-gray-500">{timestamp}</p>
+                <p className="mt-1 text-xs text-heritage-dark/60">{timestamp}</p>
             </div>
 
             {/* Action Indicator */}
             {onClick && (
                 <div className="flex-shrink-0">
-                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-heritage-dark/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                 </div>

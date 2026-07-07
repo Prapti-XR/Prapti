@@ -127,9 +127,9 @@ function getContentType(filename: string): string {
 }
 
 /**
- * Bulk upload from a directory
+ * Bulk upload from a directory (exported for reuse; not invoked by main())
  */
-async function uploadDirectory(options: {
+export async function uploadDirectory(options: {
   directoryPath: string;
   siteId: string;
   assetType: 'models' | 'panoramas' | 'images' | 'thumbnails';

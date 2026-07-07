@@ -11,7 +11,7 @@ export default function DocsPage() {
                         <h1 className="text-5xl font-bold text-heritage-dark font-serif mb-4">
                             Documentation
                         </h1>
-                        <p className="text-xl text-gray-600">
+                        <p className="text-xl text-heritage-dark/70">
                             Learn more about Prapti and how to use the platform
                         </p>
                     </div>
@@ -48,17 +48,17 @@ function DocCard({ title, description, href }: { title: string; description: str
     return (
         <Link
             href={href}
-            className="group block p-6 bg-white/60 backdrop-blur-lg rounded-2xl border border-gray-200/50 hover:border-heritage-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="group block p-6 bg-white/60 backdrop-blur-lg rounded-2xl border border-heritage-light/40/50 hover:border-heritage-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
         >
             <div className="flex items-start justify-between">
                 <div className="flex-1">
                     <h3 className="text-xl font-semibold text-heritage-dark mb-2 font-serif group-hover:text-heritage-primary transition-colors">
                         {title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">{description}</p>
+                    <p className="text-heritage-dark/70 leading-relaxed">{description}</p>
                 </div>
                 <svg
-                    className="w-6 h-6 text-gray-400 group-hover:text-heritage-primary transition-colors"
+                    className="w-6 h-6 text-heritage-dark/40 group-hover:text-heritage-primary transition-colors"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

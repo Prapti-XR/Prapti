@@ -14,6 +14,9 @@ module.exports = {
           accent: '#96ADC8',       // Soft blue-gray - calm complement
           dark: '#3E2723',         // Dark brown - text and headers
           light: '#DAE0F2',        // Light blue-gray - backgrounds
+          // Sanctioned tints/shades of the core tokens (see docs/DESIGN_SYSTEM.md)
+          'dark-deep': '#241713',  // Deeper shade of dark - viewer wells, immersive surfaces
+          'primary-soft': '#FFE3C2', // Tint of primary - subtle highlights on dark
         },
       },
       fontFamily: {

@@ -28,7 +28,7 @@ export function Card({
 
     const variantStyles = {
         default: 'bg-white border border-heritage-light/20 shadow-sm',
-        glass: 'bg-white/70 backdrop-blur-xl border border-gray-200/50 shadow-lg',
+        glass: 'bg-white/70 backdrop-blur-xl border border-heritage-light/40/50 shadow-lg',
         elevated: 'bg-white shadow-md border border-transparent',
         bordered: 'bg-white border-2 border-heritage-primary/30',
     };
@@ -110,7 +110,7 @@ export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraph
 export function CardDescription({ className, children, ...props }: CardDescriptionProps) {
     return (
         <p
-            className={cn('text-sm text-gray-600 leading-relaxed', className)}
+            className={cn('text-sm text-heritage-dark/70 leading-relaxed', className)}
             {...props}
         >
             {children}

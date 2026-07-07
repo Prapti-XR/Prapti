@@ -70,7 +70,6 @@ export default function UploadPage() {
                 throw new Error(error.error || 'Failed to upload asset');
             }
 
-            const result = await response.json();
             router.push(`/site/${formData.get('siteId')}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to upload asset');
@@ -83,12 +82,12 @@ export default function UploadPage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-gray-100">
+                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-heritage-light/30 animate-fade-in">
                     <div className="max-w-4xl mx-auto">
                         <h1 className="text-4xl font-bold text-heritage-dark font-serif mb-2">
                             Upload {typeParam === 'model' ? '3D Model' : typeParam === 'panorama' ? 'Panorama' : 'Image'}
                         </h1>
-                        <p className="text-gray-600">Add assets to heritage sites</p>
+                        <p className="text-heritage-dark/70">Add assets to heritage sites</p>
                     </div>
                 </header>
 
@@ -102,20 +101,20 @@ export default function UploadPage() {
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Site Selection */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Select Site
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="siteId" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="siteId" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Heritage Site *
                                     </label>
                                     <select
                                         id="siteId"
                                         name="siteId"
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     >
                                         <option value="">Select a site...</option>
                                         {sites.map((site) => (
@@ -128,13 +127,13 @@ export default function UploadPage() {
                             </section>
 
                             {/* File Upload */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Upload File
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="file" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         File *
                                     </label>
                                     <input
@@ -146,10 +145,10 @@ export default function UploadPage() {
                                                 typeParam === 'panorama' ? 'image/*' :
                                                     'image/*'
                                         }
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                         required
                                     />
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <p className="mt-1 text-sm text-heritage-dark/60">
                                         {typeParam === 'model' ? 'Supported formats: GLB, GLTF' :
                                             typeParam === 'panorama' ? 'Supported formats: JPG, PNG (360° images)' :
                                                 'Supported formats: JPG, PNG'}
@@ -157,11 +156,11 @@ export default function UploadPage() {
                                 </div>
 
                                 {selectedFile && (
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <p className="text-sm text-gray-600">
+                                    <div className="p-4 bg-heritage-light/20 rounded-lg">
+                                        <p className="text-sm text-heritage-dark/70">
                                             Selected: <span className="font-medium">{selectedFile.name}</span>
                                         </p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-heritage-dark/60">
                                             Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                                         </p>
                                     </div>
@@ -169,13 +168,13 @@ export default function UploadPage() {
                             </section>
 
                             {/* Asset Details */}
-                            <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                            <section className="bg-white border border-heritage-light/40 rounded-lg p-6 space-y-4">
                                 <h2 className="text-xl font-semibold text-heritage-dark font-serif">
                                     Asset Details
                                 </h2>
 
                                 <div>
-                                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="title" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Title *
                                     </label>
                                     <input
@@ -183,24 +182,24 @@ export default function UploadPage() {
                                         id="title"
                                         name="title"
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="description" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Description
                                     </label>
                                     <textarea
                                         id="description"
                                         name="description"
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="attribution" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="attribution" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         Attribution
                                     </label>
                                     <input
@@ -208,18 +207,18 @@ export default function UploadPage() {
                                         id="attribution"
                                         name="attribution"
                                         placeholder="e.g., Created by John Doe"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="license" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="license" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                         License
                                     </label>
                                     <select
                                         id="license"
                                         name="license"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-heritage-light/60 rounded-lg focus:ring-2 focus:ring-heritage-primary focus:border-transparent"
                                     >
                                         <option value="">Select license...</option>
                                         <option value="CC0">CC0 - Public Domain</option>
@@ -235,7 +234,7 @@ export default function UploadPage() {
                                 <button
                                     type="button"
                                     onClick={() => router.back()}
-                                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                                    className="px-6 py-2 border border-heritage-light/60 rounded-lg text-heritage-dark/80 hover:bg-heritage-light/20 transition-colors"
                                 >
                                     Cancel
                                 </button>

@@ -138,8 +138,11 @@ export function QRCodeModal({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
             onClick={handleClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`QR code for ${siteName}`}
         >
             <div
                 className="w-full max-w-md p-6 transition-all transform bg-white shadow-2xl rounded-2xl md:p-8"
@@ -148,16 +151,16 @@ export function QRCodeModal({
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h2 className="mb-1 text-2xl font-bold text-gray-900">
+                        <h2 className="mb-1 font-serif text-2xl font-bold text-heritage-dark">
                             📱 View in AR
                         </h2>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-heritage-dark/70">
                             Scan with your mobile device
                         </p>
                     </div>
                     <button
                         onClick={handleClose}
-                        className="p-1 text-gray-400 transition-colors rounded-lg hover:text-gray-900 hover:bg-gray-100"
+                        className="flex items-center justify-center w-11 h-11 text-heritage-dark/40 transition-colors rounded-lg hover:text-heritage-dark hover:bg-heritage-light/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
                         aria-label="Close modal"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,7 +171,7 @@ export function QRCodeModal({
 
                 {/* QR Code */}
                 <div className="flex justify-center mb-6">
-                    <div className="p-4 bg-white border-4 border-gray-200 shadow-sm rounded-xl">
+                    <div className="p-4 bg-white border-4 border-heritage-light/60 shadow-sm rounded-xl">
                         <div id="qr-code-svg">
                             <QRCodeSVG
                                 value={arUrl}
@@ -182,11 +185,11 @@ export function QRCodeModal({
                 </div>
 
                 {/* Site Info */}
-                <div className="p-4 mb-6 border bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-amber-200">
-                    <p className="mb-2 text-sm font-medium text-gray-700">
+                <div className="p-4 mb-6 border bg-gradient-to-br from-heritage-primary/10 to-heritage-primary/20 rounded-xl border-heritage-primary/30">
+                    <p className="mb-2 text-sm font-medium text-heritage-dark">
                         {siteName}
                     </p>
-                    <p className="p-2 font-mono text-xs text-gray-600 break-all rounded bg-white/50">
+                    <p className="p-2 font-mono text-xs text-heritage-dark/70 break-all rounded bg-white/50">
                         {arUrl}
                     </p>
                 </div>
@@ -195,7 +198,7 @@ export function QRCodeModal({
                 <div className="grid grid-cols-2 gap-3 mb-4">
                     <button
                         onClick={handleCopy}
-                        className="flex items-center justify-center gap-2 px-4 py-3 font-medium text-white transition-all bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 active:scale-95"
+                        className="flex items-center justify-center gap-2 px-4 py-3 font-semibold text-heritage-dark transition-all bg-heritage-primary rounded-lg shadow-sm hover:bg-heritage-primary/90 hover:shadow-md active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                     >
                         {copied ? (
                             <>
@@ -217,7 +220,7 @@ export function QRCodeModal({
                     {typeof navigator !== 'undefined' && 'share' in navigator ? (
                         <button
                             onClick={handleShare}
-                            className="flex items-center justify-center gap-2 px-4 py-3 font-medium text-white transition-all bg-green-600 rounded-lg shadow-sm hover:bg-green-700 active:scale-95"
+                            className="flex items-center justify-center gap-2 px-4 py-3 font-semibold text-white transition-all bg-heritage-secondary rounded-lg shadow-sm hover:bg-heritage-secondary/90 hover:shadow-md active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -227,7 +230,7 @@ export function QRCodeModal({
                     ) : (
                         <button
                             onClick={handlePrint}
-                            className="flex items-center justify-center gap-2 px-4 py-3 font-medium text-white transition-all bg-gray-600 rounded-lg shadow-sm hover:bg-gray-700 active:scale-95"
+                            className="flex items-center justify-center gap-2 px-4 py-3 font-semibold text-white transition-all bg-heritage-accent rounded-lg shadow-sm hover:bg-heritage-accent/90 hover:shadow-md active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -238,18 +241,18 @@ export function QRCodeModal({
                 </div>
 
                 {/* Instructions */}
-                <div className="p-4 border border-blue-200 bg-blue-50 rounded-xl">
+                <div className="p-4 border border-heritage-accent/40 bg-heritage-accent/10 rounded-xl">
                     <div className="flex gap-3">
                         <div className="flex-shrink-0 mt-0.5">
-                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-heritage-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div>
-                            <p className="mb-1 text-xs font-medium text-blue-900">
+                            <p className="mb-1 text-xs font-medium text-heritage-dark">
                                 How to use:
                             </p>
-                            <p className="text-xs text-blue-800">
+                            <p className="text-xs text-heritage-dark/70">
                                 Open your smartphone camera and point it at the QR code. Tap the notification to open the AR experience directly in your browser.
                             </p>
                         </div>

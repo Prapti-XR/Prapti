@@ -85,7 +85,7 @@ function LoadingPlaceholder() {
     return (
         <Html center>
             <div className="flex flex-col items-center justify-center p-6 bg-black/50 backdrop-blur-sm rounded-lg text-white">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-3"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heritage-primary mb-3"></div>
                 <p className="text-sm">Loading 3D Model...</p>
             </div>
         </Html>
@@ -109,7 +109,6 @@ function ErrorPlaceholder({ message }: { message: string }) {
 export function ModelViewer({
     modelUrl,
     title,
-    description,
     showGrid = false,
     autoRotate = true,
     environmentPreset = 'sunset',
@@ -117,7 +116,7 @@ export function ModelViewer({
     onLoad,
     onError
 }: ModelViewerProps) {
-    const [isLoading, setIsLoading] = useState(true);
+    const [, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -146,12 +145,12 @@ export function ModelViewer({
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg overflow-hidden shadow-xl"
+            className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-heritage-dark to-heritage-dark-deep rounded-xl overflow-hidden shadow-xl"
         >
             {/* Header */}
             {title && (
                 <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4">
-                    <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
+                    <h3 className="font-serif text-xl font-bold text-white mb-1">{title}</h3>
                 </div>
             )}
 
@@ -159,8 +158,9 @@ export function ModelViewer({
             <div className="absolute top-4 right-4 z-10 flex gap-2">
                 <button
                     onClick={toggleFullscreen}
-                    className="p-2 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-lg transition-colors"
+                    className="flex items-center justify-center w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
                     title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                    aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                 >
                     {isFullscreen ? (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

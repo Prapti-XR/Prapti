@@ -94,14 +94,14 @@ export default function SignUpPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
-            <div className="max-w-md w-full space-y-8">
+            <div className="max-w-md w-full space-y-8 animate-slide-up">
                 {/* Header */}
                 <div className="text-center">
                     <Link href="/" className="inline-block mb-6">
                         <span className="text-2xl font-bold text-heritage-dark">Prapti</span>
                     </Link>
                     <h1 className="text-3xl md:text-4xl font-bold text-heritage-dark font-serif mb-2">Create Account</h1>
-                    <p className="text-gray-600">
+                    <p className="text-heritage-dark/70">
                         Join us to explore world heritage sites
                     </p>
                 </div>
@@ -117,7 +117,7 @@ export default function SignUpPage() {
                 <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="name" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Full Name
                             </label>
                             <input
@@ -127,13 +127,13 @@ export default function SignUpPage() {
                                 autoComplete="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="John Doe"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="email" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Email Address
                             </label>
                             <input
@@ -144,13 +144,13 @@ export default function SignUpPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="password" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Password
                             </label>
                             <input
@@ -161,16 +161,16 @@ export default function SignUpPage() {
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="mt-1 text-xs text-heritage-dark/60">
                                 Must be at least 8 characters long
                             </p>
                         </div>
 
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-heritage-dark/80 mb-1">
                                 Confirm Password
                             </label>
                             <input
@@ -181,7 +181,7 @@ export default function SignUpPage() {
                                 required
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
+                                className="block w-full px-4 py-3 border border-heritage-light/40 rounded-lg focus:outline-none focus:border-heritage-dark transition-colors"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -194,11 +194,11 @@ export default function SignUpPage() {
                                 name="terms"
                                 type="checkbox"
                                 required
-                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-gray-300 rounded"
+                                className="h-4 w-4 text-heritage-dark focus:ring-heritage-primary border-heritage-light/60 rounded"
                             />
                         </div>
                         <div className="ml-3 text-sm">
-                            <label htmlFor="terms" className="text-gray-700">
+                            <label htmlFor="terms" className="text-heritage-dark/80">
                                 I agree to the{' '}
                                 <Link href="/terms" className="font-medium text-heritage-dark hover:text-heritage-primary">
                                     Terms of Service
@@ -225,10 +225,10 @@ export default function SignUpPage() {
                 {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-200"></div>
+                        <div className="w-full border-t border-heritage-light/40"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        <span className="px-2 bg-white text-heritage-dark/60">Or continue with</span>
                     </div>
                 </div>
 
@@ -263,7 +263,7 @@ export default function SignUpPage() {
                 </Button>
 
                 {/* Sign In Link */}
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-heritage-dark/70">
                     Already have an account?{' '}
                     <Link href="/auth/signin" className="font-medium text-heritage-dark hover:text-heritage-primary">
                         Sign in

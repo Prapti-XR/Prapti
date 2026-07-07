@@ -37,7 +37,7 @@ export function ActionCard({
     const variantStyles = {
         default: 'bg-white border-heritage-light/30',
         primary: 'bg-gradient-to-br from-heritage-primary/10 to-heritage-accent/10 border-heritage-primary/40',
-        glass: 'bg-white/70 backdrop-blur-xl border-gray-200/50',
+        glass: 'bg-white/70 backdrop-blur-xl border-heritage-light/40/50',
     };
 
     const content = (
@@ -64,7 +64,7 @@ export function ActionCard({
                     <h3 className="mb-2 text-lg font-semibold transition-colors font-serif text-heritage-dark group-hover:text-heritage-secondary">
                         {title}
                     </h3>
-                    <p className="text-sm leading-relaxed text-gray-600">
+                    <p className="text-sm leading-relaxed text-heritage-dark/70">
                         {description}
                     </p>
                 </div>

@@ -74,7 +74,7 @@ export default function TriviaPage() {
         setSelectedAnswer(answerIndex);
         setShowExplanation(true);
 
-        if (question.answers[answerIndex].correct) {
+        if (question?.answers[answerIndex]?.correct) {
             setScore(score + 10);
         }
     };
@@ -107,12 +107,12 @@ export default function TriviaPage() {
             <Navbar />
             <main className="min-h-screen bg-white">
                 {/* Header */}
-                <header className="pt-24 pb-12 border-b border-gray-100 md:pt-32 md:pb-16 px-4 md:px-6">
+                <header className="pt-24 pb-12 border-b border-heritage-light/30 md:pt-32 md:pb-16 px-4 md:px-6">
                     <div className="max-w-4xl mx-auto text-center">
                         <h1 className="mb-4 font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-heritage-dark md:mb-6">
                             Heritage Trivia
                         </h1>
-                        <p className="text-lg leading-relaxed text-gray-600 md:text-xl">
+                        <p className="text-lg leading-relaxed text-heritage-dark/70 md:text-xl">
                             Test your knowledge about cultural heritage and historical sites
                         </p>
                     </div>
@@ -125,7 +125,7 @@ export default function TriviaPage() {
                             <div className="flex items-center justify-center py-20">
                                 <div className="text-center">
                                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heritage-primary mx-auto mb-4"></div>
-                                    <p className="text-gray-600">Loading trivia questions...</p>
+                                    <p className="text-heritage-dark/70">Loading trivia questions...</p>
                                 </div>
                             </div>
                         ) : error ? (
@@ -134,25 +134,25 @@ export default function TriviaPage() {
                                     <svg className="w-12 h-12 text-red-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p className="text-gray-600 font-medium mb-2">Failed to load trivia</p>
-                                    <p className="text-sm text-gray-500">{error}</p>
+                                    <p className="text-heritage-dark/70 font-medium mb-2">Failed to load trivia</p>
+                                    <p className="text-sm text-heritage-dark/60">{error}</p>
                                 </div>
                             </div>
                         ) : triviaData.length === 0 ? (
                             <div className="flex items-center justify-center py-20">
                                 <div className="text-center max-w-md">
-                                    <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-12 h-12 text-heritage-dark/20 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p className="text-gray-600 font-medium mb-2">No trivia available yet</p>
-                                    <p className="text-sm text-gray-500">Trivia questions will be added soon!</p>
+                                    <p className="text-heritage-dark/70 font-medium mb-2">No trivia available yet</p>
+                                    <p className="text-sm text-heritage-dark/60">Trivia questions will be added soon!</p>
                                 </div>
                             </div>
                         ) : gameState === 'menu' && (
                             <div className="space-y-8">
                                 {/* Score Display */}
                                 {levelScores.length > 0 && (
-                                    <div className="p-6 text-center border border-gray-200 rounded-lg bg-gradient-to-br from-heritage-light to-gray-50">
+                                    <div className="p-6 text-center border border-heritage-light/40 rounded-lg bg-gradient-to-br from-heritage-light/50 to-white">
                                         <h2 className="mb-2 text-xl font-semibold text-heritage-dark">Total Score</h2>
                                         <p className="text-4xl font-bold text-heritage-primary">
                                             {levelScores.reduce((a, b) => a + b, 0)} points
@@ -170,7 +170,7 @@ export default function TriviaPage() {
                                             <button
                                                 key={level.siteId}
                                                 onClick={() => startLevel(index)}
-                                                className="p-6 text-left transition-all bg-white border-2 border-gray-200 rounded-lg hover:border-heritage-primary hover:shadow-md"
+                                                className="p-6 text-left transition-all bg-white border-2 border-heritage-light/40 rounded-lg hover:border-heritage-primary hover:shadow-md"
                                             >
                                                 <div className="mb-3 text-3xl">
                                                     {index === 0 ? '♜' : index === 1 ? '🕉️' : '🛕'}
@@ -179,20 +179,20 @@ export default function TriviaPage() {
                                                     {level.siteName}
                                                 </h3>
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-sm text-gray-600">
+                                                    <span className="text-sm text-heritage-dark/70">
                                                         {level.questions.length} questions
                                                     </span>
                                                     <span className={`text-xs px-2 py-1 rounded ${level.difficulty === 'EASY'
                                                         ? 'bg-green-100 text-green-700'
                                                         : level.difficulty === 'MEDIUM'
-                                                            ? 'bg-orange-100 text-orange-700'
+                                                            ? 'bg-heritage-primary/30 text-heritage-secondary'
                                                             : 'bg-red-100 text-red-700'
                                                         }`}>
                                                         {level.difficulty}
                                                     </span>
                                                 </div>
                                                 {levelScores[index] !== undefined && (
-                                                    <div className="pt-3 mt-3 border-t border-gray-200">
+                                                    <div className="pt-3 mt-3 border-t border-heritage-light/40">
                                                         <p className="text-sm font-medium text-heritage-primary">
                                                             Best: {levelScores[index]} points
                                                         </p>
@@ -208,21 +208,21 @@ export default function TriviaPage() {
                         {gameState === 'playing' && question && (
                             <div className="space-y-6">
                                 {/* Progress */}
-                                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                <div className="flex items-center justify-between p-4 border border-heritage-light/40 rounded-lg bg-heritage-light/20">
                                     <div>
-                                        <p className="text-sm text-gray-600">Level: {currentLevelData.siteName}</p>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-sm text-heritage-dark/70">Level: {currentLevelData.siteName}</p>
+                                        <p className="text-xs text-heritage-dark/60">
                                             Question {currentQuestion + 1} of {totalQuestions}
                                         </p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-2xl font-bold text-heritage-primary">{score}</p>
-                                        <p className="text-xs text-gray-600">points</p>
+                                        <p className="text-xs text-heritage-dark/70">points</p>
                                     </div>
                                 </div>
 
                                 {/* Question */}
-                                <div className="p-6 border border-gray-200 rounded-lg md:p-8 bg-white">
+                                <div className="p-6 border border-heritage-light/40 rounded-lg md:p-8 bg-white">
                                     <h3 className="mb-6 text-xl font-semibold md:text-2xl text-heritage-dark">
                                         {question.question}
                                     </h3>
@@ -240,14 +240,14 @@ export default function TriviaPage() {
                                                     onClick={() => handleAnswerSelect(index)}
                                                     disabled={showExplanation}
                                                     className={`w-full p-4 text-left border-2 rounded-lg transition-all ${!showResult
-                                                        ? 'border-gray-200 hover:border-heritage-primary hover:bg-heritage-light/20'
+                                                        ? 'border-heritage-light/40 hover:border-heritage-primary hover:bg-heritage-light/20'
                                                         : isSelected && isCorrect
                                                             ? 'border-green-500 bg-green-50'
                                                             : isSelected && !isCorrect
                                                                 ? 'border-red-500 bg-red-50'
                                                                 : isCorrect
                                                                     ? 'border-green-500 bg-green-50'
-                                                                    : 'border-gray-200 opacity-50'
+                                                                    : 'border-heritage-light/40 opacity-50'
                                                         } ${showExplanation ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                                 >
                                                     <div className="flex items-center justify-between">
@@ -272,11 +272,11 @@ export default function TriviaPage() {
 
                                     {/* Explanation */}
                                     {showExplanation && (
-                                        <div className="p-4 mt-6 border-l-4 rounded bg-blue-50 border-heritage-primary">
+                                        <div className="p-4 mt-6 border-l-4 rounded bg-heritage-light/30 border-heritage-primary">
                                             <p className="mb-1 text-sm font-semibold text-heritage-dark">
                                                 Explanation
                                             </p>
-                                            <p className="text-sm text-gray-700">{question.explanation}</p>
+                                            <p className="text-sm text-heritage-dark/80">{question.explanation}</p>
                                         </div>
                                     )}
                                 </div>
@@ -297,20 +297,20 @@ export default function TriviaPage() {
 
                         {gameState === 'result' && (
                             <div className="space-y-6 text-center">
-                                <div className="p-8 border border-gray-200 rounded-lg md:p-12 bg-gradient-to-br from-heritage-light to-gray-50">
+                                <div className="p-8 border border-heritage-light/40 rounded-lg md:p-12 bg-gradient-to-br from-heritage-light/50 to-white">
                                     <div className="mb-4 text-6xl">
                                         {score >= totalQuestions * 8 ? '🏆' : score >= totalQuestions * 5 ? '⭐' : '👍'}
                                     </div>
                                     <h2 className="mb-2 text-3xl font-bold font-serif text-heritage-dark">
                                         Level Complete!
                                     </h2>
-                                    <p className="mb-6 text-gray-600">
-                                        You completed {currentLevelData.siteName}
+                                    <p className="mb-6 text-heritage-dark/70">
+                                        You completed {currentLevelData?.siteName}
                                     </p>
-                                    <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg">
-                                        <p className="mb-2 text-sm text-gray-600">Your Score</p>
+                                    <div className="p-6 mb-6 bg-white border border-heritage-light/40 rounded-lg">
+                                        <p className="mb-2 text-sm text-heritage-dark/70">Your Score</p>
                                         <p className="text-5xl font-bold text-heritage-primary">{score}</p>
-                                        <p className="mt-2 text-sm text-gray-600">
+                                        <p className="mt-2 text-sm text-heritage-dark/70">
                                             out of {totalQuestions * 10} points
                                         </p>
                                     </div>

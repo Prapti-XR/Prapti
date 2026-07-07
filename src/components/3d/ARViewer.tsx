@@ -6,7 +6,7 @@
 
 'use client';
 
-import { Suspense, useRef, useState, useEffect } from 'react';
+import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { XR, createXRStore } from '@react-three/xr';
 import {
@@ -32,47 +32,41 @@ interface ARModelProps {
     onError?: (error: Error) => void;
 }
 
-function ARModel({ url, scale = 1, onLoad, onError }: ARModelProps) {
+function ARModel({ url, scale = 1, onLoad }: ARModelProps) {
     const groupRef = useRef<THREE.Group>(null);
     const [rotation, setRotation] = useState(0);
 
-    try {
-        const { scene } = useGLTF(url);
+    // Hooks must be unconditional — load errors suspend/throw and are
+    // handled by the surrounding <Suspense> and ThreeErrorBoundary.
+    const { scene } = useGLTF(url);
 
-        // Clone the scene to avoid issues with multiple instances
-        const clonedScene = scene.clone();
+    // Clone the scene to avoid issues with multiple instances
+    const clonedScene = useMemo(() => scene.clone(), [scene]);
 
-        useEffect(() => {
-            if (onLoad) {
-                onLoad();
-            }
-        }, [onLoad]);
-
-        const handleClick = () => {
-            // Rotate model on interaction
-            setRotation(prev => prev + Math.PI / 4);
-        };
-
-        return (
-            <group
-                ref={groupRef}
-                position={[0, 0, -2]}
-                rotation={[0, rotation, 0]}
-                scale={scale}
-                onClick={handleClick}
-            >
-                <Center>
-                    <primitive object={clonedScene} dispose={null} />
-                </Center>
-            </group>
-        );
-    } catch (error) {
-        console.error('Error loading AR model:', error);
-        if (onError) {
-            onError(error as Error);
+    useEffect(() => {
+        if (onLoad) {
+            onLoad();
         }
-        return null;
-    }
+    }, [onLoad]);
+
+    const handleClick = () => {
+        // Rotate model on interaction
+        setRotation(prev => prev + Math.PI / 4);
+    };
+
+    return (
+        <group
+            ref={groupRef}
+            position={[0, 0, -2]}
+            rotation={[0, rotation, 0]}
+            scale={scale}
+            onClick={handleClick}
+        >
+            <Center>
+                <primitive object={clonedScene} dispose={null} />
+            </Center>
+        </group>
+    );
 }
 
 function LoadingPlaceholder() {
@@ -122,8 +116,8 @@ export function ARViewer({
         if (onError) onError(err);
     };
 
-    // Create XR store
-    const store = createXRStore();
+    // Create XR store once per mount (recreating it every render resets XR state)
+    const [store] = useState(() => createXRStore());
 
     // Check WebXR support
     useEffect(() => {
@@ -147,8 +141,8 @@ export function ARViewer({
 
     if (!isARSupported) {
         return (
-            <div className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg overflow-hidden shadow-xl flex items-center justify-center">
-                <div className="flex flex-col items-center justify-center max-w-md p-8 mx-4 text-white rounded-lg bg-yellow-900/50 backdrop-blur-sm">
+            <div className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-heritage-dark to-heritage-dark-deep rounded-xl overflow-hidden shadow-xl flex items-center justify-center">
+                <div className="flex flex-col items-center justify-center max-w-md p-8 mx-4 text-white rounded-xl bg-heritage-secondary/40 backdrop-blur-sm border border-heritage-primary/30">
                     <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
@@ -165,11 +159,11 @@ export function ARViewer({
     }
 
     return (
-        <div className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg overflow-hidden shadow-xl">
+        <div className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-heritage-dark to-heritage-dark-deep rounded-xl overflow-hidden shadow-xl">
             {/* Header */}
             {title && (
                 <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/60 to-transparent">
-                    <h3 className="mb-1 text-xl font-bold text-white">{title}</h3>
+                    <h3 className="mb-1 font-serif text-xl font-bold text-white">{title}</h3>
                     <p className="text-sm text-gray-200">Tap "Start AR" to begin</p>
                 </div>
             )}
@@ -178,7 +172,7 @@ export function ARViewer({
             <div className="absolute z-10 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
                 <button
                     onClick={() => store.enterAR()}
-                    className="px-8 py-4 text-lg font-bold text-white transition-colors bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700"
+                    className="px-8 py-4 text-lg font-bold text-heritage-dark transition-all bg-heritage-primary rounded-full shadow-lg hover:bg-heritage-primary/90 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2 focus-visible:ring-offset-heritage-dark"
                 >
                     Start AR Experience
                 </button>
@@ -186,9 +180,9 @@ export function ARViewer({
 
             {/* Loading Indicator */}
             {isLoading && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-slate-900/50 backdrop-blur-sm">
+                <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-heritage-dark/50 backdrop-blur-sm">
                     <div className="flex flex-col items-center">
-                        <div className="w-16 h-16 mb-4 border-b-2 border-white rounded-full animate-spin"></div>
+                        <div className="w-16 h-16 mb-4 border-b-2 border-heritage-primary rounded-full animate-spin"></div>
                         <p className="text-lg font-semibold text-white">Preparing AR...</p>
                     </div>
                 </div>
@@ -243,7 +237,7 @@ export function ARViewer({
             </div>
 
             {/* AR Badge */}
-            <div className="absolute z-10 px-3 py-2 text-xs font-bold text-white rounded-full bottom-4 right-4 bg-purple-600/80 backdrop-blur-sm">
+            <div className="absolute z-10 px-3 py-2 text-xs font-bold text-white rounded-full bottom-4 right-4 bg-heritage-accent/80 backdrop-blur-sm">
                 AR Ready
             </div>
         </div>

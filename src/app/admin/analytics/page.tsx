@@ -50,12 +50,12 @@ export default function AnalyticsPage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-gray-100">
+                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-heritage-light/30 animate-fade-in">
                     <div className="max-w-6xl mx-auto">
                         <h1 className="text-4xl font-bold text-heritage-dark font-serif mb-2">
                             Analytics
                         </h1>
-                        <p className="text-gray-600">Platform statistics and insights</p>
+                        <p className="text-heritage-dark/70">Platform statistics and insights</p>
                     </div>
                 </header>
 
@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
                         {loading ? (
                             <div className="text-center py-12">
                                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-heritage-primary"></div>
-                                <p className="mt-4 text-gray-600">Loading analytics...</p>
+                                <p className="mt-4 text-heritage-dark/70">Loading analytics...</p>
                             </div>
                         ) : analytics ? (
                             <>
@@ -133,9 +133,9 @@ export default function AnalyticsPage() {
                                     <h2 className="text-2xl font-semibold text-heritage-dark font-serif mb-4">
                                         Assets by Type
                                     </h2>
-                                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                                    <div className="bg-white border border-heritage-light/40 rounded-lg p-6">
                                         {analytics.assetsByType.length === 0 ? (
-                                            <p className="text-gray-500 text-center">No assets yet</p>
+                                            <p className="text-heritage-dark/60 text-center">No assets yet</p>
                                         ) : (
                                             <div className="space-y-4">
                                                 {analytics.assetsByType.map((asset) => (
@@ -171,31 +171,31 @@ export default function AnalyticsPage() {
                                         <h2 className="text-2xl font-semibold text-heritage-dark font-serif mb-4">
                                             Recent Activity (Last 7 Days)
                                         </h2>
-                                        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                                            <table className="min-w-full divide-y divide-gray-200">
-                                                <thead className="bg-gray-50">
+                                        <div className="bg-white border border-heritage-light/40 rounded-lg overflow-hidden">
+                                            <table className="min-w-full divide-y divide-heritage-light/40">
+                                                <thead className="bg-heritage-light/20">
                                                     <tr>
-                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                             Date
                                                         </th>
-                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                             Sites Added
                                                         </th>
-                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-heritage-dark/60 uppercase tracking-wider">
                                                             Assets Uploaded
                                                         </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody className="bg-white divide-y divide-gray-200">
+                                                <tbody className="bg-white divide-y divide-heritage-light/40">
                                                     {analytics.recentActivity.map((activity) => (
                                                         <tr key={activity.date}>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark">
                                                                 {new Date(activity.date).toLocaleDateString()}
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark/60">
                                                                 {activity.sites}
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-heritage-dark/60">
                                                                 {activity.assets}
                                                             </td>
                                                         </tr>

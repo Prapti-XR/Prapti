@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
+import { Badge, type BadgeProps } from '@/components/ui';
 
 interface Contribution {
     id: string;
@@ -66,33 +67,33 @@ export default function ContributionsPage() {
         }
     };
 
-    const getStatusBadgeColor = (status: string) => {
+    const getStatusVariant = (status: string): BadgeProps['variant'] => {
         switch (status) {
             case 'PENDING':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'primary';
             case 'UNDER_REVIEW':
-                return 'bg-blue-100 text-blue-800';
+                return 'accent';
             case 'APPROVED':
-                return 'bg-green-100 text-green-800';
+                return 'success';
             case 'REJECTED':
-                return 'bg-red-100 text-red-800';
+                return 'error';
             case 'MERGED':
-                return 'bg-purple-100 text-purple-800';
+                return 'secondary';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'neutral';
         }
     };
 
-    const getTypeBadgeColor = (type: string) => {
+    const getTypeVariant = (type: string): BadgeProps['variant'] => {
         switch (type) {
             case 'NEW_SITE':
-                return 'bg-indigo-100 text-indigo-800';
+                return 'accent';
             case 'ADD_ASSET':
-                return 'bg-cyan-100 text-cyan-800';
+                return 'neutral';
             case 'EDIT_SITE':
-                return 'bg-amber-100 text-amber-800';
+                return 'outline';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'neutral';
         }
     };
 
@@ -100,12 +101,12 @@ export default function ContributionsPage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-gray-100">
+                <header className="pt-24 md:pt-32 pb-8 px-4 md:px-6 border-b border-heritage-light/30 animate-fade-in">
                     <div className="max-w-6xl mx-auto">
                         <h1 className="text-4xl font-bold text-heritage-dark font-serif mb-2">
                             Content Review
                         </h1>
-                        <p className="text-gray-600">Review and manage user contributions</p>
+                        <p className="text-heritage-dark/70">Review and manage user contributions</p>
                     </div>
                 </header>
 
@@ -117,9 +118,9 @@ export default function ContributionsPage() {
                                 <button
                                     key={status}
                                     onClick={() => setFilter(status)}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === status
-                                            ? 'bg-heritage-primary text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    className={`px-4 py-2 min-h-[44px] rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2 ${filter === status
+                                            ? 'bg-heritage-primary text-heritage-dark'
+                                            : 'bg-heritage-light/40 text-heritage-dark/70 hover:bg-heritage-light/60'
                                         }`}
                                 >
                                     {status.replace('_', ' ')}
@@ -136,21 +137,21 @@ export default function ContributionsPage() {
                         {loading ? (
                             <div className="text-center py-12">
                                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-heritage-primary"></div>
-                                <p className="mt-4 text-gray-600">Loading contributions...</p>
+                                <p className="mt-4 text-heritage-dark/70">Loading contributions...</p>
                             </div>
                         ) : contributions.length === 0 ? (
-                            <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200">
-                                <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="bg-heritage-light/20 rounded-lg p-8 text-center border border-heritage-light/40">
+                                <svg className="w-12 h-12 text-heritage-dark/20 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p className="text-gray-600">No contributions found</p>
+                                <p className="text-heritage-dark/70">No contributions found</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {contributions.map((contribution) => (
                                     <div
                                         key={contribution.id}
-                                        className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                                        className="bg-white border border-heritage-light/40 rounded-lg p-6 hover:shadow-md transition-shadow"
                                     >
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex-1">
@@ -158,34 +159,34 @@ export default function ContributionsPage() {
                                                     <h3 className="text-lg font-semibold text-heritage-dark">
                                                         {contribution.title}
                                                     </h3>
-                                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeBadgeColor(contribution.type)}`}>
+                                                    <Badge variant={getTypeVariant(contribution.type)} size="sm">
                                                         {contribution.type.replace('_', ' ')}
-                                                    </span>
+                                                    </Badge>
                                                 </div>
-                                                <p className="text-gray-600 mb-2">{contribution.description}</p>
-                                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                                <p className="text-heritage-dark/70 mb-2">{contribution.description}</p>
+                                                <div className="flex items-center gap-4 text-sm text-heritage-dark/60">
                                                     <span>By {contribution.author.name || contribution.author.email}</span>
                                                     {contribution.site && <span>• {contribution.site.name}</span>}
                                                     <span>• {new Date(contribution.createdAt).toLocaleDateString()}</span>
                                                 </div>
                                             </div>
-                                            <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(contribution.status)}`}>
+                                            <Badge variant={getStatusVariant(contribution.status)} size="sm">
                                                 {contribution.status.replace('_', ' ')}
-                                            </span>
+                                            </Badge>
                                         </div>
 
                                         {/* Actions */}
                                         {contribution.status === 'PENDING' && (
-                                            <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+                                            <div className="flex items-center gap-2 pt-4 border-t border-heritage-light/30">
                                                 <button
                                                     onClick={() => updateContributionStatus(contribution.id, 'UNDER_REVIEW')}
-                                                    className="px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
+                                                    className="px-4 py-2 min-h-[44px] bg-heritage-accent text-white text-sm font-medium rounded-lg hover:bg-heritage-accent/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                                                 >
                                                     Start Review
                                                 </button>
                                                 <button
                                                     onClick={() => updateContributionStatus(contribution.id, 'APPROVED')}
-                                                    className="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors"
+                                                    className="px-4 py-2 min-h-[44px] bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                                                 >
                                                     Approve
                                                 </button>
@@ -196,7 +197,7 @@ export default function ContributionsPage() {
                                                             updateContributionStatus(contribution.id, 'REJECTED', reason);
                                                         }
                                                     }}
-                                                    className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                                                    className="px-4 py-2 min-h-[44px] bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                                                 >
                                                     Reject
                                                 </button>
@@ -204,10 +205,10 @@ export default function ContributionsPage() {
                                         )}
 
                                         {contribution.status === 'APPROVED' && (
-                                            <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+                                            <div className="flex items-center gap-2 pt-4 border-t border-heritage-light/30">
                                                 <button
                                                     onClick={() => updateContributionStatus(contribution.id, 'MERGED')}
-                                                    className="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-colors"
+                                                    className="px-4 py-2 min-h-[44px] bg-heritage-secondary text-white text-sm font-medium rounded-lg hover:bg-heritage-secondary/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary focus-visible:ring-offset-2"
                                                 >
                                                     Merge
                                                 </button>

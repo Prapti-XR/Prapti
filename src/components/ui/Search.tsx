@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const searchVariants = cva(
     // Base styles - minimalist design with soft focus state
-    'flex items-center gap-3 w-full max-w-full rounded-full bg-white border-2 border-gray-200 transition-all duration-200 focus-within:border-heritage-primary focus-within:shadow-lg hover:border-gray-300',
+    'flex items-center gap-3 w-full max-w-full rounded-full bg-white border-2 border-heritage-light/40 transition-all duration-200 focus-within:border-heritage-primary focus-within:shadow-lg hover:border-heritage-light/60',
     {
         variants: {
             variant: {
@@ -87,7 +87,7 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                         type="button"
                         onClick={handleSearchClick}
                         disabled={disabled}
-                        className="flex-shrink-0 flex items-center justify-center w-5 h-5 text-gray-400 hover:text-heritage-primary transition-colors disabled:cursor-not-allowed"
+                        className="flex-shrink-0 flex items-center justify-center w-5 h-5 text-heritage-dark/40 hover:text-heritage-primary transition-colors disabled:cursor-not-allowed"
                         aria-label="Search"
                     >
                         <SearchIcon />
@@ -103,7 +103,7 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                     placeholder={placeholder}
                     disabled={disabled}
                     className={cn(
-                        'flex-1 min-w-0 bg-transparent outline-none placeholder:text-gray-400 text-gray-900 disabled:cursor-not-allowed',
+                        'flex-1 min-w-0 bg-transparent outline-none placeholder:text-heritage-dark/40 text-heritage-dark disabled:cursor-not-allowed',
                         className
                     )}
                     {...props}
@@ -121,7 +121,7 @@ const Search = React.forwardRef<HTMLInputElement, SearchProps>(
                             size === 'lg' && 'w-10 h-10',
                             size === 'xl' && 'w-12 h-12',
                             disabled
-                                ? 'bg-gray-100 text-gray-400'
+                                ? 'bg-heritage-light/30 text-heritage-dark/40'
                                 : 'bg-heritage-primary text-white hover:bg-heritage-primary/90 shadow-sm hover:shadow-md'
                         )}
                         aria-label="Search"

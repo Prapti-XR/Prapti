@@ -93,7 +93,7 @@ export function ImageCard({
 
     // Additional info (captured year)
     const additionalInfo = capturedYear && (
-        <span className="text-gray-500"> • Captured {capturedYear}</span>
+        <span className="text-heritage-dark/60"> • Captured {capturedYear}</span>
     );
 
     return (

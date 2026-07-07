@@ -97,13 +97,13 @@ export default function SitesPage() {
             <Navbar />
             <main className="min-h-screen bg-white">
                 {/* Header */}
-                <header className="px-4 pt-24 pb-12 border-b border-gray-100 md:pt-32 md:pb-16 md:px-6">
+                <header className="px-4 pt-24 pb-12 border-b border-heritage-light/30 md:pt-32 md:pb-16 md:px-6">
                     <div className="max-w-6xl mx-auto">
                         <div className="max-w-3xl">
                             <h1 className="mb-4 font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-heritage-dark md:mb-6">
                                 Heritage Sites
                             </h1>
-                            <p className="text-lg leading-relaxed text-gray-600 md:text-xl">
+                            <p className="text-lg leading-relaxed text-heritage-dark/70 md:text-xl">
                                 Discover ancient temples, forts, and monuments. Explore their rich
                                 history, architectural beauty, and cultural significance.
                             </p>
@@ -112,7 +112,7 @@ export default function SitesPage() {
                 </header>
 
                 {/* Search and Filters */}
-                <section className="px-4 py-6 bg-white border-b border-gray-200 md:py-8 md:px-6">
+                <section className="px-4 py-6 bg-white border-b border-heritage-light/40 md:py-8 md:px-6">
                     <div className="max-w-6xl mx-auto space-y-4">
                         <Search
                             placeholder="Search heritage sites..."
@@ -161,7 +161,7 @@ export default function SitesPage() {
                             <div className="flex items-center justify-center py-20">
                                 <div className="text-center">
                                     <div className="w-12 h-12 mx-auto mb-4 border-b-2 rounded-full animate-spin border-heritage-primary"></div>
-                                    <p className="text-gray-600">Loading heritage sites...</p>
+                                    <p className="text-heritage-dark/70">Loading heritage sites...</p>
                                 </div>
                             </div>
                         ) : error ? (
@@ -170,8 +170,8 @@ export default function SitesPage() {
                                     <svg className="w-12 h-12 mx-auto mb-4 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p className="mb-2 font-medium text-gray-600">Failed to load sites</p>
-                                    <p className="text-sm text-gray-500">{error}</p>
+                                    <p className="mb-2 font-medium text-heritage-dark/70">Failed to load sites</p>
+                                    <p className="text-sm text-heritage-dark/60">{error}</p>
                                 </div>
                             </div>
                         ) : filteredSites.length > 0 ? (
@@ -196,7 +196,7 @@ export default function SitesPage() {
                         ) : (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
                                 <svg
-                                    className="w-16 h-16 mb-4 text-gray-300"
+                                    className="w-16 h-16 mb-4 text-heritage-dark/20"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -208,10 +208,10 @@ export default function SitesPage() {
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                                     />
                                 </svg>
-                                <h3 className="mb-2 text-lg font-semibold text-gray-700">
+                                <h3 className="mb-2 text-lg font-semibold text-heritage-dark/80">
                                     No sites found
                                 </h3>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-heritage-dark/60">
                                     Try adjusting your search or filter criteria
                                 </p>
                             </div>
