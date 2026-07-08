@@ -34,6 +34,8 @@ interface SiteData {
     name: string;
     description: string;
     location: string;
+    latitude: number;
+    longitude: number;
     country: string;
     city: string | null;
     era: string | null;
@@ -77,6 +79,8 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                     name: dbSite.name,
                     description: dbSite.description,
                     location: dbSite.location,
+                    latitude: dbSite.latitude,
+                    longitude: dbSite.longitude,
                     country: dbSite.country,
                     city: dbSite.city,
                     era: dbSite.era,
@@ -89,6 +93,15 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                     panoramaUrl: panoramaAsset?.storageUrl || null,
                     tags,
                 });
+
+                // Warm the GLTF loader cache so the viewers open without a download wait.
+                // Dynamic import keeps three.js out of SSR and the initial bundle.
+                if (typeof window !== 'undefined' && modelAsset?.storageUrl) {
+                    const url = modelAsset.storageUrl;
+                    import('@react-three/drei')
+                        .then(({ useGLTF }) => useGLTF.preload(url))
+                        .catch(() => { /* preload is best-effort */ });
+                }
             } catch (err) {
                 console.error('Error fetching site:', err);
                 setError(err instanceof Error ? err.message : 'Failed to load site');
@@ -177,6 +190,17 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                     </svg>
                                     <span>{site.era} Era • {site.yearBuilt}</span>
                                 </div>
+                                <a
+                                    href={`https://www.google.com/maps/dir/?api=1&destination=${site.latitude},${site.longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 min-h-[44px] text-sm font-medium rounded-full bg-heritage-light/40 text-heritage-dark hover:bg-heritage-light/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                                >
+                                    <svg className="w-4 h-4 text-heritage-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                    </svg>
+                                    Get Directions
+                                </a>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-4">
                                 {site.tags.map((tag: string) => (
@@ -287,6 +311,13 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 content={site.accessibility || 'No accessibility information available.'}
                             />
                         </section>
+
+                        {/* Nearby Sites */}
+                        <NearbySites
+                            currentId={site.id}
+                            latitude={site.latitude}
+                            longitude={site.longitude}
+                        />
                     </div>
                 </article>
 
@@ -416,5 +447,77 @@ function InfoCard({ title, icon, content }: InfoCardProps) {
                 {content}
             </p>
         </div>
+    );
+}
+
+interface NearbySite {
+    id: string;
+    name: string;
+    city: string | null;
+    era: string | null;
+    distance?: number;
+    assets?: { storageUrl: string }[];
+}
+
+function NearbySites({ currentId, latitude, longitude }: { currentId: string; latitude: number; longitude: number }) {
+    const [sites, setSites] = useState<NearbySite[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchNearby() {
+            try {
+                const res = await fetch(`/api/sites/nearby?lat=${latitude}&lon=${longitude}&radius=150`);
+                if (!res.ok) throw new Error('nearby fetch failed');
+                const data = await res.json();
+                const nearby = (data.sites || [])
+                    .filter((s: NearbySite) => s.id !== currentId)
+                    .slice(0, 3);
+                setSites(nearby);
+            } catch (err) {
+                console.error('Error fetching nearby sites:', err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchNearby();
+    }, [currentId, latitude, longitude]);
+
+    if (!loading && sites.length === 0) return null;
+
+    return (
+        <section className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-heritage-dark">
+                Nearby Heritage Sites
+            </h2>
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[0, 1, 2].map((i) => (
+                        <div key={i} className="h-28 rounded-xl bg-heritage-light/30 animate-pulse" />
+                    ))}
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {sites.map((s) => (
+                        <Link
+                            key={s.id}
+                            href={`/site/${s.id}`}
+                            className="group p-4 sm:p-5 border border-heritage-light/30 rounded-xl bg-white hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                        >
+                            <h3 className="font-serif text-base sm:text-lg font-semibold text-heritage-dark group-hover:text-heritage-secondary transition-colors mb-1 line-clamp-1">
+                                {s.name}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-heritage-dark/60 mb-2">
+                                {[s.city, s.era].filter(Boolean).join(' • ') || 'Heritage site'}
+                            </p>
+                            {typeof s.distance === 'number' && (
+                                <span className="inline-block px-2.5 py-0.5 text-xs font-medium rounded-full bg-heritage-accent/20 text-heritage-dark">
+                                    {s.distance < 1 ? '< 1' : Math.round(s.distance)} km away
+                                </span>
+                            )}
+                        </Link>
+                    ))}
+                </div>
+            )}
+        </section>
     );
 }

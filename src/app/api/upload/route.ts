@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { uploadToR2, generatePresignedUploadUrl } from '@/lib/upload';
 import { generateAssetKey } from '@/lib/r2';
 import { serializeBigInt } from '@/lib/utils';
+import { optimizeAsset, ASSET_CACHE_CONTROL } from '@/lib/optimize';
 
 /**
  * POST /api/upload
@@ -56,12 +57,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upload file to R2
+    // Optimize before storage: Draco+WebP for models, recompressed JPEG for
+    // panoramas/images. Falls back to the original bytes on failure.
+    const original = Buffer.from(await file.arrayBuffer());
+    const optimizedResult = await optimizeAsset(assetType, original, file.type);
+
+    // Upload the optimized bytes to R2 with immutable cache headers
     const uploadResult = await uploadToR2({
       siteId,
       assetType,
       file,
-      contentType: file.type,
+      contentType: optimizedResult.mimeType,
+      body: optimizedResult.buffer,
+      cacheControl: ASSET_CACHE_CONTROL,
     });
 
     // Determine asset type enum
@@ -76,9 +84,13 @@ export async function POST(request: NextRequest) {
       assetTypeEnum = 'IMAGE';
     }
 
-    // Get file dimensions for images (if available)
-    const width = formData.get('width') ? parseInt(formData.get('width') as string) : null;
-    const height = formData.get('height') ? parseInt(formData.get('height') as string) : null;
+    // Dimensions: prefer what the optimizer measured, fall back to client-provided
+    const width =
+      optimizedResult.width ??
+      (formData.get('width') ? parseInt(formData.get('width') as string) : null);
+    const height =
+      optimizedResult.height ??
+      (formData.get('height') ? parseInt(formData.get('height') as string) : null);
 
     // Create asset record in database
     const asset = await prisma.asset.create({
@@ -89,7 +101,7 @@ export async function POST(request: NextRequest) {
         storageKey: uploadResult.key,
         storageUrl: uploadResult.url,
         fileSize: BigInt(uploadResult.size),
-        mimeType: file.type,
+        mimeType: optimizedResult.mimeType,
         format: assetType === 'models' ? file.name.split('.').pop()?.toUpperCase() : null,
         isPanorama: assetType === 'panoramas',
         panoramaType: assetType === 'panoramas' ? (file.name.includes('360') ? '360' : '180') : null,

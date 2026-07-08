@@ -35,9 +35,23 @@ const nextConfig = {
   },
 
   // Experimental features for better performance
+  // (single block — a duplicate key further down used to silently override this one)
   experimental: {
-    optimizePackageImports: ['@react-google-maps/api', '@react-three/fiber', '@react-three/drei'],
-    optimizeCss: true, // Enable CSS optimization
+    optimizePackageImports: [
+      '@react-google-maps/api',
+      'three',
+      '@react-three/fiber',
+      '@react-three/drei',
+    ],
+    // Native/WASM packages used by the server-side asset optimizer must be
+    // required from node_modules at runtime, not bundled by webpack.
+    serverComponentsExternalPackages: [
+      'sharp',
+      '@gltf-transform/core',
+      '@gltf-transform/functions',
+      '@gltf-transform/extensions',
+      'draco3dgltf',
+    ],
   },
 
   // Enable compression
@@ -140,11 +154,6 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_ALLOWED_ORIGINS: process.env.NEXT_PUBLIC_ALLOWED_ORIGINS,
-  },
-
-  // Experimental features
-  experimental: {
-    optimizePackageImports: ['three', '@react-three/fiber', '@react-three/drei'],
   },
 
   // Output configuration

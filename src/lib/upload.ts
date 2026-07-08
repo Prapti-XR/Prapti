@@ -12,6 +12,9 @@ export interface UploadOptions {
   assetType: 'models' | 'panoramas' | 'images' | 'thumbnails';
   file: File;
   contentType: string;
+  /** Pre-processed bytes to upload instead of the file's own (e.g. optimizer output). */
+  body?: Buffer;
+  cacheControl?: string;
 }
 
 export interface UploadResult {
@@ -24,16 +27,18 @@ export interface UploadResult {
  * Upload a file to R2 storage
  */
 export async function uploadToR2(options: UploadOptions): Promise<UploadResult> {
-  const { siteId, assetType, file, contentType } = options;
-  
+  const { siteId, assetType, file, contentType, body, cacheControl } = options;
+
   const key = generateAssetKey(siteId, assetType, file.name);
-  const buffer = await file.arrayBuffer();
-  
+  const buffer = body ?? Buffer.from(await file.arrayBuffer());
+
   const command = new PutObjectCommand({
     Bucket: R2_BUCKET,
     Key: key,
-    Body: Buffer.from(buffer),
+    Body: buffer,
     ContentType: contentType,
+    // Keys are timestamped, so objects are effectively content-addressed.
+    CacheControl: cacheControl ?? 'public, max-age=31536000, immutable',
     Metadata: {
       siteId,
       assetType,
@@ -46,7 +51,7 @@ export async function uploadToR2(options: UploadOptions): Promise<UploadResult> 
   return {
     key,
     url: getR2PublicUrl(key),
-    size: file.size,
+    size: buffer.length,
   };
 }
 

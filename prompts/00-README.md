@@ -19,6 +19,20 @@ This folder holds ready-to-run prompts for **Fable** (Claude Fable 5) to take Pr
 | 5 | `04-skill-library.md` | Distill everything into an auto-loading operating manual | Skills in `.claude/skills/` |
 
 > Prompts are numbered by creation order (`05` is the newest), but **run them in the # order above**: 01 → 02 → 05 → 03 → 04.
+>
+> **Status 2026-07-08:** 01, 02, 05, 04 are **done and verified**; 03 was **skipped** at the user's request.
+
+## The enhancement prompts (phases of `ROADMAP.md` — run in order, on any capable model)
+
+These assume the foundation above is done and lean on the auto-loading `.claude/skills/prapti-*` operating manual.
+
+| Phase | File | Goal |
+|-------|------|------|
+| 1 | `06-content-pipeline.md` | Adding a heritage site becomes a 10-minute job (bulk import + admin wizard + authoring template) |
+| 2 | `07-discovery-map.md` | "Better than Maps": clustering, filters, Hidden Gems, heritage-aware search, rich site pages |
+| 3 | `08-xr-performance.md` | Immersive view < 5s on mid-range mobile: compression, panorama tiers, CDN/CORS, VR comfort |
+| 4 | `09-pwa.md` | Installable PWA with offline site pages (manifest is half-wired already) |
+| 5 | `10-community.md` | Public contribution flows + real merge in the review pipeline |
 
 ## Before you start
 

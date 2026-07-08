@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import '@/styles/globals.css';
 import { Footer } from '@/components/layout/Footer';
 import { SessionProvider } from '@/components/layout/SessionProvider';
+import { ServiceWorkerRegister } from '@/components/layout/ServiceWorkerRegister';
 
 const inter = Inter({
     subsets: ['latin'],
@@ -36,12 +37,20 @@ export const metadata: Metadata = {
         description: 'Experience historical sites and cultural landmarks through immersive AR/VR technology',
     },
     manifest: '/manifest.json',
+    icons: {
+        icon: [
+            { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
+        apple: '/icons/apple-touch-icon.png',
+    },
 };
 
 export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 5,
+    themeColor: '#8B4513',
 };
 
 export default function RootLayout({
@@ -53,6 +62,7 @@ export default function RootLayout({
         <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
             <body className="font-sans bg-white min-h-screen flex flex-col antialiased">
                 <SessionProvider>
+                    <ServiceWorkerRegister />
                     <main className="flex-grow">
                         {children}
                     </main>

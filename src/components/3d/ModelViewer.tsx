@@ -14,6 +14,7 @@ import {
     Environment,
     Grid,
     useGLTF,
+    useProgress,
     Html,
     Center
 } from '@react-three/drei';
@@ -82,11 +83,12 @@ function Model({ url, onLoad }: ModelProps) {
 }
 
 function LoadingPlaceholder() {
+    const { progress } = useProgress();
     return (
         <Html center>
             <div className="flex flex-col items-center justify-center p-6 bg-black/50 backdrop-blur-sm rounded-lg text-white">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heritage-primary mb-3"></div>
-                <p className="text-sm">Loading 3D Model...</p>
+                <p className="text-sm whitespace-nowrap">Loading 3D Model... {progress.toFixed(0)}%</p>
             </div>
         </Html>
     );

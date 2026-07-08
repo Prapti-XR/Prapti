@@ -18,11 +18,14 @@ export async function GET(request: NextRequest) {
     const country = searchParams.get('country');
     const city = searchParams.get('city');
     const featured = searchParams.get('featured') === 'true';
+    const q = searchParams.get('q')?.trim() || null;
+    const era = searchParams.get('era')?.trim() || null;
+    const tag = searchParams.get('tag')?.trim() || null;
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
 
     // Generate cache key based on filters
-    const cacheKey = `sites:list:country:${country || 'all'}:city:${city || 'all'}:featured:${featured}:limit:${limit}:offset:${offset}`;
+    const cacheKey = `sites:list:country:${country || 'all'}:city:${city || 'all'}:featured:${featured}:q:${q || 'none'}:era:${era || 'all'}:tag:${tag || 'all'}:limit:${limit}:offset:${offset}`;
     
     // Try cache first
     const cached = await cache.get(cacheKey);
@@ -44,6 +47,21 @@ export async function GET(request: NextRequest) {
     if (country) where.country = country;
     if (city) where.city = city;
     if (featured) where.isFeatured = true;
+    if (era) where.era = { contains: era, mode: 'insensitive' };
+    if (tag) where.tags = { some: { tag: { slug: tag } } };
+
+    // Heritage-aware free-text search: name, place, era, and tag names
+    // (dynasty, deity, architectural style live as tags).
+    if (q) {
+      where.OR = [
+        { name: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+        { location: { contains: q, mode: 'insensitive' } },
+        { city: { contains: q, mode: 'insensitive' } },
+        { era: { contains: q, mode: 'insensitive' } },
+        { tags: { some: { tag: { name: { contains: q, mode: 'insensitive' } } } } },
+      ];
+    }
 
     const sites = await prisma.heritageSite.findMany({
       where,

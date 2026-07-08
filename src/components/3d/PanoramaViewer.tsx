@@ -7,7 +7,7 @@
 
 import { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Html, useTexture } from '@react-three/drei';
+import { OrbitControls, Html, useTexture, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface PanoramaViewerProps {
@@ -66,11 +66,12 @@ function PanoramaSphere({ imageUrl, onLoad, onError }: PanoramaSphereProps) {
 }
 
 function LoadingPlaceholder() {
+    const { progress } = useProgress();
     return (
         <Html center>
             <div className="flex flex-col items-center justify-center p-6 bg-black/50 backdrop-blur-sm rounded-lg text-white">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heritage-primary mb-3"></div>
-                <p className="text-sm">Loading Panorama...</p>
+                <p className="text-sm whitespace-nowrap">Loading Panorama... {progress.toFixed(0)}%</p>
             </div>
         </Html>
     );

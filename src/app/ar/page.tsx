@@ -69,6 +69,14 @@ function ARPageContent() {
                         modelUrl: modelAsset?.storageUrl ?? null,
                         panoramaUrl: panoramaAsset?.storageUrl ?? null,
                     });
+
+                    // Warm the GLTF loader cache so the viewer opens without a download wait.
+                    if (typeof window !== 'undefined' && modelAsset?.storageUrl) {
+                        const url = modelAsset.storageUrl;
+                        import('@react-three/drei')
+                            .then(({ useGLTF }) => useGLTF.preload(url))
+                            .catch(() => { /* preload is best-effort */ });
+                    }
                 } else {
                     setFetchError('This site has no 3D model or panorama yet.');
                 }

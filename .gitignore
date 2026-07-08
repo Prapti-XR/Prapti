@@ -71,3 +71,5 @@ certificates/
 
 # Local Docs
 docs
+# Staged for deletion (review then remove)
+todelete/

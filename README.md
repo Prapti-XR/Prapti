@@ -35,7 +35,7 @@ Prapti is a cutting-edge Heritage AR/VR platform that brings historical sites, m
 ### Backend & Database
 - **Database**: Neon PostgreSQL (serverless)
 - **ORM**: Prisma 5.22.0
-- **Authentication**: NextAuth v5
+- **Authentication**: NextAuth v4 (`getServerSession` APIs — see CLAUDE.md)
 
 ### Cloud Services
 - **Storage**: Cloudflare R2 (S3-compatible)
