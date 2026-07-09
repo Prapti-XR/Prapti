@@ -107,6 +107,7 @@ model HeritageSite {
   // Status
   isPublished     Boolean @default(false)
   isFeatured      Boolean @default(false)
+  isHiddenGem     Boolean @default(false) // Low-traffic, high-significance places — the flagship collection
   viewCount       Int     @default(0)
   popularityScore Float   @default(0)
 

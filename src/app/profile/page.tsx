@@ -1,10 +1,11 @@
 'use client';
 
 import { Navbar } from '@/components/layout/Navbar';
-import { Button } from '@/components';
+import { Button, Badge, type BadgeProps } from '@/components';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function ProfilePage() {
     const { data: session, status } = useSession();
@@ -90,6 +91,9 @@ export default function ProfilePage() {
                             </div>
                         </section>
 
+                        {/* My Contributions */}
+                        <MyContributions />
+
                         {/* Favorites */}
                         <section className="space-y-4">
                             <h2 className="text-2xl font-semibold text-heritage-dark font-serif">
@@ -119,6 +123,77 @@ export default function ProfilePage() {
                 </div>
             </main>
         </>
+    );
+}
+
+interface MyContribution {
+    id: string;
+    title: string;
+    type: string;
+    status: string;
+    createdAt: string;
+    rejectionReason: string | null;
+}
+
+function MyContributions() {
+    const [items, setItems] = useState<MyContribution[]>([]);
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        fetch('/api/contributions')
+            .then((r) => (r.ok ? r.json() : Promise.reject()))
+            .then((d) => setItems(d.data || []))
+            .catch(() => setItems([]))
+            .finally(() => setLoaded(true));
+    }, []);
+
+    const statusVariant = (s: string): BadgeProps['variant'] =>
+        s === 'PENDING' ? 'primary'
+            : s === 'UNDER_REVIEW' ? 'accent'
+                : s === 'APPROVED' ? 'success'
+                    : s === 'REJECTED' ? 'error'
+                        : s === 'MERGED' ? 'secondary'
+                            : 'neutral';
+
+    return (
+        <section className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-heritage-dark font-serif">
+                    My Contributions
+                </h2>
+                <Link
+                    href="/contribute"
+                    className="px-4 py-2 min-h-[44px] inline-flex items-center rounded-full bg-heritage-primary/20 text-heritage-secondary text-sm font-medium hover:bg-heritage-primary/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                >
+                    + Suggest a place
+                </Link>
+            </div>
+            {!loaded ? (
+                <div className="h-20 rounded-lg bg-heritage-light/30 animate-pulse" />
+            ) : items.length === 0 ? (
+                <div className="bg-heritage-light/20 rounded-lg p-8 text-center border border-heritage-light/40">
+                    <p className="text-heritage-dark/70">No contributions yet</p>
+                    <p className="text-sm text-heritage-dark/60 mt-2">
+                        Know a hidden heritage place? Suggest it and moderators will review it.
+                    </p>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    {items.map((c) => (
+                        <div key={c.id} className="flex items-center gap-3 p-4 bg-white border border-heritage-light/40 rounded-lg">
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-heritage-dark truncate">{c.title}</p>
+                                <p className="text-xs text-heritage-dark/60">
+                                    {c.type.replace('_', ' ')} · {new Date(c.createdAt).toLocaleDateString()}
+                                    {c.status === 'REJECTED' && c.rejectionReason ? ` · ${c.rejectionReason}` : ''}
+                                </p>
+                            </div>
+                            <Badge variant={statusVariant(c.status)} size="sm">{c.status.replace('_', ' ')}</Badge>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </section>
     );
 }
 

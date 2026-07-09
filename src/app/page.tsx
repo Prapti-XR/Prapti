@@ -251,6 +251,9 @@ export default function HomePage() {
                     </div>
                 </section>
 
+                {/* Hidden Gems */}
+                <HiddenGemsStrip />
+
                 {/* Featured Site Section */}
                 <section className="px-4 py-16 md:py-24 md:px-6 bg-white">
                     <div className="max-w-4xl mx-auto">
@@ -277,5 +280,62 @@ export default function HomePage() {
                 </section>
             </main>
         </>
+    );
+}
+
+interface GemSite {
+    id: string;
+    name: string;
+    city: string | null;
+    era: string | null;
+    description: string;
+}
+
+/** Low-traffic, high-significance places — the collection Maps doesn't have. */
+function HiddenGemsStrip() {
+    const [gems, setGems] = useState<GemSite[]>([]);
+
+    useEffect(() => {
+        fetch('/api/sites?hiddenGem=true&limit=3')
+            .then((r) => (r.ok ? r.json() : Promise.reject()))
+            .then((d) => setGems(d.data || []))
+            .catch(() => setGems([]));
+    }, []);
+
+    if (gems.length === 0) return null;
+
+    return (
+        <section className="px-4 py-16 md:py-24 md:px-6 bg-white">
+            <div className="max-w-6xl mx-auto space-y-8">
+                <div className="text-center space-y-3">
+                    <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-heritage-primary/20 text-heritage-secondary">
+                        ✦ Hidden Gems
+                    </span>
+                    <h2 className="font-serif text-3xl font-bold tracking-tight md:text-4xl text-heritage-dark">
+                        Places the maps forgot
+                    </h2>
+                    <p className="max-w-2xl mx-auto text-base leading-relaxed text-heritage-dark/70">
+                        Culturally rich sites you won&apos;t find on a tourist itinerary — documented, explorable, and waiting.
+                    </p>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {gems.map((g) => (
+                        <Link
+                            key={g.id}
+                            href={`/site/${g.id}`}
+                            className="group p-6 bg-white border border-heritage-light/30 rounded-lg transition-all duration-200 hover:border-heritage-primary hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                        >
+                            <h3 className="mb-1 font-serif text-xl font-semibold text-heritage-dark group-hover:text-heritage-secondary transition-colors">
+                                {g.name}
+                            </h3>
+                            <p className="mb-3 text-xs text-heritage-dark/60">
+                                {[g.city, g.era].filter(Boolean).join(' • ')}
+                            </p>
+                            <p className="text-sm leading-relaxed text-heritage-dark/70 line-clamp-3">{g.description}</p>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </section>
     );
 }

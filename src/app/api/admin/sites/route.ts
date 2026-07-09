@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
                 accessibility: data.accessibility || null,
                 isPublished: data.isPublished || false,
                 isFeatured: data.isFeatured || false,
+                isHiddenGem: data.isHiddenGem || false,
             },
         });
 

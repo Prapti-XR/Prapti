@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Search } from '@/components';
 import { GoogleMap } from '@/components/map/GoogleMap';
 import { MapMarker } from '@/components/map/MapMarker';
+import { MarkerClustererF } from '@react-google-maps/api';
 import { useGoogleMaps } from '@/hooks/useGoogleMaps';
 import { useMapInteraction } from '@/hooks/useMapInteraction';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -102,18 +103,38 @@ export default function MapPage() {
                         onMapLoad={setMapInstance}
                         onClick={handleMapClick}
                     >
-                        {/* Render Markers */}
-                        {sites.map((site) => (
-                            <MapMarker
-                                key={site.id}
-                                site={site}
-                                isSelected={selectedSite?.id === site.id}
-                                isHovered={hoveredMarkerId === site.id}
-                                onClick={() => handleMarkerClick(site)}
-                                onMouseOver={() => handleMarkerHover(site.id)}
-                                onMouseOut={() => handleMarkerHover(null)}
-                            />
-                        ))}
+                        {/* Render Markers (clustered at low zoom) */}
+                        <MarkerClustererF
+                            averageCenter
+                            gridSize={55}
+                            minimumClusterSize={3}
+                            styles={[36, 44, 52].map((size) => ({
+                                url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                                    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#8B4513" opacity="0.9"/><circle cx="24" cy="24" r="16" fill="#FEC683"/></svg>`
+                                )}`,
+                                height: size,
+                                width: size,
+                                textColor: '#3E2723',
+                                textSize: 12,
+                            }))}
+                        >
+                            {(clusterer) => (
+                                <>
+                                    {sites.map((site) => (
+                                        <MapMarker
+                                            key={site.id}
+                                            site={site}
+                                            isSelected={selectedSite?.id === site.id}
+                                            isHovered={hoveredMarkerId === site.id}
+                                            onClick={() => handleMarkerClick(site)}
+                                            onMouseOver={() => handleMarkerHover(site.id)}
+                                            onMouseOut={() => handleMarkerHover(null)}
+                                            clusterer={clusterer}
+                                        />
+                                    ))}
+                                </>
+                            )}
+                        </MarkerClustererF>
                     </GoogleMap>
 
                     {/* Navbar Overlay */}

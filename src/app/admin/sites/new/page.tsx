@@ -140,6 +140,7 @@ export default function AddSiteWizard() {
     const [trivia, setTrivia] = useState<TriviaDraft[]>([]);
     // Step 5 — Review & submit
     const [isPublished, setIsPublished] = useState(false);
+    const [isHiddenGem, setIsHiddenGem] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [uploads, setUploads] = useState<UploadItem[]>([]);
     const createdSiteId = useRef<string | null>(null);
@@ -197,6 +198,7 @@ export default function AddSiteWizard() {
                         visitingInfo: story.visitingInfo.trim() || null,
                         accessibility: story.accessibility.trim() || null,
                         isPublished,
+                        isHiddenGem,
                     }),
                 });
                 const body = await res.json();
@@ -528,6 +530,13 @@ export default function AddSiteWizard() {
                                         className="w-5 h-5 accent-[#FEC683]" />
                                     <span className="text-heritage-dark font-medium">Publish immediately</span>
                                     <span className="text-sm text-heritage-dark/60">(unchecked = saved as draft)</span>
+                                </label>
+
+                                <label className="flex items-center gap-3 min-h-[44px] cursor-pointer">
+                                    <input type="checkbox" checked={isHiddenGem} onChange={(e) => setIsHiddenGem(e.target.checked)}
+                                        className="w-5 h-5 accent-[#FEC683]" />
+                                    <span className="text-heritage-dark font-medium">Hidden Gem</span>
+                                    <span className="text-sm text-heritage-dark/60">(low-traffic, high-significance — featured in the collection)</span>
                                 </label>
 
                                 {uploads.length > 0 && (

@@ -11,6 +11,9 @@ interface Contribution {
     type: string;
     status: string;
     createdAt: string;
+    siteId: string | null;
+    contributionData: Record<string, unknown> | null;
+    newSiteData: Record<string, unknown> | null;
     author: {
         name: string | null;
         email: string;
@@ -18,6 +21,79 @@ interface Contribution {
     site: {
         name: string;
     } | null;
+}
+
+// Fields the merge writes — the diff view shows exactly these.
+const REVIEWABLE_FIELDS = [
+    'name', 'description', 'location', 'latitude', 'longitude', 'country', 'city',
+    'era', 'yearBuilt', 'culturalContext', 'historicalFacts', 'visitingInfo', 'accessibility',
+] as const;
+
+/** Expandable proposed-content view; for site edits, shows current → proposed. */
+function ProposedContent({ contribution }: { contribution: Contribution }) {
+    const [open, setOpen] = useState(false);
+    const [current, setCurrent] = useState<Record<string, unknown> | null>(null);
+
+    const payload = (contribution.newSiteData ?? contribution.contributionData ?? {}) as Record<string, unknown>;
+    const rows = REVIEWABLE_FIELDS.filter((f) => payload[f] !== undefined && payload[f] !== null && payload[f] !== '');
+    const isEdit = (contribution.type === 'EDIT_SITE' || contribution.type === 'FIX_INFO') && contribution.siteId;
+
+    useEffect(() => {
+        if (!open || !isEdit || current) return;
+        fetch(`/api/sites/${contribution.siteId}`)
+            .then((r) => (r.ok ? r.json() : Promise.reject()))
+            .then((d) => setCurrent(d.data))
+            .catch(() => setCurrent({}));
+    }, [open, isEdit, current, contribution.siteId]);
+
+    if (rows.length === 0) return null;
+
+    return (
+        <div className="pt-3">
+            <button
+                onClick={() => setOpen(!open)}
+                aria-expanded={open}
+                className="text-sm font-medium text-heritage-secondary hover:text-heritage-dark min-h-[44px] px-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary rounded"
+            >
+                {open ? '▾ Hide proposed content' : '▸ Review proposed content'}
+            </button>
+            {open && (
+                <div className="mt-2 border border-heritage-light/40 rounded-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-heritage-light/20 text-left">
+                                <tr>
+                                    <th className="px-3 py-2 font-medium text-heritage-dark/80">Field</th>
+                                    {isEdit && <th className="px-3 py-2 font-medium text-heritage-dark/80">Current</th>}
+                                    <th className="px-3 py-2 font-medium text-heritage-dark/80">Proposed</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-heritage-light/30">
+                                {rows.map((f) => {
+                                    const proposed = String(payload[f]);
+                                    const existing = current ? String((current as Record<string, unknown>)[f] ?? '—') : '…';
+                                    const changed = isEdit && current && existing !== proposed;
+                                    return (
+                                        <tr key={f} className={changed ? 'bg-heritage-primary/10' : ''}>
+                                            <td className="px-3 py-2 font-medium text-heritage-dark/70 whitespace-nowrap align-top">{f}</td>
+                                            {isEdit && (
+                                                <td className="px-3 py-2 text-heritage-dark/60 align-top max-w-xs">
+                                                    <span className="line-clamp-3">{existing}</span>
+                                                </td>
+                                            )}
+                                            <td className="px-3 py-2 text-heritage-dark align-top max-w-xs">
+                                                <span className="line-clamp-3">{proposed}</span>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default function ContributionsPage() {
@@ -58,7 +134,8 @@ export default function ContributionsPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update contribution');
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body.error || 'Failed to update contribution');
             }
 
             fetchContributions();
@@ -174,6 +251,8 @@ export default function ContributionsPage() {
                                                 {contribution.status.replace('_', ' ')}
                                             </Badge>
                                         </div>
+
+                                        <ProposedContent contribution={contribution} />
 
                                         {/* Actions */}
                                         {contribution.status === 'PENDING' && (

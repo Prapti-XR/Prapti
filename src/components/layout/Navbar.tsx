@@ -42,6 +42,7 @@ export function Navbar() {
             children: [
                 { label: 'About Us', href: '/about' },
                 { label: 'Walkthrough', href: '/doc' },
+                { label: 'Suggest a Place', href: '/contribute' },
             ],
         },
     ];
@@ -125,7 +126,7 @@ export function Navbar() {
                                                         <span>{item.label}</span>
                                                     </button>
                                                 ) : (
-                                                    <Link key={item.label} href={item.href} className="flex items-center block gap-2 px-4 py-2 transition-colors hover:bg-heritage-light/30">
+                                                    <Link key={item.label} href={item.href} className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-heritage-light/30">
                                                         <span>{item.icon}</span>
                                                         <span>{item.label}</span>
                                                     </Link>
@@ -193,7 +194,7 @@ export function Navbar() {
                                                 <span>{item.label}</span>
                                             </button>
                                         ) : (
-                                            <Link key={item.label} href={item.href} className="flex items-center block gap-2 px-4 py-3 rounded-lg hover:bg-heritage-light/30">
+                                            <Link key={item.label} href={item.href} className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-heritage-light/30">
                                                 <span>{item.icon}</span>
                                                 <span>{item.label}</span>
                                             </Link>

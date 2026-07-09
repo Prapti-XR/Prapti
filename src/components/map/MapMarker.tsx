@@ -1,6 +1,7 @@
 'use client';
 
 import { Marker } from '@react-google-maps/api';
+import type { Clusterer } from '@react-google-maps/marker-clusterer';
 import type { HeritageSiteWithAssets } from '@/types';
 
 interface MapMarkerProps {
@@ -10,6 +11,8 @@ interface MapMarkerProps {
     onClick: () => void;
     onMouseOver: () => void;
     onMouseOut: () => void;
+    /** When rendered inside <MarkerClustererF>, pass its clusterer down. */
+    clusterer?: Clusterer;
 }
 
 export function MapMarker({
@@ -19,6 +22,7 @@ export function MapMarker({
     onClick,
     onMouseOver,
     onMouseOut,
+    clusterer,
 }: MapMarkerProps) {
     // Custom marker icon based on site category
     const icon = {
@@ -41,6 +45,7 @@ export function MapMarker({
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
             animation={isSelected ? google.maps.Animation.BOUNCE : undefined}
+            clusterer={clusterer}
         />
     );
 }

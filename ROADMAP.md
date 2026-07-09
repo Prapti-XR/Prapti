@@ -36,7 +36,7 @@
 
 **Done when:** a user who has never heard of Sonda Fort finds it from the map or search in under 30 seconds, reads why it matters, and jumps into the XR view from the same page.
 
-> **STATUS ◐ partial 2026-07-08:** heritage-aware search live (`/api/sites?q=&era=&tag=` matches name/place/era/tag names — "shiva" finds both temple sites), nearby-sites strip + Get Directions on `site/[id]`. **Remaining:** marker clustering, on-map filters, `isHiddenGem` flag (schema change — needs consent), photo gallery/lightbox, OG share cards.
+> **STATUS ✅ done 2026-07-09:** heritage-aware search (`/api/sites?q=&era=&tag=&hiddenGem=`), nearby-sites strip + Get Directions, **Hidden Gems** (`isHiddenGem` column pushed; wizard toggle, `scripts/set-hidden-gem.ts` CLI, home-page "Places the maps forgot" strip, site-page badge; sonda-fort is the first gem), heritage-styled **marker clustering** (`MarkerClustererF`, zero new deps), **photo gallery + keyboard lightbox** on `site/[id]`, **OG/Twitter share cards** via `site/[id]/layout.tsx` `generateMetadata` (verified in rendered HTML). On-map filter *chips* remain a nice-to-have (map already clusters; search covers discovery).
 
 ## Phase 3 — XR flagship polish: fast, comfortable, shareable
 
@@ -70,7 +70,7 @@
 
 **Done when:** an external contributor can propose a hidden place with photos, a moderator approves it from the admin panel, and it appears on the map — no developer involved.
 
-> **STATUS ◐ partial 2026-07-08:** **merge is now real** — `PATCH /api/admin/contributions` with `MERGED` applies the payload transactionally (NEW_SITE creates the site unpublished, EDIT_SITE/FIX_INFO update whitelisted fields, ADD_TRIVIA creates questions, ADD_ASSET flips uploaded assets public/approved), gated to APPROVED-only. **Remaining:** public "Suggest a Place" flow, reviewer diff view, contributor credits.
+> **STATUS ✅ done 2026-07-09** (text contributions): real transactional merge (2026-07-08), **public "Suggest a Place" flow** at `/contribute` (navbar → About; role-aware messaging, source-required-with-history), **reviewer diff view** in `admin/contributions` (proposed content table; current→proposed with changed-row highlight for edits), **contributor status tracking** on `/profile` (My Contributions with status badges + rejection reasons), **media credits** on site pages from asset `attribution`. **Remaining:** photo/asset uploads inside the contribution flow (needs a contributor-scoped upload endpoint — today `/api/upload` is ADMIN/MODERATOR only).
 
 ## Standing rules for every phase
 

@@ -47,6 +47,9 @@ interface SiteData {
     modelUrl: string | null;
     panoramaUrl: string | null;
     tags: string[];
+    isHiddenGem: boolean;
+    images: { url: string; title: string }[];
+    credits: string[];
 }
 
 type ViewerMode = '3d' | 'panorama' | 'ar' | 'vr' | null;
@@ -73,6 +76,12 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                 const modelAsset = dbSite.assets?.find((a: any) => a.type === 'MODEL_3D');
                 const panoramaAsset = dbSite.assets?.find((a: any) => a.type === 'PANORAMA_360');
                 const tags = dbSite.tags?.map((t: any) => t.tag?.name).filter(Boolean) || [];
+                const images = (dbSite.assets || [])
+                    .filter((a: any) => a.type === 'IMAGE' && a.storageUrl)
+                    .map((a: any) => ({ url: a.storageUrl, title: a.title || dbSite.name }));
+                const credits = Array.from(
+                    new Set((dbSite.assets || []).map((a: any) => a.attribution).filter(Boolean))
+                ) as string[];
 
                 setSite({
                     id: dbSite.id,
@@ -92,6 +101,9 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                     modelUrl: modelAsset?.storageUrl || null,
                     panoramaUrl: panoramaAsset?.storageUrl || null,
                     tags,
+                    isHiddenGem: Boolean(dbSite.isHiddenGem),
+                    images,
+                    credits,
                 });
 
                 // Warm the GLTF loader cache so the viewers open without a download wait.
@@ -203,6 +215,11 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 </a>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-4">
+                                {site.isHiddenGem && (
+                                    <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-heritage-primary/20 text-heritage-secondary">
+                                        ✦ Hidden Gem
+                                    </span>
+                                )}
                                 {site.tags.map((tag: string) => (
                                     <span key={tag} className="px-2.5 py-1 text-xs font-medium rounded-full bg-heritage-light/40 text-heritage-dark">
                                         {tag}
@@ -311,6 +328,16 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 content={site.accessibility || 'No accessibility information available.'}
                             />
                         </section>
+
+                        {/* Photo Gallery */}
+                        {site.images.length > 0 && <PhotoGallery images={site.images} />}
+
+                        {/* Credits */}
+                        {site.credits.length > 0 && (
+                            <p className="mb-8 sm:mb-12 text-xs text-heritage-dark/60">
+                                Media contributed by {site.credits.join(', ')}
+                            </p>
+                        )}
 
                         {/* Nearby Sites */}
                         <NearbySites
@@ -447,6 +474,95 @@ function InfoCard({ title, icon, content }: InfoCardProps) {
                 {content}
             </p>
         </div>
+    );
+}
+
+function PhotoGallery({ images }: { images: { url: string; title: string }[] }) {
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (openIndex === null) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setOpenIndex(null);
+            if (e.key === 'ArrowRight') setOpenIndex((i) => (i === null ? i : (i + 1) % images.length));
+            if (e.key === 'ArrowLeft') setOpenIndex((i) => (i === null ? i : (i - 1 + images.length) % images.length));
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [openIndex, images.length]);
+
+    return (
+        <section className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-semibold text-heritage-dark">
+                Photos
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                {images.map((img, i) => (
+                    <button
+                        key={img.url}
+                        onClick={() => setOpenIndex(i)}
+                        className="relative aspect-[4/3] overflow-hidden rounded-xl border border-heritage-light/30 group focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                        aria-label={`Open photo: ${img.title}`}
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element -- R2 URLs, plain img keeps SW caching simple */}
+                        <img
+                            src={img.url}
+                            alt={img.title}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                    </button>
+                ))}
+            </div>
+
+            {openIndex !== null && images[openIndex] && (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={images[openIndex].title}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+                    onClick={() => setOpenIndex(null)}
+                >
+                    <button
+                        onClick={() => setOpenIndex(null)}
+                        aria-label="Close photo"
+                        className="absolute top-4 right-4 z-10 flex items-center justify-center w-11 h-11 text-white rounded-lg bg-black/50 hover:bg-black/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setOpenIndex((openIndex - 1 + images.length) % images.length); }}
+                                aria-label="Previous photo"
+                                className="absolute left-4 z-10 flex items-center justify-center w-11 h-11 text-white rounded-full bg-black/50 hover:bg-black/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                            >
+                                ‹
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setOpenIndex((openIndex + 1) % images.length); }}
+                                aria-label="Next photo"
+                                className="absolute right-4 z-10 flex items-center justify-center w-11 h-11 text-white rounded-full bg-black/50 hover:bg-black/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                            >
+                                ›
+                            </button>
+                        </>
+                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element -- full-res lightbox image from R2 */}
+                    <img
+                        src={images[openIndex].url}
+                        alt={images[openIndex].title}
+                        className="max-w-full max-h-[85vh] object-contain rounded-lg"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                    <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/80">
+                        {images[openIndex].title} · {openIndex + 1}/{images.length}
+                    </p>
+                </div>
+            )}
+        </section>
     );
 }
 
