@@ -21,7 +21,7 @@ export function Footer() {
         { icon: FaFacebook, href: 'https://facebook.com', label: 'Facebook' },
         { icon: FaTwitter, href: 'https://twitter.com', label: 'Twitter' },
         { icon: FaInstagram, href: 'https://instagram.com', label: 'Instagram' },
-        { icon: FaLinkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
+        { icon: FaLinkedin, href: 'https://www.linkedin.com/in/sumanth-hegde-37805a2b9/', label: 'LinkedIn' },
     ];
 
     return (
