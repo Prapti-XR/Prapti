@@ -73,3 +73,6 @@ certificates/
 docs
 # Staged for deletion (review then remove)
 todelete/
+
+# Graphify tool output
+graphify-out/
