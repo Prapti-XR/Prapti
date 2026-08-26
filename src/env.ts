@@ -33,6 +33,10 @@ export const env = createEnv({
     // Redis Cache (optional - falls back to memory cache if not set)
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+
+    // Shared secret for Vercel Cron invocations (optional - when unset the
+    // keep-alive route is unauthenticated)
+    CRON_SECRET: z.string().min(1).optional(),
   },
 
   /**
@@ -69,6 +73,7 @@ export const env = createEnv({
     
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    CRON_SECRET: process.env.CRON_SECRET,
     
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
