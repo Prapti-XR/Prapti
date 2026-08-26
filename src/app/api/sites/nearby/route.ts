@@ -39,13 +39,13 @@ function calculateDistance(
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
-  // Check Redis cache first (exclude user location from cache key)
+  // Check cache first - in-memory tier, then Redis (exclude user location from cache key)
   const cacheKey = getCacheKey(searchParams);
-  const cachedResult = await cache.get(cacheKey);
+  const { value: cachedResult, tier } = await cache.getWithTier<Record<string, unknown>>(cacheKey);
   if (cachedResult) {
-    return NextResponse.json({ 
-      ...cachedResult, 
-      source: cache.isAvailable() ? 'redis-cache' : 'memory-cache' 
+    return NextResponse.json({
+      ...cachedResult,
+      source: tier === 'redis' ? 'redis-cache' : 'memory-cache'
     }, {
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
