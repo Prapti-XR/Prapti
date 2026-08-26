@@ -219,12 +219,14 @@ function NavItemComponent({ item, pathname, hoveredItem, setHoveredItem }: any) 
                     {item.label}
                 </button>
                 {hoveredItem === item.label && (
-                    <div className="absolute left-0 z-50 w-48 py-2 mt-2 bg-white border border-heritage-light/40 rounded-lg shadow-xl">
-                        {item.children.map((child: any) => (
-                            <Link key={child.href} href={child.href} className="block px-4 py-2 text-sm transition-colors hover:bg-heritage-light/30">
-                                {child.label}
-                            </Link>
-                        ))}
+                    <div className="absolute left-0 top-full z-50 w-48 pt-2">
+                        <div className="w-full py-2 bg-white border border-heritage-light/40 rounded-lg shadow-xl">
+                            {item.children.map((child: any) => (
+                                <Link key={child.href} href={child.href} className="block px-4 py-2 text-sm transition-colors hover:bg-heritage-light/30">
+                                    {child.label}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
