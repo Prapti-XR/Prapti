@@ -20,22 +20,22 @@ export default function DocsPage() {
                         <DocCard
                             title="Architecture"
                             description="Understand the technical architecture and design decisions behind Prapti"
-                            href="/docs/architecture"
+                            href="/doc/architecture"
                         />
                         <DocCard
                             title="Authentication"
                             description="Learn about authentication methods and OAuth integration"
-                            href="/docs/authentication"
+                            href="/doc/authentication"
                         />
                         <DocCard
                             title="Getting Started"
                             description="Quick start guide to begin your journey with Prapti"
-                            href="/docs/getting-started"
+                            href="/doc/getting-started"
                         />
                         <DocCard
                             title="Schema Documentation"
                             description="Database schema and data structure documentation"
-                            href="/docs/schema"
+                            href="/doc/schema"
                         />
                     </div>
                 </div>

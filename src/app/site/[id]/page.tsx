@@ -50,6 +50,7 @@ interface SiteData {
     isHiddenGem: boolean;
     images: { url: string; title: string }[];
     credits: string[];
+    heroUrl: string | null;
 }
 
 type ViewerMode = '3d' | 'panorama' | 'ar' | 'vr' | null;
@@ -82,6 +83,10 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                 const credits = Array.from(
                     new Set((dbSite.assets || []).map((a: any) => a.attribution).filter(Boolean))
                 ) as string[];
+                const heroUrl =
+                    images[0]?.url ??
+                    dbSite.assets?.find((a: any) => a.type === 'THUMBNAIL')?.storageUrl ??
+                    null;
 
                 setSite({
                     id: dbSite.id,
@@ -104,6 +109,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                     isHiddenGem: Boolean(dbSite.isHiddenGem),
                     images,
                     credits,
+                    heroUrl,
                 });
 
                 // Warm the GLTF loader cache so the viewers open without a download wait.
@@ -163,7 +169,21 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
             <Navbar />
             <main className="min-h-screen bg-white">
                 {/* Hero Image */}
-                <div className="relative w-full h-56 sm:h-64 md:h-80 lg:h-96 bg-gradient-to-br from-heritage-light/30 to-heritage-accent/20">
+                <div className="relative w-full h-56 sm:h-64 md:h-80 lg:h-96 bg-gradient-to-br from-heritage-light/30 to-heritage-accent/20 overflow-hidden">
+                    {site.heroUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- R2-hosted hero
+                        <img
+                            src={site.heroUrl}
+                            alt={site.name}
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                            <svg className="w-16 h-16 sm:w-20 sm:h-20 text-heritage-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                    )}
                     <div className="absolute inset-0 flex items-end bg-gradient-to-b from-transparent via-transparent to-heritage-dark/60">
                         <div className="w-full max-w-7xl px-4 sm:px-6 pb-4 sm:pb-6 mx-auto">
                             <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-white/90 mb-2">
@@ -172,11 +192,6 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                 <span>Site Details</span>
                             </div>
                         </div>
-                    </div>
-                    <div className="flex items-center justify-center w-full h-full">
-                        <svg className="w-16 h-16 sm:w-20 sm:h-20 text-heritage-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
                     </div>
                 </div>
 
