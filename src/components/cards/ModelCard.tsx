@@ -43,9 +43,14 @@ export function ModelCard({
         <MediaContent aspectRatio="square">
             {thumbnail ? (
                 <>
+                    {/* crossOrigin is required: /models uses a PANORAMA_360 asset as the card
+                        thumbnail, and that same URL is loaded by THREE.TextureLoader in
+                        PanoramaViewer on /images. A no-CORS copy cached here would be reused
+                        for the texture request and fail the CORS check. */}
                     <img
                         src={thumbnail}
                         alt={name}
+                        crossOrigin="anonymous"
                         className="object-cover w-full h-full"
                         loading="lazy"
                     />

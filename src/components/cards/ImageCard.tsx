@@ -38,9 +38,14 @@ export function ImageCard({
         >
             {imageUrl ? (
                 <>
+                    {/* crossOrigin is required: this same URL is later loaded by
+                        THREE.TextureLoader in PanoramaViewer, which always requests in CORS
+                        mode. Without it the browser caches a no-CORS copy here and reuses it
+                        for the texture request, which then fails the CORS check. */}
                     <img
                         src={imageUrl}
                         alt={name}
+                        crossOrigin="anonymous"
                         className="object-cover w-full h-full"
                     />
                     {/* Gradient Overlay on image */}
