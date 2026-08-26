@@ -223,6 +223,17 @@ export default function MapPage() {
     );
 }
 
+// The nearby API returns at most one image asset per site, typed THUMBNAIL or IMAGE
+// (see src/app/api/sites/nearby/route.ts). Prefer THUMBNAIL, fall back to any image.
+function pickThumbnail(site: any): string | undefined {
+    const assets = site.assets ?? [];
+    const preferred =
+        assets.find((a: any) => a.type === 'THUMBNAIL') ??
+        assets.find((a: any) => a.type === 'IMAGE') ??
+        assets.find((a: any) => a.type === 'PANORAMA_360');
+    return preferred?.storageUrl;
+}
+
 // Simple site preview card component (will be enhanced with custom UI later)
 function SitePreviewCard({
     site,
@@ -239,7 +250,7 @@ function SitePreviewCard({
 }) {
     const has3D = site.assets.some((a: any) => a.type === 'MODEL_3D');
     const hasVR = site.assets.some((a: any) => a.type === 'PANORAMA_360');
-    const thumbnail = site.assets.find((a: any) => a.type === 'IMAGE')?.storageUrl;
+    const thumbnail = pickThumbnail(site);
 
     return (
         <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-xl border border-heritage-light/40 overflow-hidden animate-slide-up">
@@ -320,7 +331,7 @@ function SitePreviewCard({
 }
 
 function SiteListCard({ site, onClick }: { site: any; onClick: () => void }) {
-    const thumbnail = site.assets.find((a: any) => a.type === 'IMAGE')?.storageUrl;
+    const thumbnail = pickThumbnail(site);
 
     return (
         <div
