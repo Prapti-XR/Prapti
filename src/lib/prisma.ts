@@ -6,6 +6,7 @@ config();
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
+  prismaShutdownHandlersRegistered: boolean | undefined;
 };
 
 const createPrismaClient = () => {
@@ -91,12 +92,16 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Handle graceful shutdown with helpful messages
-if (typeof window === 'undefined') {
-  process.on('beforeExit', async () => {
-    console.log('🔄 Closing database connections...');
-    await prisma.$disconnect();
-  });
-  
+// Note: intentionally NOT listening for 'beforeExit' here - that event fires
+// whenever Node's event loop goes idle (e.g. between requests in a long-running
+// server), not just on real process termination. Disconnecting the shared
+// Prisma client on every idle tick was tearing down the connection pool
+// mid-flight and causing "Timed out fetching a new connection" errors under
+// concurrent requests. SIGINT/SIGTERM only fire once, on an actual shutdown
+// signal, so they're the correct place for this.
+if (typeof window === 'undefined' && !globalForPrisma.prismaShutdownHandlersRegistered) {
+  globalForPrisma.prismaShutdownHandlersRegistered = true;
+
   process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down gracefully...');
     await prisma.$disconnect();
