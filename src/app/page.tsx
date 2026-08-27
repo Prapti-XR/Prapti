@@ -138,6 +138,29 @@ export default function HomePage() {
                         />
                     </div>
 
+                    {/* Text Placeholder 1 - accompanies Temple 1 (space on the right) */}
+                    <div
+                        className="fixed z-40 max-w-xs px-4 text-right -translate-y-1/2 right-6 md:right-16 top-1/2 md:max-w-sm"
+                        style={{
+                            opacity:
+                                scrollY < 100 ? 0 :
+                                scrollY < 300 ? (scrollY - 100) / 200 :
+                                scrollY < 800 ? 1 :
+                                scrollY < 1100 ? 1 - (scrollY - 800) / 300 : 0,
+                            willChange: 'opacity'
+                        }}
+                    >
+                        <div className="p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+                            <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
+                            <p className="font-serif text-xl italic leading-snug md:text-2xl text-heritage-dark/70">
+                                &ldquo;Heritage quote goes here&rdquo;
+                            </p>
+                            <p className="inline-block px-3 py-1 text-xs font-medium border rounded-full border-heritage-dark/20 text-heritage-dark/40">
+                                CTA text placeholder
+                            </p>
+                        </div>
+                    </div>
+
                     {/* Temple 2 - Fade from bottom center, rise to final position, stay, then sink back */}
                     <div 
                         className="fixed z-40 left-1/2 -translate-x-1/2"
@@ -160,6 +183,29 @@ export default function HomePage() {
                             alt="Heritage Temple 2"
                             className="object-contain w-auto h-[70vh] drop-shadow-2xl"
                         />
+                    </div>
+
+                    {/* Text Placeholder 2 - accompanies Temple 2 (space above/left) */}
+                    <div
+                        className="fixed left-0 right-0 z-40 max-w-xl px-4 mx-auto text-center top-20 md:top-28"
+                        style={{
+                            opacity:
+                                scrollY < 1100 ? 0 :
+                                scrollY < 1300 ? (scrollY - 1100) / 200 :
+                                scrollY < 1800 ? 1 :
+                                scrollY < 2100 ? 1 - ((scrollY - 1800) / 300) : 0,
+                            willChange: 'opacity'
+                        }}
+                    >
+                        <div className="inline-block p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+                            <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
+                            <p className="font-serif text-xl italic leading-snug md:text-2xl text-heritage-dark/70">
+                                &ldquo;Heritage quote goes here&rdquo;
+                            </p>
+                            <p className="inline-block px-3 py-1 text-xs font-medium border rounded-full border-heritage-dark/20 text-heritage-dark/40">
+                                CTA text placeholder
+                            </p>
+                        </div>
                     </div>
 
                     {/* Temple 3 - Diagonal entrance from right to bottom-right (opposite of Temple 1) */}
@@ -193,6 +239,29 @@ export default function HomePage() {
                         />
                     </div>
 
+                    {/* Text Placeholder 3 - accompanies Temple 3 (space on the left) */}
+                    <div
+                        className="fixed z-40 max-w-xs px-4 text-left -translate-y-1/2 left-6 md:left-16 top-1/2 md:max-w-sm"
+                        style={{
+                            opacity:
+                                scrollY < 2100 ? 0 :
+                                scrollY < 2300 ? (scrollY - 2100) / 200 :
+                                scrollY < 2800 ? 1 :
+                                scrollY < 3100 ? 1 - (scrollY - 2800) / 300 : 0,
+                            willChange: 'opacity'
+                        }}
+                    >
+                        <div className="p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+                            <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
+                            <p className="font-serif text-xl italic leading-snug md:text-2xl text-heritage-dark/70">
+                                &ldquo;Heritage quote goes here&rdquo;
+                            </p>
+                            <p className="inline-block px-3 py-1 text-xs font-medium border rounded-full border-heritage-dark/20 text-heritage-dark/40">
+                                CTA text placeholder
+                            </p>
+                        </div>
+                    </div>
+
                     {/* Scroll Indicator */}
                     <div 
                         className="fixed z-50 transform -translate-x-1/2 bottom-8 left-1/2"
@@ -209,50 +278,6 @@ export default function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* Features Grid */}
-                <section className="px-4 py-16 md:py-24 md:px-6 bg-heritage-light/20">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
-                            <Link href="/models" className="group">
-                                <div className="p-6 transition-all duration-200 bg-white border border-heritage-light/30 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
-                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
-                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">3D Models</h3>
-                                    <p className="text-sm leading-relaxed text-heritage-dark/70">Explore detailed 3D reconstructions of heritage sites</p>
-                                </div>
-                            </Link>
-                            <Link href="/images" className="group">
-                                <div className="p-6 transition-all duration-200 bg-white border border-heritage-light/30 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
-                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
-                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">360° Images</h3>
-                                    <p className="text-sm leading-relaxed text-heritage-dark/70">Immerse yourself in panoramic views of historic places</p>
-                                </div>
-                            </Link>
-                            <Link href="/map" className="group">
-                                <div className="p-6 transition-all duration-200 bg-white border border-heritage-light/30 rounded-lg md:p-8 hover:border-heritage-primary hover:shadow-md">
-                                    <div className="flex items-center justify-center w-12 h-12 mb-4 transition-colors rounded-lg bg-heritage-light group-hover:bg-heritage-primary/10">
-                                        <svg className="w-6 h-6 text-heritage-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-xl font-semibold text-heritage-dark">Interactive Map</h3>
-                                    <p className="text-sm leading-relaxed text-heritage-dark/70">Discover heritage sites around you</p>
-                                </div>
-                            </Link>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Hidden Gems */}
-                <HiddenGemsStrip />
 
                 {/* Featured Site Section */}
                 <section className="px-4 py-16 md:py-24 md:px-6 bg-white">
@@ -283,59 +308,3 @@ export default function HomePage() {
     );
 }
 
-interface GemSite {
-    id: string;
-    name: string;
-    city: string | null;
-    era: string | null;
-    description: string;
-}
-
-/** Low-traffic, high-significance places — the collection Maps doesn't have. */
-function HiddenGemsStrip() {
-    const [gems, setGems] = useState<GemSite[]>([]);
-
-    useEffect(() => {
-        fetch('/api/sites?hiddenGem=true&limit=3')
-            .then((r) => (r.ok ? r.json() : Promise.reject()))
-            .then((d) => setGems(d.data || []))
-            .catch(() => setGems([]));
-    }, []);
-
-    if (gems.length === 0) return null;
-
-    return (
-        <section className="px-4 py-16 md:py-24 md:px-6 bg-white">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <div className="text-center space-y-3">
-                    <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-heritage-primary/20 text-heritage-secondary">
-                        ✦ Hidden Gems
-                    </span>
-                    <h2 className="font-serif text-3xl font-bold tracking-tight md:text-4xl text-heritage-dark">
-                        Places the maps forgot
-                    </h2>
-                    <p className="max-w-2xl mx-auto text-base leading-relaxed text-heritage-dark/70">
-                        Culturally rich sites you won&apos;t find on a tourist itinerary — documented, explorable, and waiting.
-                    </p>
-                </div>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {gems.map((g) => (
-                        <Link
-                            key={g.id}
-                            href={`/site/${g.id}`}
-                            className="group p-6 bg-white border border-heritage-light/30 rounded-lg transition-all duration-200 hover:border-heritage-primary hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
-                        >
-                            <h3 className="mb-1 font-serif text-xl font-semibold text-heritage-dark group-hover:text-heritage-secondary transition-colors">
-                                {g.name}
-                            </h3>
-                            <p className="mb-3 text-xs text-heritage-dark/60">
-                                {[g.city, g.era].filter(Boolean).join(' • ')}
-                            </p>
-                            <p className="text-sm leading-relaxed text-heritage-dark/70 line-clamp-3">{g.description}</p>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
