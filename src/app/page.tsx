@@ -43,8 +43,9 @@ export default function HomePage() {
                         className="fixed inset-0 z-10"
                         style={{
                             transform: `translateY(${scrollY * 0.1}px)`,
-                            opacity: scrollY < 2500 ? 0.3 :
-                                     scrollY < 3000 ? 0.3 - ((scrollY - 2500) / 500) * 0.2 : 0.1,
+                            opacity: scrollY < 400 ? 0.06 + (scrollY / 400) * 0.09 :
+                                     scrollY < 2500 ? 0.15 :
+                                     scrollY < 3000 ? 0.15 - ((scrollY - 2500) / 500) * 0.05 : 0.1,
                             willChange: 'transform, opacity'
                         }}
                     >
@@ -185,9 +186,9 @@ export default function HomePage() {
                         />
                     </div>
 
-                    {/* Text Placeholder 2 - accompanies Temple 2 (space above/left) */}
+                    {/* Text Placeholder 2a - accompanies Temple 2 (space on the left) */}
                     <div
-                        className="fixed left-0 right-0 z-40 max-w-xl px-4 mx-auto text-center top-20 md:top-28"
+                        className="fixed z-40 max-w-xs px-4 text-left -translate-y-1/2 left-6 md:left-16 top-1/2 md:max-w-sm"
                         style={{
                             opacity:
                                 scrollY < 1100 ? 0 :
@@ -197,7 +198,30 @@ export default function HomePage() {
                             willChange: 'opacity'
                         }}
                     >
-                        <div className="inline-block p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+                        <div className="p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+                            <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
+                            <p className="font-serif text-xl italic leading-snug md:text-2xl text-heritage-dark/70">
+                                &ldquo;Heritage quote goes here&rdquo;
+                            </p>
+                            <p className="inline-block px-3 py-1 text-xs font-medium border rounded-full border-heritage-dark/20 text-heritage-dark/40">
+                                CTA text placeholder
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Text Placeholder 2b - accompanies Temple 2 (space on the right) */}
+                    <div
+                        className="fixed z-40 max-w-xs px-4 text-right -translate-y-1/2 right-6 md:right-16 top-1/2 md:max-w-sm"
+                        style={{
+                            opacity:
+                                scrollY < 1100 ? 0 :
+                                scrollY < 1300 ? (scrollY - 1100) / 200 :
+                                scrollY < 1800 ? 1 :
+                                scrollY < 2100 ? 1 - ((scrollY - 1800) / 300) : 0,
+                            willChange: 'opacity'
+                        }}
+                    >
+                        <div className="p-5 space-y-2 border-2 border-dashed rounded-xl md:p-6 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
                             <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
                             <p className="font-serif text-xl italic leading-snug md:text-2xl text-heritage-dark/70">
                                 &ldquo;Heritage quote goes here&rdquo;
