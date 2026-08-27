@@ -3,7 +3,52 @@
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+
+function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            setVisible(true);
+            return;
+        }
+        const el = ref.current;
+        if (!el) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry?.isIntersecting) {
+                    setVisible(true);
+                    observer.unobserve(el);
+                }
+            },
+            { threshold: 0.15 }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div ref={ref} className={`${className} ${visible ? 'animate-slide-up' : 'opacity-0'}`}>
+            {children}
+        </div>
+    );
+}
+
+function QuoteCard() {
+    return (
+        <div className="w-full max-w-xs p-5 space-y-2 text-center border-2 border-dashed rounded-xl border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
+            <p className="text-xs font-semibold tracking-wide uppercase text-heritage-dark/40">Quote placeholder</p>
+            <p className="font-serif text-xl italic leading-snug text-heritage-dark/70">
+                &ldquo;Heritage quote goes here&rdquo;
+            </p>
+            <p className="inline-block px-3 py-1 text-xs font-medium border rounded-full border-heritage-dark/20 text-heritage-dark/40">
+                CTA text placeholder
+            </p>
+        </div>
+    );
+}
 
 export default function HomePage() {
     const [scrollY, setScrollY] = useState(0);
@@ -21,8 +66,8 @@ export default function HomePage() {
         <>
             <Navbar />
             <main className="min-h-screen bg-white">
-                {/* Parallax Hero Section - Extended */}
-                <section className="relative h-[400vh] overflow-hidden">
+                {/* Parallax Hero Section - Extended (desktop / md and up only) */}
+                <section className="relative hidden h-[400vh] overflow-hidden md:block">
                     {/* Background Layer - Behind (slowest) */}
                     <div 
                         className="fixed inset-0 z-0"
@@ -300,6 +345,72 @@ export default function HomePage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                             </svg>
                         </div>
+                    </div>
+                </section>
+
+                {/* Static Hero Section (mobile / small & medium screens, below md) */}
+                <section className="relative md:hidden">
+                    <div className="relative flex flex-col items-center justify-center min-h-[85vh] px-4 py-16 overflow-hidden text-center">
+                        <img
+                            src="/pagesrc/background-behind.png"
+                            alt="Background"
+                            className="absolute inset-0 object-cover w-full h-full"
+                        />
+                        <div className="absolute inset-0 bg-heritage-dark/50" />
+                        <div className="relative z-10 max-w-md mx-auto space-y-6 animate-fade-in">
+                            <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-white drop-shadow-lg">
+                                Discover Heritage,<br />Experience History
+                            </h1>
+                            <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
+                                Explore cultural landmarks through immersive AR/VR technology.
+                                Journey through time and space from anywhere.
+                            </p>
+                            <div className="flex flex-col justify-center gap-3 pt-2">
+                                <Link href="/map">
+                                    <Button variant="primary" size="lg" className="w-full">
+                                        <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                        </svg>
+                                        Explore Map
+                                    </Button>
+                                </Link>
+                                <Link href="/about">
+                                    <Button variant="default" size="lg" className="w-full">
+                                        Learn More
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-16 px-4 py-16 bg-white">
+                        <Reveal className="flex flex-col items-center w-full gap-6">
+                            <img
+                                src="/pagesrc/temple-1.png"
+                                alt="Heritage Temple 1"
+                                className="object-contain w-full max-w-xs h-56"
+                            />
+                            <QuoteCard />
+                        </Reveal>
+
+                        <Reveal className="flex flex-col items-center w-full gap-6">
+                            <img
+                                src="/pagesrc/temple-2.png"
+                                alt="Heritage Temple 2"
+                                className="object-contain w-full max-w-xs h-56"
+                            />
+                            <QuoteCard />
+                            <QuoteCard />
+                        </Reveal>
+
+                        <Reveal className="flex flex-col items-center w-full gap-6">
+                            <img
+                                src="/pagesrc/temple-3.png"
+                                alt="Heritage Temple 3"
+                                className="object-contain w-full max-w-xs h-56"
+                            />
+                            <QuoteCard />
+                        </Reveal>
                     </div>
                 </section>
 
