@@ -5,33 +5,35 @@ import { Button } from '@/components';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-/** Placeholder copy block that rides alongside each temple illustration. */
-function QuotePlaceholder({
+/**
+ * A single display sentence riding alongside each temple illustration.
+ *
+ * No card, no chrome - the drop shadow is what keeps the type legible over the artwork,
+ * matching the treatment already used on the hero h1. Alignment is inherited from the
+ * caller (centred on mobile, left or right beside the temple on desktop).
+ */
+function ScrollQuote({
+  children,
   className,
   style,
 }: {
+  children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }) {
   return (
     <div className={`fixed z-40 px-4 pointer-events-none ${className ?? ''}`} style={style}>
-      <div className="p-3 space-y-1.5 border-2 border-dashed rounded-xl md:p-6 md:space-y-2 border-heritage-dark/25 bg-white/70 backdrop-blur-sm">
-        <p className="text-[10px] font-semibold tracking-wide uppercase md:text-xs text-heritage-dark/40">
-          Quote placeholder
-        </p>
-        <p className="font-serif text-base italic leading-snug md:text-2xl text-heritage-dark/70">
-          &ldquo;Heritage quote goes here&rdquo;
-        </p>
-        <p className="inline-block px-3 py-1 text-[10px] font-medium border rounded-full md:text-xs border-heritage-dark/20 text-heritage-dark/40">
-          CTA text placeholder
-        </p>
-      </div>
+      {/* h2 scale from the design system: text-3xl md:text-4xl lg:text-5xl, Playfair bold. */}
+      <p className="font-serif text-3xl font-bold leading-snug tracking-tight md:text-4xl lg:text-5xl text-heritage-dark drop-shadow-lg">
+        {children}
+      </p>
     </div>
   );
 }
 
 /** Mobile pins the quote near the top of the viewport; desktop centres it beside the temple. */
-const QUOTE_TOP_MOBILE = 'inset-x-0 mx-auto max-w-sm text-center top-20';
+const QUOTE_TOP_MOBILE =
+  'inset-x-0 mx-auto max-w-sm md:max-w-md lg:max-w-lg text-center top-20';
 
 /**
  * The keyframes below were authored against a ~1080px-tall viewport, where the hero's
@@ -45,7 +47,7 @@ const TIMELINE_LENGTH = 3240;
 /** Every illustration shares this 2245x1587 canvas. */
 const ART_RATIO = 2245 / 1587;
 
-/** Vertical space the stacked mobile quote cards occupy, top and bottom. */
+/** Vertical space the stacked mobile statements occupy, top and bottom. */
 const QUOTE_BAND_TOP = 240;
 const QUOTE_BAND_BOTTOM = 186;
 
@@ -88,9 +90,9 @@ export default function HomePage() {
   // off-screen, and only fade out once the third temple arrives.
   const backdropOpacity = t < 2100 ? 1 : Math.max(0, 1 - (t - 2100) / 300);
 
-  // On mobile Temple 2 sits between the two stacked quote cards, so size it to the gap
+  // On mobile Temple 2 sits between the two stacked statements, so size it to the gap
   // that is actually left over rather than to a fixed vh value - a fixed one overlaps the
-  // cards on short viewports and wastes space on tall ones.
+  // statements on short viewports and wastes space on tall ones.
   const quoteGap = Math.max(0, viewportHeight - QUOTE_BAND_TOP - QUOTE_BAND_BOTTOM);
   const temple2Height = Math.min(quoteGap, viewportHeight * 0.46);
   const temple2Width = temple2Height * ART_RATIO;
@@ -265,8 +267,8 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Text Placeholder 1 - accompanies Temple 1 */}
-          <QuotePlaceholder
+          {/* Statement 1 - accompanies Temple 1 */}
+          <ScrollQuote
             className={`${QUOTE_TOP_MOBILE} md:inset-x-auto md:mx-0 md:right-16 md:top-1/2 md:-translate-y-1/2 md:text-right`}
             style={{
               opacity:
@@ -281,7 +283,9 @@ export default function HomePage() {
                         : 0,
               willChange: 'opacity',
             }}
-          />
+          >
+            Stand inside history, from anywhere.
+          </ScrollQuote>
 
           {/* Temple 2 - Fade from bottom center, rise to final position, stay, then sink back.
               Centred via left-1/2, which leaves only 50vw of shrink-to-fit space, so the width
@@ -323,9 +327,8 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Text Placeholder 2a - above Temple 2 on mobile, left of it on desktop */}
-          <QuotePlaceholder
-            className={`${QUOTE_TOP_MOBILE} md:inset-x-auto md:mx-0 md:left-16 md:top-1/2 md:-translate-y-1/2 md:text-left`}
+          {/* Statement 2 - above Temple 2 on mobile, left of it on desktop */}
+          <ScrollQuote            className={`${QUOTE_TOP_MOBILE} md:inset-x-auto md:mx-0 md:left-16 md:top-1/2 md:-translate-y-1/2 md:text-left`}
             style={{
               opacity:
                 t < 1100
@@ -339,11 +342,12 @@ export default function HomePage() {
                         : 0,
               willChange: 'opacity',
             }}
-          />
+          >
+            Every carving, preserved in three dimensions.
+          </ScrollQuote>
 
-          {/* Text Placeholder 2b - below Temple 2 on mobile, right of it on desktop */}
-          <QuotePlaceholder
-            className="inset-x-0 mx-auto max-w-sm text-center bottom-6 md:inset-x-auto md:mx-0 md:bottom-auto md:right-16 md:top-1/2 md:-translate-y-1/2 md:text-right"
+          {/* Statement 3 - below Temple 2 on mobile, right of it on desktop */}
+          <ScrollQuote            className="inset-x-0 mx-auto max-w-sm text-center bottom-6 md:inset-x-auto md:mx-0 md:bottom-auto md:right-16 md:top-1/2 md:-translate-y-1/2 md:text-right"
             style={{
               opacity:
                 t < 1100
@@ -357,7 +361,9 @@ export default function HomePage() {
                         : 0,
               willChange: 'opacity',
             }}
-          />
+          >
+            Heritage you walk through, not just read about.
+          </ScrollQuote>
 
           {/* Temple 3 - Diagonal entrance from right to bottom-right (opposite of Temple 1).
               Sits below the quote layer so the copy stays legible over it. */}
@@ -403,9 +409,8 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Text Placeholder 3 - accompanies Temple 3 */}
-          <QuotePlaceholder
-            className={`${QUOTE_TOP_MOBILE} md:inset-x-auto md:mx-0 md:left-16 md:top-1/2 md:-translate-y-1/2 md:text-left`}
+          {/* Statement 4 - accompanies Temple 3 */}
+          <ScrollQuote            className={`${QUOTE_TOP_MOBILE} md:inset-x-auto md:mx-0 md:left-16 md:top-1/2 md:-translate-y-1/2 md:text-left`}
             style={{
               opacity:
                 t < 2100
@@ -417,7 +422,9 @@ export default function HomePage() {
                       : Math.max(0, 1 - (t - 3100) / 140),
               willChange: 'opacity',
             }}
-          />
+          >
+            A monument endures as long as it is seen.
+          </ScrollQuote>
 
           {/* Scroll Indicator */}
           <div
