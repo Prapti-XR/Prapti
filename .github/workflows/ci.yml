@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push to the same ref makes an in-flight run obsolete.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Type-check, lint, build
+    runs-on: ubuntu-latest
+    # The three.js / drei / fiber bundle makes a cold build heavy; this is headroom, not a target.
+    timeout-minutes: 30
+
+    env:
+      # This repo has no test framework - type-check, lint and build ARE the quality
+      # gate (see CLAUDE.md). None of them may depend on real credentials:
+      #
+      #  - SKIP_ENV_VALIDATION bypasses the Zod schema in src/env.ts, which would
+      #    otherwise reject the missing R2 / OAuth / Maps vars at build time.
+      #  - Prisma still needs a syntactically valid datasource URL: src/lib/prisma.ts
+      #    constructs PrismaClient at module load, and the constructor throws on an
+      #    undefined url even when no query is ever issued. Nothing connects to it.
+      SKIP_ENV_VALIDATION: '1'
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/prapti
+      DIRECT_URL: postgresql://ci:ci@localhost:5432/prapti
+      NEXT_TELEMETRY_DISABLED: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # postinstall runs `prisma generate`, so the generated client exists before tsc.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+
+      # Reusing Next's cache across runs turns a cold ~3min build into well under a minute.
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', 'next.config.js', 'tailwind.config.js') }}
+          restore-keys: |
+            ${{ runner.os }}-next-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-next-
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
