@@ -85,7 +85,7 @@ export function Navbar() {
 
     return (
         <>
-            <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl hidden md:block transition-all duration-300 ${scrolled ? 'top-4' : 'top-6'}`}>
+            <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-6xl hidden lg:block transition-all duration-300 ${scrolled ? 'top-4' : 'top-6'}`}>
                 <div className={`relative border rounded-full shadow-lg bg-white/70 backdrop-blur-xl border-heritage-light/40/50 transition-all duration-300 ${scrolled ? 'shadow-xl shadow-black/10' : 'shadow-black/5'}`}>
                     <div className="relative flex items-center px-10 py-4">
                         <div className="flex items-center justify-start flex-1 gap-3">
@@ -150,7 +150,7 @@ export function Navbar() {
                 </div>
             </nav>
 
-            <nav className="fixed top-0 left-0 right-0 z-50 md:hidden">
+            <nav className="fixed top-0 left-0 right-0 z-50 lg:hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b shadow-md bg-white/90 backdrop-blur-xl border-heritage-light/40/50">
                     <Link href="/" className="font-serif text-xl font-semibold text-heritage-dark">Prapti</Link>
                     <div className="flex items-center gap-3">
