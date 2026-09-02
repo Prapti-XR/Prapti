@@ -31,6 +31,7 @@ interface SiteData {
     name: string;
     description: string;
     modelUrl: string | null;
+    modelRealScaleFactor: number | null;
     panoramaUrl: string | null;
 }
 
@@ -67,6 +68,7 @@ function ARPageContent() {
                         name: siteData.name,
                         description: siteData.description,
                         modelUrl: modelAsset?.storageUrl ?? null,
+                        modelRealScaleFactor: modelAsset?.realScaleFactor ?? null,
                         panoramaUrl: panoramaAsset?.storageUrl ?? null,
                     });
 
@@ -169,6 +171,7 @@ function ARPageContent() {
                             modelUrl={site.modelUrl}
                             title={site.name}
                             scale={1}
+                            realScaleFactor={site.modelRealScaleFactor}
                         />
                     ) : (
                         <ModelViewer

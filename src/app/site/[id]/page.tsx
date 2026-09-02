@@ -46,6 +46,7 @@ interface SiteData {
     visitingInfo: string | null;
     accessibility: string | null;
     modelUrl: string | null;
+    modelRealScaleFactor: number | null;
     panoramaUrl: string | null;
     tags: string[];
     isHiddenGem: boolean;
@@ -115,6 +116,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                     visitingInfo: dbSite.visitingInfo,
                     accessibility: dbSite.accessibility,
                     modelUrl: modelAsset?.storageUrl || null,
+                    modelRealScaleFactor: modelAsset?.realScaleFactor ?? null,
                     panoramaUrl: panoramaAsset?.storageUrl || null,
                     tags,
                     isHiddenGem: Boolean(dbSite.isHiddenGem),
@@ -419,6 +421,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                             modelUrl={site.modelUrl}
                                             title={`${site.name} - AR Experience`}
                                             scale={0.5}
+                                            realScaleFactor={site.modelRealScaleFactor}
                                         />
                                     )}
                                     {viewerMode === 'vr' && (
