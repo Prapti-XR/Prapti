@@ -8,6 +8,7 @@ import { QRCodeModal } from '@/components/ar/QRCodeModal';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
+import { useARSupport } from '@/hooks/useARSupport';
 
 const ModelViewer = dynamic(
     () => import('@/components/3d/ModelViewer').then(mod => ({ default: mod.ModelViewer })),
@@ -61,6 +62,16 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
     const [site, setSite] = useState<SiteData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { check: checkARSupport } = useARSupport();
+
+    const handleViewInAR = async () => {
+        const supported = await checkARSupport();
+        if (supported) {
+            setViewerMode('ar');
+        } else {
+            setShowQRModal(true);
+        }
+    };
 
     // Fetch site data from database
     useEffect(() => {
@@ -270,7 +281,7 @@ export default function SiteInfoPage({ params }: { params: { id: string } }) {
                                     </svg>
                                 }
                                 label="View in AR"
-                                onClick={() => setShowQRModal(true)}
+                                onClick={handleViewInAR}
                             />
                             <ActionButton
                                 icon={

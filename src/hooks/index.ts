@@ -10,3 +10,7 @@ export { useMapFilters } from './useMapFilters';
 export { useNearbySites } from './useNearbySites';
 export type { MapFilters } from './useMapFilters';
 
+// 3D/XR hooks
+export { useDeviceOrientation } from './useDeviceOrientation';
+export { useARSupport } from './useARSupport';
+
