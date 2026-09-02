@@ -13,4 +13,6 @@ export type { MapFilters } from './useMapFilters';
 // 3D/XR hooks
 export { useDeviceOrientation } from './useDeviceOrientation';
 export { useARSupport } from './useARSupport';
+export { useARPlacement } from './useARPlacement';
+export type { ARPlacementState } from './useARPlacement';
 

@@ -6,9 +6,18 @@
 
 'use client';
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    Suspense,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    type ReactNode,
+    type RefObject
+} from 'react';
 import { Canvas } from '@react-three/fiber';
-import { XR, XRDomOverlay, createXRStore } from '@react-three/xr';
+import { XR, XRDomOverlay, XRSpace, createXRStore } from '@react-three/xr';
 import {
     useGLTF,
     Html,
@@ -17,6 +26,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { useARSupport } from '@/hooks/useARSupport';
+import { useARPlacement } from '@/hooks/useARPlacement';
 import { computeNormalizedScale } from '@/lib/model-sizing';
 
 const AR_TARGET_SIZE = 1;
@@ -134,7 +144,6 @@ function ARModel({ url, calibration, scaleMode, realScaleFactor, onLoad }: ARMod
     return (
         <group
             ref={groupRef}
-            position={[0, 0, -2]}
             rotation={[0, rotation, 0]}
             scale={effectiveScale}
             onClick={handleClick}
@@ -247,6 +256,118 @@ function CalibrationControls({
     );
 }
 
+/** Renders the hit-test reticle and, once placed, the model inside the
+ * anchor's tracked space. Falls back to the original fixed position so
+ * devices without hit-test/anchor support still see the model. */
+function ARPlacement({
+    anchor,
+    reticleRef,
+    children
+}: {
+    anchor: XRAnchor | undefined;
+    reticleRef: RefObject<THREE.Group>;
+    children: ReactNode;
+}) {
+    return (
+        <>
+            <group ref={reticleRef} visible={false}>
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[0.12, 0.15, 32]} />
+                    <meshBasicMaterial color="#ffffff" toneMapped={false} />
+                </mesh>
+            </group>
+
+            {anchor ? (
+                <XRSpace space={anchor.anchorSpace}>{children}</XRSpace>
+            ) : (
+                // Unplaced, or anchors unsupported: keep the pre-existing behaviour
+                // so the model is always visible rather than waiting on a surface.
+                <group position={[0, 0, -2]}>{children}</group>
+            )}
+        </>
+    );
+}
+
+/** Owns the placement lifecycle. Lives inside <XR> because useARPlacement
+ * calls R3F hooks, and renders the in-session overlay alongside the 3D
+ * content so both read the same placement state. */
+function ARScene({
+    modelUrl,
+    calibration,
+    scaleMode,
+    realScaleFactor,
+    error,
+    onLoad,
+    onError,
+    controls
+}: {
+    modelUrl: string;
+    calibration: number;
+    scaleMode: ARScaleMode;
+    realScaleFactor: number | null;
+    error: string | null;
+    onLoad: () => void;
+    onError: (err: Error) => void;
+    controls: ReactNode;
+}) {
+    const { state, anchor, reticleRef, place, reset } = useARPlacement();
+
+    const hint =
+        state === 'scanning'
+            ? 'Point your camera at the floor to find a surface'
+            : state === 'ready'
+              ? 'Tap Place to put the model on the surface'
+              : 'Placed - walk around to view it';
+
+    return (
+        <>
+            <ARPlacement anchor={anchor} reticleRef={reticleRef}>
+                <Suspense fallback={<LoadingPlaceholder />}>
+                    {error ? (
+                        <ErrorPlaceholder message={error} />
+                    ) : (
+                        <ARModel
+                            url={modelUrl}
+                            calibration={calibration}
+                            scaleMode={scaleMode}
+                            realScaleFactor={realScaleFactor}
+                            onLoad={onLoad}
+                            onError={onError}
+                        />
+                    )}
+                </Suspense>
+            </ARPlacement>
+
+            <XRDomOverlay>
+                <div className="absolute inset-x-0 flex justify-center bottom-28">
+                    <p className="px-3 py-2 text-xs text-white rounded-lg bg-black/60 backdrop-blur-sm">
+                        {hint}
+                    </p>
+                </div>
+                <div className="absolute flex flex-col items-end gap-2 bottom-6 right-4">
+                    {controls}
+                    {state === 'placed' ? (
+                        <button
+                            onClick={reset}
+                            className="px-4 py-2 text-sm font-semibold rounded-lg pointer-events-auto text-heritage-dark bg-heritage-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                        >
+                            Move
+                        </button>
+                    ) : (
+                        <button
+                            onClick={place}
+                            disabled={state !== 'ready'}
+                            className="px-4 py-2 text-sm font-semibold rounded-lg pointer-events-auto text-heritage-dark bg-heritage-primary disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                        >
+                            Place
+                        </button>
+                    )}
+                </div>
+            </XRDomOverlay>
+        </>
+    );
+}
+
 export function ARViewer({
     modelUrl,
     title,
@@ -319,7 +440,9 @@ export function ARViewer({
     };
 
     // Create XR store once per mount (recreating it every render resets XR state)
-    const [store] = useState(() => createXRStore());
+    const [store] = useState(() =>
+        createXRStore({ hitTest: true, anchors: true, domOverlay: true })
+    );
 
     if (isARSupported === false) {
         return (
@@ -418,25 +541,16 @@ export function ARViewer({
                     {/* Environment */}
                     <Environment preset="city" />
 
-                    {/* AR Model */}
-                    <Suspense fallback={<LoadingPlaceholder />}>
-                        {error ? (
-                            <ErrorPlaceholder message={error} />
-                        ) : (
-                            <ARModel
-                                url={modelUrl}
-                                calibration={calibration}
-                                scaleMode={scaleMode}
-                                realScaleFactor={realScaleFactor}
-                                onLoad={handleLoad}
-                                onError={handleError}
-                            />
-                        )}
-                    </Suspense>
-
-                    {/* In-session size calibration, shown via the WebXR DOM overlay */}
-                    <XRDomOverlay>
-                        <div className="absolute bottom-6 right-4">
+                    {/* Placement, model and in-session overlay */}
+                    <ARScene
+                        modelUrl={modelUrl}
+                        calibration={calibration}
+                        scaleMode={scaleMode}
+                        realScaleFactor={realScaleFactor}
+                        error={error}
+                        onLoad={handleLoad}
+                        onError={handleError}
+                        controls={
                             <CalibrationControls
                                 calibration={calibration}
                                 scaleMode={scaleMode}
@@ -446,8 +560,8 @@ export function ARViewer({
                                 onReset={handleCalibrateReset}
                                 onToggleMode={handleToggleMode}
                             />
-                        </div>
-                    </XRDomOverlay>
+                        }
+                    />
                 </XR>
             </Canvas>
 
@@ -455,10 +569,9 @@ export function ARViewer({
             <div className="absolute z-10 max-w-xs p-3 text-xs text-white rounded-lg bottom-4 left-4 bg-black/50 backdrop-blur-sm">
                 <p className="mb-1 font-semibold">AR Instructions:</p>
                 <ul className="space-y-1 opacity-90">
-                    <li>📱 Point camera at a flat surface</li>
-                    <li>👆 Tap to place the model</li>
-                    <li>🔄 Tap model to rotate</li>
-                    <li>⚙️ Use the size control to calibrate scale</li>
+                    <li>📱 Point the camera at a flat surface</li>
+                    <li>🎯 Tap Place when the ring appears</li>
+                    <li>📐 Use Real scale for true size</li>
                     <li>🚶 Walk around to view from all angles</li>
                 </ul>
             </div>
