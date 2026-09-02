@@ -24,18 +24,48 @@ const CALIBRATION_MIN = 0.25;
 const CALIBRATION_MAX = 3;
 const CALIBRATION_STEP = 0.1;
 
-function calibrationStorageKey(modelUrl: string) {
+export type ARScaleMode = 'preview' | 'real';
+
+/** Preview trim and real-scale trim are stored separately on purpose. Preview
+ * defaults to the call site's `scale` (0.5 on the site page) for a tabletop
+ * look; real scale must default to 1.0 or a "true scale" toggle would silently
+ * render at half size. Sharing one key would corrupt whichever mode was set second. */
+function previewStorageKey(modelUrl: string) {
     return `ar-scale:${modelUrl}`;
 }
+function realTrimStorageKey(modelUrl: string) {
+    return `ar-real-trim:${modelUrl}`;
+}
+function modeStorageKey(modelUrl: string) {
+    return `ar-scale-mode:${modelUrl}`;
+}
 
-function loadStoredCalibration(modelUrl: string, fallback: number): number {
+function loadStoredNumber(key: string, fallback: number): number {
     if (typeof window === 'undefined') return fallback;
     try {
-        const raw = window.localStorage.getItem(calibrationStorageKey(modelUrl));
+        const raw = window.localStorage.getItem(key);
         const parsed = raw !== null ? parseFloat(raw) : NaN;
         return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
     } catch {
         return fallback;
+    }
+}
+
+function loadStoredMode(modelUrl: string): ARScaleMode {
+    if (typeof window === 'undefined') return 'preview';
+    try {
+        return window.localStorage.getItem(modeStorageKey(modelUrl)) === 'real' ? 'real' : 'preview';
+    } catch {
+        return 'preview';
+    }
+}
+
+function persist(key: string, value: string) {
+    if (typeof window === 'undefined') return;
+    try {
+        window.localStorage.setItem(key, value);
+    } catch (err) {
+        console.error('Failed to persist AR scale setting:', err);
     }
 }
 
@@ -46,18 +76,25 @@ interface ARViewerProps {
      * the model's own bounding-box-normalized scale. Acts as the "reset"
      * target for the in-AR size calibration control. */
     scale?: number;
+    /** Multiplier from the model's authored units to real-world metres, from
+     * `Asset.realScaleFactor`. null/undefined means the model has not been
+     * calibrated, which disables the real-scale control. */
+    realScaleFactor?: number | null;
     onLoad?: () => void;
     onError?: (error: Error) => void;
 }
 
 interface ARModelProps {
     url: string;
+    /** Fine-trim multiplier applied in both modes. */
     calibration: number;
+    scaleMode: ARScaleMode;
+    realScaleFactor: number | null;
     onLoad?: () => void;
     onError?: (error: Error) => void;
 }
 
-function ARModel({ url, calibration, onLoad }: ARModelProps) {
+function ARModel({ url, calibration, scaleMode, realScaleFactor, onLoad }: ARModelProps) {
     const groupRef = useRef<THREE.Group>(null);
     const [rotation, setRotation] = useState(0);
 
@@ -75,6 +112,14 @@ function ARModel({ url, calibration, onLoad }: ARModelProps) {
         [clonedScene]
     );
 
+    // preview: normalize the model to AR_TARGET_SIZE so every site looks like a
+    // tabletop object. real: ignore the bounding box entirely and use the
+    // measured authored-units-to-metres factor, so the model appears at life size.
+    const effectiveScale =
+        scaleMode === 'real' && realScaleFactor !== null
+            ? realScaleFactor * calibration
+            : baseScale * calibration;
+
     useEffect(() => {
         if (onLoad) {
             onLoad();
@@ -91,7 +136,7 @@ function ARModel({ url, calibration, onLoad }: ARModelProps) {
             ref={groupRef}
             position={[0, 0, -2]}
             rotation={[0, rotation, 0]}
-            scale={baseScale * calibration}
+            scale={effectiveScale}
             onClick={handleClick}
         >
             <Center>
@@ -128,43 +173,76 @@ function ErrorPlaceholder({ message }: { message: string }) {
 
 function CalibrationControls({
     calibration,
+    scaleMode,
+    realScaleFactor,
     onDecrease,
     onIncrease,
-    onReset
+    onReset,
+    onToggleMode
 }: {
     calibration: number;
+    scaleMode: ARScaleMode;
+    realScaleFactor: number | null;
     onDecrease: () => void;
     onIncrease: () => void;
     onReset: () => void;
+    onToggleMode: () => void;
 }) {
+    const canUseRealScale = realScaleFactor !== null;
+    // The number to transcribe into /admin/scale once the size looks right.
+    const effectiveFactor = canUseRealScale ? realScaleFactor * calibration : null;
+
     return (
-        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg pointer-events-auto">
+        <div className="flex flex-col gap-2 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg pointer-events-auto">
+            <div className="flex items-center gap-2">
+                <button
+                    onClick={onDecrease}
+                    className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
+                    aria-label="Decrease AR model size"
+                    disabled={calibration <= CALIBRATION_MIN}
+                >
+                    −
+                </button>
+                <span className="min-w-[3.5ch] text-center font-semibold">
+                    {Math.round(calibration * 100)}%
+                </span>
+                <button
+                    onClick={onIncrease}
+                    className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
+                    aria-label="Increase AR model size"
+                    disabled={calibration >= CALIBRATION_MAX}
+                >
+                    +
+                </button>
+                <button
+                    onClick={onReset}
+                    className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                    aria-label="Reset AR model size"
+                >
+                    Reset
+                </button>
+            </div>
+
             <button
-                onClick={onDecrease}
-                className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
-                aria-label="Decrease AR model size"
-                disabled={calibration <= CALIBRATION_MIN}
+                onClick={onToggleMode}
+                disabled={!canUseRealScale}
+                aria-pressed={scaleMode === 'real'}
+                title={
+                    canUseRealScale
+                        ? 'Toggle real-world scale'
+                        : 'This model has no real-world scale set yet (Admin -> Real-World Scale)'
+                }
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
             >
-                −
+                {scaleMode === 'real' ? '📐 Real scale: ON' : '📐 Real scale: OFF'}
             </button>
-            <span className="min-w-[3.5ch] text-center font-semibold">
-                {Math.round(calibration * 100)}%
-            </span>
-            <button
-                onClick={onIncrease}
-                className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
-                aria-label="Increase AR model size"
-                disabled={calibration >= CALIBRATION_MAX}
-            >
-                +
-            </button>
-            <button
-                onClick={onReset}
-                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
-                aria-label="Reset AR model size"
-            >
-                Reset
-            </button>
+
+            {scaleMode === 'real' && effectiveFactor !== null && (
+                <span className="opacity-90">
+                    Effective factor <strong>{effectiveFactor.toFixed(3)}</strong> — enter this in
+                    Admin → Real-World Scale
+                </span>
+            )}
         </div>
     );
 }
@@ -173,37 +251,61 @@ export function ARViewer({
     modelUrl,
     title,
     scale = 0.5,
+    realScaleFactor = null,
     onLoad,
     onError
 }: ARViewerProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showOptions, setShowOptions] = useState(false);
-    const [calibration, setCalibration] = useState(() => loadStoredCalibration(modelUrl, scale));
+    const [scaleMode, setScaleMode] = useState<ARScaleMode>(() => loadStoredMode(modelUrl));
+    const [previewTrim, setPreviewTrim] = useState(() =>
+        loadStoredNumber(previewStorageKey(modelUrl), scale)
+    );
+    const [realTrim, setRealTrim] = useState(() => loadStoredNumber(realTrimStorageKey(modelUrl), 1));
     const { isSupported: isARSupported } = useARSupport();
 
     useEffect(() => {
-        setCalibration(loadStoredCalibration(modelUrl, scale));
+        setScaleMode(loadStoredMode(modelUrl));
+        setPreviewTrim(loadStoredNumber(previewStorageKey(modelUrl), scale));
+        setRealTrim(loadStoredNumber(realTrimStorageKey(modelUrl), 1));
     }, [modelUrl, scale]);
+
+    // A model with no calibration must never sit in real mode - it would render
+    // at the raw authored units, which are arbitrary.
+    useEffect(() => {
+        if (realScaleFactor === null && scaleMode === 'real') {
+            setScaleMode('preview');
+        }
+    }, [realScaleFactor, scaleMode]);
+
+    const calibration = scaleMode === 'real' ? realTrim : previewTrim;
 
     const updateCalibration = useCallback(
         (value: number) => {
             const clamped = Math.min(CALIBRATION_MAX, Math.max(CALIBRATION_MIN, value));
-            setCalibration(clamped);
-            if (typeof window !== 'undefined') {
-                try {
-                    window.localStorage.setItem(calibrationStorageKey(modelUrl), String(clamped));
-                } catch (err) {
-                    console.error('Failed to persist AR size calibration:', err);
-                }
+            if (scaleMode === 'real') {
+                setRealTrim(clamped);
+                persist(realTrimStorageKey(modelUrl), String(clamped));
+            } else {
+                setPreviewTrim(clamped);
+                persist(previewStorageKey(modelUrl), String(clamped));
             }
         },
-        [modelUrl]
+        [modelUrl, scaleMode]
     );
+
+    const handleToggleMode = useCallback(() => {
+        setScaleMode((prev) => {
+            const next: ARScaleMode = prev === 'real' ? 'preview' : 'real';
+            persist(modeStorageKey(modelUrl), next);
+            return next;
+        });
+    }, [modelUrl]);
 
     const handleCalibrateDecrease = () => updateCalibration(calibration - CALIBRATION_STEP);
     const handleCalibrateIncrease = () => updateCalibration(calibration + CALIBRATION_STEP);
-    const handleCalibrateReset = () => updateCalibration(scale);
+    const handleCalibrateReset = () => updateCalibration(scaleMode === 'real' ? 1 : scale);
 
     const handleLoad = () => {
         setIsLoading(false);
@@ -265,9 +367,12 @@ export function ARViewer({
                 {showOptions && (
                     <CalibrationControls
                         calibration={calibration}
+                        scaleMode={scaleMode}
+                        realScaleFactor={realScaleFactor}
                         onDecrease={handleCalibrateDecrease}
                         onIncrease={handleCalibrateIncrease}
                         onReset={handleCalibrateReset}
+                        onToggleMode={handleToggleMode}
                     />
                 )}
             </div>
@@ -321,6 +426,8 @@ export function ARViewer({
                             <ARModel
                                 url={modelUrl}
                                 calibration={calibration}
+                                scaleMode={scaleMode}
+                                realScaleFactor={realScaleFactor}
                                 onLoad={handleLoad}
                                 onError={handleError}
                             />
@@ -332,9 +439,12 @@ export function ARViewer({
                         <div className="absolute bottom-6 right-4">
                             <CalibrationControls
                                 calibration={calibration}
+                                scaleMode={scaleMode}
+                                realScaleFactor={realScaleFactor}
                                 onDecrease={handleCalibrateDecrease}
                                 onIncrease={handleCalibrateIncrease}
                                 onReset={handleCalibrateReset}
+                                onToggleMode={handleToggleMode}
                             />
                         </div>
                     </XRDomOverlay>
