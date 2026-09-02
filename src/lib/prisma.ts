@@ -12,12 +12,13 @@ const globalForPrisma = globalThis as unknown as {
 const createPrismaClient = () => {
   const client = new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-    // Connection pool configuration
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL,
-      },
-    },
+    // NOTE: deliberately NOT passing `datasources: { db: { url: process.env.DATABASE_URL } }`.
+    // It was redundant — schema.prisma already declares `url = env("DATABASE_URL")` — but it
+    // also turned a missing DATABASE_URL into a PrismaClientConstructorValidationError thrown
+    // at *module import*. `next build` imports every route module during "Collecting page
+    // data", so an unset DATABASE_URL failed the entire production build instead of only the
+    // routes that actually query. Letting Prisma resolve the env var itself keeps construction
+    // lazy: a missing or bad URL now surfaces as a runtime error on the request that needs it.
   });
 
   // Enhanced error handling with user-friendly messages
