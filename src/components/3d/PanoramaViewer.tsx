@@ -85,6 +85,10 @@ function FovController({ fov }: { fov: number }) {
     return null;
 }
 
+/** Exponential smoothing rate for the gyro camera, in units of 1/second.
+ * Higher is more responsive and less smooth; ~12 settles in roughly 80ms,
+ * which damps sensor noise without feeling laggy when you turn your head. */
+const GYRO_SMOOTHING_RATE = 12;
 /** Drives the camera's look direction directly from device orientation
  * readings while gyro mode is active. Mounted only in gyro mode so it never
  * fights OrbitControls for control of the camera transform. */
@@ -94,18 +98,41 @@ function GyroCameraController({
     subscribe: (listener: (quaternion: THREE.Quaternion) => void) => () => void;
 }) {
     const { camera } = useThree();
-    const latestQuaternion = useRef<THREE.Quaternion | null>(null);
+    const targetQuaternion = useRef<THREE.Quaternion | null>(null);
+    const hasSnapped = useRef(false);
 
     useEffect(() => {
         return subscribe((quaternion) => {
-            latestQuaternion.current = quaternion;
+            // The hook reuses one quaternion instance across events, so copy
+            // rather than alias it — otherwise the smoothing target mutates
+            // underneath the slerp between frames.
+            if (targetQuaternion.current === null) {
+                targetQuaternion.current = quaternion.clone();
+            } else {
+                targetQuaternion.current.copy(quaternion);
+            }
         });
     }, [subscribe]);
 
-    useFrame(() => {
-        if (latestQuaternion.current) {
-            camera.quaternion.copy(latestQuaternion.current);
+    useFrame((_state, delta) => {
+        const target = targetQuaternion.current;
+        if (!target) return;
+
+        // Snap on the first reading; easing in from the identity quaternion
+        // would swing the view across the scene on entry.
+        if (!hasSnapped.current) {
+            camera.quaternion.copy(target);
+            hasSnapped.current = true;
+            return;
         }
+
+        // Raw deviceorientation readings carry visible sensor noise, and
+        // copying them straight onto the camera transmits every bit of it.
+        // Exponential smoothing is frame-rate independent, so the damping
+        // feels identical at 60fps and 120fps; delta is clamped so a stalled
+        // frame cannot produce a jump.
+        const t = 1 - Math.exp(-GYRO_SMOOTHING_RATE * Math.min(delta, 0.1));
+        camera.quaternion.slerp(target, t);
     });
 
     return null;

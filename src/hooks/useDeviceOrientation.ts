@@ -38,9 +38,17 @@ function computeCameraQuaternion(
   gamma: number,
   screenAngle: number
 ) {
+  // Axis order matters and is not interchangeable: the device frame maps to
+  // the camera as (X = beta, Y = alpha, Z = -gamma) under YXZ order. Using
+  // gamma for Y and -alpha for Z instead — as this did originally — looks
+  // correct only while you face the reference heading; once alpha != 0 it
+  // trades pitch for horizon roll (turn 90 deg and tilt down 45 deg and you
+  // get roll 45 / pitch 0 instead of pitch -45 / roll 0), which reads as an
+  // inverted Y axis and a swimming, jittery horizon. This matches three.js
+  // DeviceOrientationControls.
   const x = THREE.MathUtils.degToRad(beta);
-  const y = THREE.MathUtils.degToRad(gamma);
-  const z = THREE.MathUtils.degToRad(alpha);
+  const y = THREE.MathUtils.degToRad(alpha);
+  const z = THREE.MathUtils.degToRad(gamma);
   const orient = THREE.MathUtils.degToRad(screenAngle);
 
   workingEuler.set(x, y, -z, 'YXZ');
