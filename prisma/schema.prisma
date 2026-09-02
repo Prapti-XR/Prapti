@@ -148,6 +148,13 @@ model Asset {
   format       String? // e.g., "GLTF", "GLB"
   polygonCount Int?
   textureCount Int?
+  // Multiplier from the model's authored GLTF units to real-world metres:
+  // world size = authored size * realScaleFactor. Photogrammetry scans are
+  // exported at arbitrary units (sonda-fort.glb is 2.75 units across for a
+  // real fort), so true scale cannot be derived from the asset and must be
+  // measured by experiment. null = not calibrated yet, which makes the AR
+  // real-scale control render disabled rather than show a wrong size.
+  realScaleFactor Float?
 
   // Panorama specific
   isPanorama   Boolean @default(false)
