@@ -47,6 +47,12 @@ export default function AdminPage() {
                                     href="/admin/upload?type=model"
                                 />
                                 <ActionCard
+                                    title="Real-World Scale"
+                                    description="Calibrate AR size for 3D models"
+                                    icon="📐"
+                                    href="/admin/scale"
+                                />
+                                <ActionCard
                                     title="Upload Images"
                                     description="Add 360° panoramic images"
                                     icon="🖼️"
