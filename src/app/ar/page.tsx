@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ThreeErrorBoundary } from '@/components/error/ThreeErrorBoundary';
+import { useARSupport } from '@/hooks/useARSupport';
 
 const ARViewer = dynamic(
     () => import('@/components/3d/ARViewer').then(mod => ({ default: mod.ARViewer })),
@@ -38,8 +39,7 @@ function ARPageContent() {
     const siteId = searchParams.get('site') || '';
 
     const [site, setSite] = useState<SiteData | null>(null);
-    const [isARSupported, setIsARSupported] = useState<boolean | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const { isSupported: isARSupported, isChecking: isCheckingARSupport } = useARSupport();
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [viewerMode, setViewerMode] = useState<'ar' | '3d' | 'vr'>('ar');
 
@@ -90,30 +90,9 @@ function ARPageContent() {
     }, [siteId]);
 
     useEffect(() => {
-        // Check if AR is supported
-        const checkARSupport = async () => {
-            setIsLoading(true);
-
-            if ('xr' in navigator) {
-                try {
-                    const supported = await (navigator as any).xr?.isSessionSupported?.('immersive-ar');
-                    setIsARSupported(supported);
-                    setViewerMode(supported ? 'ar' : '3d');
-                } catch (error) {
-                    console.error('AR support check failed:', error);
-                    setIsARSupported(false);
-                    setViewerMode('3d');
-                }
-            } else {
-                setIsARSupported(false);
-                setViewerMode('3d');
-            }
-
-            setIsLoading(false);
-        };
-
-        checkARSupport();
-    }, []);
+        if (isCheckingARSupport) return;
+        setViewerMode(isARSupported ? 'ar' : '3d');
+    }, [isARSupported, isCheckingARSupport]);
 
     if (fetchError) {
         return (
@@ -132,7 +111,7 @@ function ARPageContent() {
         );
     }
 
-    if (isLoading || !site) {
+    if (isCheckingARSupport || !site) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-heritage-dark via-heritage-secondary to-heritage-dark-deep">
                 <div className="text-center">

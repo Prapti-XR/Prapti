@@ -6,7 +6,7 @@
 
 'use client';
 
-import { Suspense, useRef, useState } from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
     OrbitControls,
@@ -19,6 +19,9 @@ import {
     Center
 } from '@react-three/drei';
 import * as THREE from 'three';
+import { computeNormalizedScale } from '@/lib/model-sizing';
+
+const MODEL_TARGET_SIZE = 2;
 
 interface ModelViewerProps {
     modelUrl: string;
@@ -61,6 +64,15 @@ function Model({ url, onLoad }: ModelProps) {
 
     const { scene } = gltf;
 
+    // Normalize scale from the model's own bounding box so every model gets
+    // a consistent, fixed size regardless of the units it was exported at.
+    // Computed before the scene-presence check below so this hook is always
+    // called in the same order (rules-of-hooks).
+    const scale = useMemo(
+        () => (scene ? computeNormalizedScale(scene, MODEL_TARGET_SIZE) : 1),
+        [scene]
+    );
+
     // Call onLoad only once when model is successfully loaded
     if (scene && onLoad && !hasCalledOnLoad.current) {
         hasCalledOnLoad.current = true;
@@ -76,6 +88,7 @@ function Model({ url, onLoad }: ModelProps) {
             <primitive
                 ref={groupRef}
                 object={scene}
+                scale={scale}
                 dispose={null}
             />
         </Center>

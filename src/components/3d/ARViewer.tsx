@@ -6,9 +6,9 @@
 
 'use client';
 
-import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { XR, createXRStore } from '@react-three/xr';
+import { XR, XRDomOverlay, createXRStore } from '@react-three/xr';
 import {
     useGLTF,
     Html,
@@ -16,10 +16,35 @@ import {
     Center
 } from '@react-three/drei';
 import * as THREE from 'three';
+import { useARSupport } from '@/hooks/useARSupport';
+import { computeNormalizedScale } from '@/lib/model-sizing';
+
+const AR_TARGET_SIZE = 1;
+const CALIBRATION_MIN = 0.25;
+const CALIBRATION_MAX = 3;
+const CALIBRATION_STEP = 0.1;
+
+function calibrationStorageKey(modelUrl: string) {
+    return `ar-scale:${modelUrl}`;
+}
+
+function loadStoredCalibration(modelUrl: string, fallback: number): number {
+    if (typeof window === 'undefined') return fallback;
+    try {
+        const raw = window.localStorage.getItem(calibrationStorageKey(modelUrl));
+        const parsed = raw !== null ? parseFloat(raw) : NaN;
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+    } catch {
+        return fallback;
+    }
+}
 
 interface ARViewerProps {
     modelUrl: string;
     title?: string;
+    /** Fixed default size multiplier for this call site, applied on top of
+     * the model's own bounding-box-normalized scale. Acts as the "reset"
+     * target for the in-AR size calibration control. */
     scale?: number;
     onLoad?: () => void;
     onError?: (error: Error) => void;
@@ -27,12 +52,12 @@ interface ARViewerProps {
 
 interface ARModelProps {
     url: string;
-    scale?: number;
+    calibration: number;
     onLoad?: () => void;
     onError?: (error: Error) => void;
 }
 
-function ARModel({ url, scale = 1, onLoad }: ARModelProps) {
+function ARModel({ url, calibration, onLoad }: ARModelProps) {
     const groupRef = useRef<THREE.Group>(null);
     const [rotation, setRotation] = useState(0);
 
@@ -42,6 +67,13 @@ function ARModel({ url, scale = 1, onLoad }: ARModelProps) {
 
     // Clone the scene to avoid issues with multiple instances
     const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+    // Fixed baseline size derived from the model's own bounding box; the
+    // user-adjustable `calibration` multiplier is layered on top of it.
+    const baseScale = useMemo(
+        () => computeNormalizedScale(clonedScene, AR_TARGET_SIZE),
+        [clonedScene]
+    );
 
     useEffect(() => {
         if (onLoad) {
@@ -59,7 +91,7 @@ function ARModel({ url, scale = 1, onLoad }: ARModelProps) {
             ref={groupRef}
             position={[0, 0, -2]}
             rotation={[0, rotation, 0]}
-            scale={scale}
+            scale={baseScale * calibration}
             onClick={handleClick}
         >
             <Center>
@@ -94,6 +126,49 @@ function ErrorPlaceholder({ message }: { message: string }) {
     );
 }
 
+function CalibrationControls({
+    calibration,
+    onDecrease,
+    onIncrease,
+    onReset
+}: {
+    calibration: number;
+    onDecrease: () => void;
+    onIncrease: () => void;
+    onReset: () => void;
+}) {
+    return (
+        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg pointer-events-auto">
+            <button
+                onClick={onDecrease}
+                className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
+                aria-label="Decrease AR model size"
+                disabled={calibration <= CALIBRATION_MIN}
+            >
+                −
+            </button>
+            <span className="min-w-[3.5ch] text-center font-semibold">
+                {Math.round(calibration * 100)}%
+            </span>
+            <button
+                onClick={onIncrease}
+                className="flex items-center justify-center w-8 h-8 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary disabled:opacity-40"
+                aria-label="Increase AR model size"
+                disabled={calibration >= CALIBRATION_MAX}
+            >
+                +
+            </button>
+            <button
+                onClick={onReset}
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                aria-label="Reset AR model size"
+            >
+                Reset
+            </button>
+        </div>
+    );
+}
+
 export function ARViewer({
     modelUrl,
     title,
@@ -103,7 +178,32 @@ export function ARViewer({
 }: ARViewerProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isARSupported, setIsARSupported] = useState(true);
+    const [showOptions, setShowOptions] = useState(false);
+    const [calibration, setCalibration] = useState(() => loadStoredCalibration(modelUrl, scale));
+    const { isSupported: isARSupported } = useARSupport();
+
+    useEffect(() => {
+        setCalibration(loadStoredCalibration(modelUrl, scale));
+    }, [modelUrl, scale]);
+
+    const updateCalibration = useCallback(
+        (value: number) => {
+            const clamped = Math.min(CALIBRATION_MAX, Math.max(CALIBRATION_MIN, value));
+            setCalibration(clamped);
+            if (typeof window !== 'undefined') {
+                try {
+                    window.localStorage.setItem(calibrationStorageKey(modelUrl), String(clamped));
+                } catch (err) {
+                    console.error('Failed to persist AR size calibration:', err);
+                }
+            }
+        },
+        [modelUrl]
+    );
+
+    const handleCalibrateDecrease = () => updateCalibration(calibration - CALIBRATION_STEP);
+    const handleCalibrateIncrease = () => updateCalibration(calibration + CALIBRATION_STEP);
+    const handleCalibrateReset = () => updateCalibration(scale);
 
     const handleLoad = () => {
         setIsLoading(false);
@@ -119,27 +219,7 @@ export function ARViewer({
     // Create XR store once per mount (recreating it every render resets XR state)
     const [store] = useState(() => createXRStore());
 
-    // Check WebXR support
-    useEffect(() => {
-        const checkARSupport = async () => {
-            if (typeof navigator === 'undefined' || !navigator.xr) {
-                setIsARSupported(false);
-                return;
-            }
-
-            try {
-                const supported = await navigator.xr.isSessionSupported('immersive-ar');
-                setIsARSupported(supported);
-            } catch (err) {
-                console.error('WebXR check failed:', err);
-                setIsARSupported(false);
-            }
-        };
-
-        checkARSupport();
-    }, []);
-
-    if (!isARSupported) {
+    if (isARSupported === false) {
         return (
             <div className="relative w-full h-full min-h-[500px] bg-gradient-to-b from-heritage-dark to-heritage-dark-deep rounded-xl overflow-hidden shadow-xl flex items-center justify-center">
                 <div className="flex flex-col items-center justify-center max-w-md p-8 mx-4 text-white rounded-xl bg-heritage-secondary/40 backdrop-blur-sm border border-heritage-primary/30">
@@ -151,7 +231,7 @@ export function ARViewer({
                         Your browser doesn't support WebXR for AR experiences.
                     </p>
                     <p className="text-xs text-center opacity-90">
-                        Try using Chrome on Android or Safari on iOS with AR support.
+                        AR requires a WebXR-compatible browser, such as Chrome on Android with ARCore support.
                     </p>
                 </div>
             </div>
@@ -167,6 +247,30 @@ export function ARViewer({
                     <p className="text-sm text-gray-200">Tap "Start AR" to begin</p>
                 </div>
             )}
+
+            {/* Size Calibration */}
+            <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+                <button
+                    onClick={() => setShowOptions((prev) => !prev)}
+                    className="flex items-center justify-center w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-primary"
+                    title="Calibrate Size"
+                    aria-label="Calibrate AR model size"
+                    aria-expanded={showOptions}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+                {showOptions && (
+                    <CalibrationControls
+                        calibration={calibration}
+                        onDecrease={handleCalibrateDecrease}
+                        onIncrease={handleCalibrateIncrease}
+                        onReset={handleCalibrateReset}
+                    />
+                )}
+            </div>
 
             {/* AR Button */}
             <div className="absolute z-10 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -216,12 +320,24 @@ export function ARViewer({
                         ) : (
                             <ARModel
                                 url={modelUrl}
-                                scale={scale}
+                                calibration={calibration}
                                 onLoad={handleLoad}
                                 onError={handleError}
                             />
                         )}
                     </Suspense>
+
+                    {/* In-session size calibration, shown via the WebXR DOM overlay */}
+                    <XRDomOverlay>
+                        <div className="absolute bottom-6 right-4">
+                            <CalibrationControls
+                                calibration={calibration}
+                                onDecrease={handleCalibrateDecrease}
+                                onIncrease={handleCalibrateIncrease}
+                                onReset={handleCalibrateReset}
+                            />
+                        </div>
+                    </XRDomOverlay>
                 </XR>
             </Canvas>
 
@@ -232,6 +348,7 @@ export function ARViewer({
                     <li>📱 Point camera at a flat surface</li>
                     <li>👆 Tap to place the model</li>
                     <li>🔄 Tap model to rotate</li>
+                    <li>⚙️ Use the size control to calibrate scale</li>
                     <li>🚶 Walk around to view from all angles</li>
                 </ul>
             </div>
